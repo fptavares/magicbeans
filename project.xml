@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*
+ * Copyright 2001-2004 The Apache Software Foundation.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ -->
+
+
+<project>
+  <!-- the version of maven's project object model -->
+  <pomVersion>3</pomVersion>
+  
+  <groupId>magicbeans</groupId>
+  
+  <!-- a unique name for this project -->
+  <artifactId>magicbeans</artifactId>
+  
+  <!-- a short but descriptive name for the project -->
+  <name>Swing's Magic Beans</name>
+  
+  <!-- The version of the project under development, e.g.
+       1.1, 1.2, 2.0-SNAPSHOT -->
+  <currentVersion>0.1</currentVersion>
+  
+  <!-- details about the organization that 'owns' the project -->
+  <organization>
+    <name>devyant</name>
+    <url>http://www.devyant.org/</url>
+    <logo>http://www.devyant.org/images/devyant.jpg</logo>
+  </organization>
+  
+  <!-- the year the project started -->
+  <inceptionYear>2005</inceptionYear>
+  <package>org.devyant.${pom.groupId}</package>
+  <logo></logo>
+  <description>
+    A set of Java libraries that provide direct mapping between Swing components
+    and you Java beans. Swing forms may be automatically generated through your
+	beans and their public fields.
+  </description>
+  
+  <!-- a short description of what the project does -->
+  <shortDescription>Direct Swing&lt;-&gt;Bean mapping and automatic Swing form generation.</shortDescription>
+  
+  <!-- the project home page -->
+  <url>http://www.devyant.org/${pom.groupId}/</url>
+  
+  <!-- the version control repository and http url for online access
+       the connection element has the form:
+       scm:<system>:<system specific connection string> -->
+  <repository/>
+  
+  <versions>
+    <version>
+      <id>0.1</id>
+      <name>0.1</name>
+      <tag>HEAD</tag>
+    </version>
+  </versions>
+  
+  <!-- any mailing lists for the project -->
+  <mailingLists/>
+  
+  <!-- who the developers are for the project -->
+  <developers>
+
+    <developer>
+      <name>Filipe Tavares</name>
+      <id>ftavares</id>
+      <email>ftavares@devyant.org</email>
+      <organization>devyant</organization>
+    </developer>
+
+  </developers>
+  
+  <licenses>
+    <name>GPL</name>
+    <url>http://www.gnu.org/licenses/gpl.html</url>
+    <distribution>manual</distribution>
+  </licenses>
+  
+  <!-- jar files the project is dependent on -->
+  <dependencies>
+  
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <type>jar</type>
+      <url>http://junit.sf.net/</url>
+      <properties>
+        <comment>Required to run all tests.</comment>
+      </properties>
+    </dependency>
+    
+  </dependencies>
+  
+  <!-- build information for the project -->
+  <build>
+    <nagEmailAddress>${pom.groupId}@devyant.org</nagEmailAddress>
+	
+    <sourceDirectory>src/java</sourceDirectory>
+    <unitTestSourceDirectory>src/test</unitTestSourceDirectory>
+    <unitTest>
+      <includes>
+        <include>**/*Test.java</include>
+      </includes>
+    </unitTest>
+    <resources>
+      <resource>
+        <directory>src/test-resources</directory>
+		<filtering>false</filtering>
+      </resource>
+    </resources>
+  </build>
+</project>
