@@ -18,7 +18,6 @@ package org.devyant.magicbeans.beans;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.devyant.magicbeans.MagicBean;
 import org.devyant.magicbeans.MagicUtils;
 
 /**
