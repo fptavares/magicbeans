@@ -28,15 +28,15 @@ import javax.swing.JPanel;
 import org.apache.commons.lang.StringUtils;
 import org.devyant.magicbeans.MagicComponent;
 import org.devyant.magicbeans.MagicContainer;
+import org.devyant.magicbeans.MagicLayout;
 import org.devyant.magicbeans.MagicUtils;
 import org.devyant.magicbeans.MagicView;
 import org.devyant.magicbeans.beans.MagicProperty;
 import org.devyant.magicbeans.i18n.MagicResources;
-import org.devyant.magicbeans.observer.BasicSubjectBehaviour;
-import org.devyant.magicbeans.observer.Observer;
+import org.devyant.magicbeans.layouts.GridBagMagicLayout;
 import org.devyant.magicbeans.swing.listeners.UpdateButtonActionListener;
 import org.devyant.magicbeans.utils.components.UnlabeledComponent;
-import org.devyant.magicbeans.utils.containers.MagicContainers;
+import org.devyant.magicbeans.utils.containers.DefaultContainerBehaviour;
 
 /**
  * SwingContainer is a <b>cool</b> class.
@@ -47,8 +47,7 @@ import org.devyant.magicbeans.utils.containers.MagicContainers;
  * @todo maybe remove status bar....
  * replace by a simple -> title + "*" -> only at nested containers...:(
  */
-public class SwingContainer extends JPanel
-        implements MagicView {
+public class SwingContainer extends JPanel implements MagicView {
     /**
      * The status <code>JLabel</code>.
      */
@@ -57,22 +56,14 @@ public class SwingContainer extends JPanel
      * The okButton <code>JButton</code>.
      */
     private final JButton okButton = new JButton();
+    
     /**
-     * The <code>GridBagConstraints</code>.
+     * The <code>MagicLayout</code>.
      */
-    private GridBagConstraints gridBagConstraints;
-    /**
-     * The insets for the components.
-     */
-    protected final Insets insets = new Insets(5, 5, 5, 5);
-    /**
-     * The current line being filled at the <code>GridBagLayout</code>.
-     */
-    protected int line = 0;
+    protected final MagicLayout layout = new GridBagMagicLayout();
     
     /**
      * The default message resources.
-     * @todo return property if null
      */
     protected MagicResources resources;
     
@@ -94,7 +85,7 @@ public class SwingContainer extends JPanel
      */
     protected void init() {
         // gui initialization
-        setLayout(new java.awt.GridBagLayout());
+        setLayout(layout);
         
         okButton.setText(resources.getString(MagicResources.STRING_OKBUTTON));
         okButton.addActionListener(new java.awt.event.ActionListener() {
@@ -119,7 +110,7 @@ public class SwingContainer extends JPanel
      */
     public void update() throws Exception {
         // do common update
-        MagicContainers.doUpdateForContainer(this);
+        DefaultContainerBehaviour.doUpdateForContainer(this);
     }
     
     /**
@@ -187,8 +178,7 @@ public class SwingContainer extends JPanel
             ((UnlabeledComponent) component).setTitle(string);
         }
         // add magic component
-        addComponent((Component) component, 0, line++,
-                GridBagConstraints.WEST, GridBagConstraints.BOTH, 2, 1, insets);
+        layout.addUnlabeledComponent(this, (Component) component);
     }
     /**
      * @param component The component to add
@@ -196,67 +186,22 @@ public class SwingContainer extends JPanel
      */
     private void addLabeledComponent(final MagicComponent component,
             final String string) {
-        // add label
-        addComponent(new JLabel(string), 0, line);
-        // add magic component
-        addComponent((Component) component, 1, line++);
-    }
-    
-    /**
-     * Add a component to the panel.
-     * @param component The component to add
-     * @param x The x coordinate
-     * @param y The y coordinate
-     */
-    private final void addComponent(final Component component, int x, int y) {
-        addComponent(component, x, y,
-                GridBagConstraints.WEST, GridBagConstraints.BOTH);
-    }
-    
-    /**
-     * @param component The component to add
-     * @param x The x coordinate
-     * @param y The y coordinate
-     * @param anchor The <code>GridBagConstraints</code>'s anchor to use
-     */
-    private final void addComponent(final Component component,
-            int x, int y, int anchor, int fill) {
-        addComponent(component, x, y, anchor, fill, 1, 1, insets);
-    }
-    
-    /**
-     * @param component The component to add
-     * @param x The x coordinate
-     * @param y The y coordinate
-     * @param anchor The <code>GridBagConstraints</code>'s anchor to use
-     */
-    protected final void addComponent(final Component component, int x, int y,
-            int anchor, int fill, int gridwidth, int gridheight, Insets insets) {
-        gridBagConstraints = new GridBagConstraints();
-        gridBagConstraints.anchor = anchor;
-        gridBagConstraints.fill = fill;
-        gridBagConstraints.gridwidth = gridwidth;
-        gridBagConstraints.gridheight = gridheight;
-        gridBagConstraints.gridx = x;
-        gridBagConstraints.gridy = y;
-        gridBagConstraints.insets = insets;
-        add(component, gridBagConstraints);
+        // add label + magic component
+        layout.addLabeledComponent(this, new JLabel(string),
+        		(Component) component);
     }
 
     /**
      * Add the OK button.
      */
     private final void addOKButton() {
-        addComponent(okButton, 1, line++,
-                GridBagConstraints.EAST, GridBagConstraints.NONE);
+        layout.addButton(this, okButton);
     }
     /**
      * Add the status bar.
      */
     private final void addStatusBar() {
-        addComponent(status, 0, line++, GridBagConstraints.CENTER,
-                GridBagConstraints.BOTH, GridBagConstraints.REMAINDER, 1,
-                new Insets(0, 5, 0, 5));
+        layout.addStatus(this, status);
     }
     
     /**

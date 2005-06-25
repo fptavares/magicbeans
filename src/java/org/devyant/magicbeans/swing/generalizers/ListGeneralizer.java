@@ -27,4 +27,5 @@ import javax.swing.ListModel;
 public interface ListGeneralizer {
     public void setModel(ListModel model);
     public Object getSelectedValue();
+    public Object [] getSelectedValues();
 }

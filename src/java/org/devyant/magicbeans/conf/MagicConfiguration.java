@@ -15,6 +15,8 @@
  */
 package org.devyant.magicbeans.conf;
 
+import java.awt.Dimension;
+
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
@@ -59,6 +61,15 @@ public abstract class MagicConfiguration {
 
     public static final String GUI_TYPE_KEY = "gui.type";
     public static final String GUI_TYPE = get(GUI_TYPE_KEY);
+    
+    public static final String GUI_COMPONENT_MINIMUM_WIDTH_KEY = "gui.component.minimum.width";
+    public static final int GUI_COMPONENT_MINIMUM_WIDTH = getInt(GUI_COMPONENT_MINIMUM_WIDTH_KEY);
+    
+    public static final String GUI_COMPONENT_MINIMUM_HEIGHT_KEY = "gui.component.minimum.height";
+    public static final int GUI_COMPONENT_MINIMUM_HEIGHT = getInt(GUI_COMPONENT_MINIMUM_HEIGHT_KEY);
+    
+    public static final Dimension GUI_COMPONENT_MINIMUM_SIZE =
+    	new Dimension(GUI_COMPONENT_MINIMUM_WIDTH, GUI_COMPONENT_MINIMUM_HEIGHT);
 
     public static final String GUI_STACKING_TOLERANCE_KEY = "gui.stacking.tolerance";
     public static final int GUI_STACKING_TOLERANCE = getInt(GUI_STACKING_TOLERANCE_KEY);

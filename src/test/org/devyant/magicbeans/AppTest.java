@@ -18,16 +18,12 @@ package org.devyant.magicbeans;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Random;
-
-import javax.swing.JFrame;
-
-import org.apache.commons.lang.RandomStringUtils;
-import org.apache.commons.lang.StringUtils;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+
+import org.apache.commons.lang.RandomStringUtils;
 
 /**
  * AppTest is a <b>cool</b> class.
@@ -67,6 +63,20 @@ public class AppTest
         bean.includeResources("org.devyant.magicbeans.Resources");
         
         bean.showFrame(null);
+        
+        /*final Container c = bean.render();
+        c.setPreferredSize(new Dimension(300, 600));
+        JFrame frame =
+            new JFrame("test");
+        frame.addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                System.exit(0);
+            }
+        });
+        frame.setContentPane(c);
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);*/
     }
     
     /**

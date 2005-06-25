@@ -19,7 +19,6 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import org.apache.commons.lang.StringUtils;
-import org.devyant.magicbeans.MagicUtils;
 import org.devyant.magicbeans.conf.MagicConfiguration;
 
 /**
@@ -42,22 +41,20 @@ public class MagicResources {
     /**
      * The PROPERTY_KEY_PREFIX.
      */
-    public static String PROPERTY_KEY_PREFIX = MagicConfiguration.RESOURCES_PROPERTY_PREFIX;
+    public static final String PROPERTY_KEY_PREFIX = MagicConfiguration.RESOURCES_PROPERTY_PREFIX;
     
-    /**
-     * The MESSAGE_UPDATED <code>String</code>.
-     */
+    // messages
+    
     public static final String MESSAGE_UPDATED = "updated";
 
-    /**
-     * The STRING_TITLE <code>String</code>.
-     */
+    // strings
+    
     public static final String STRING_TITLE = "title";
     
-    /**
-     * The STRING_OKBUTTON <code>String</code>.
-     */
-    public static final String STRING_OKBUTTON = "okbutton";
+    public static final String STRING_OKBUTTON = "button.ok";
+	public static final String STRING_ADDBUTTON = "button.add";
+	public static final String STRING_EDITBUTTON = "button.edit";
+	public static final String STRING_REMOVEBUTTON = "button.remove";
     
     /**
      * The resources to use.
@@ -103,13 +100,5 @@ public class MagicResources {
      */
     public final String getString(final String name) {
         return bundle.getString(BASE_KEY_PREFIX + name);
-    }
-    
-    /**
-     * @param PROPERTY_KEY_PREFIX The prefix to use when searching for a 
-     * property's resource
-     */
-    public static final void setProperty_key_prefix(String property_key_prefix) {
-        MagicResources.PROPERTY_KEY_PREFIX = property_key_prefix;
     }
 }

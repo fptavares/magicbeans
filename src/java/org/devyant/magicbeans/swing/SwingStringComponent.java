@@ -20,6 +20,7 @@ import javax.swing.JTextField;
 
 import org.devyant.magicbeans.MagicComponent;
 import org.devyant.magicbeans.beans.MagicProperty;
+import org.devyant.magicbeans.conf.MagicConfiguration;
 
 /**
  * SwingStringComponent is a <b>cool</b> class.
@@ -51,7 +52,7 @@ public class SwingStringComponent extends JTextField implements MagicComponent {
             setText(value.toString());
         }
         // ui stuff
-        setMinimumSize(new Dimension(60, 16));
+        setMinimumSize(MagicConfiguration.GUI_COMPONENT_MINIMUM_SIZE);
     }
     /**
      * @see org.devyant.magicbeans.MagicComponent#getProperty()

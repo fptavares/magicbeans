@@ -22,17 +22,17 @@ import org.devyant.magicbeans.MagicComponent;
 import org.devyant.magicbeans.MagicUtils;
 
 /**
- * MagicContainers is a <b>cool</b> class.
+ * DefaultContainerBehaviour is a <b>cool</b> class.
  * 
  * @author Filipe Tavares
  * @version $Revision$ $Date$ ($Author$)
  * @since 17/Jun/2005 1:28:17
  */
-public abstract class MagicContainers {
+public abstract class DefaultContainerBehaviour {
     /**
      * This is a utility class, therefor it should not be instatiated.
      */
-    protected MagicContainers() {
+    protected DefaultContainerBehaviour() {
         throw new UnsupportedOperationException();
     }
     
@@ -40,6 +40,7 @@ public abstract class MagicContainers {
      * Common implementation for all <code>MagicContainer</code>s
      * {@link org.devyant.magicbeans.MagicComponent#update()} method.
      * @param container
+     * @see org.devyant.magicbeans.MagicComponent
      */
     public static final void doUpdateForContainer(Container container) {
         final Component [] components = container.getComponents();
@@ -47,14 +48,16 @@ public abstract class MagicContainers {
             if (components[i] instanceof MagicComponent) {
                 MagicUtils.debug(components[i].getClass());
                 try {
+                	// do layer-by-layer update
                     ((MagicComponent) components[i]).update();
+                    // debug
                     MagicUtils.debug(
                             ((MagicComponent) components[i]).getProperty().getName()
                             + ": "
                             + ((MagicComponent) components[i]).getProperty().get()
                             );
                 } catch(Exception e) {
-                    e.printStackTrace();
+                	MagicUtils.debug(e);
                 }
             }
         }

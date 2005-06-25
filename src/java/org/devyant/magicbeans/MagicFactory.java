@@ -42,7 +42,6 @@ public abstract class MagicFactory {
      */
     protected static final MagicView getContainerInstanceFor(
             final Class beanClass) throws ConfigurationException {
-        MagicContainer container;
         if (MagicConfiguration.GUI_TYPE.equalsIgnoreCase(SWING)) {
             // Swing
             //return new SwingContainer();

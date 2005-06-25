@@ -17,8 +17,9 @@ package org.devyant.magicbeans.swing;
 
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.GridBagConstraints;
+import java.awt.event.ActionEvent;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Vector;
@@ -31,6 +32,8 @@ import org.devyant.magicbeans.MagicBean;
 import org.devyant.magicbeans.MagicUtils;
 import org.devyant.magicbeans.MagicView;
 import org.devyant.magicbeans.beans.MagicProperty;
+import org.devyant.magicbeans.conf.MagicConfiguration;
+import org.devyant.magicbeans.i18n.MagicResources;
 import org.devyant.magicbeans.swing.generalizers.ListGeneralizer;
 import org.devyant.magicbeans.swing.listeners.UpdateButtonActionListener;
 import org.devyant.magicbeans.swing.utils.BasicDialog;
@@ -41,17 +44,19 @@ import org.devyant.magicbeans.swing.utils.BasicDialog;
  * @author Filipe Tavares
  * @version $Revision$ $Date$ ($Author$)
  * @since 17/Jun/2005 2:41:31
- * @todo buttons with life?.. :)p
- * @todo how to define set and get for a non-magic property?... damn...:(
  */
 public class SwingCollectionContainer extends SwingNestedContainer
         implements UpdateButtonActionListener {
     private final ListGeneralizer component;
     private final DefaultComboBoxModel model = new DefaultComboBoxModel();
-    private final JButton addButton = new JButton("Add");
-    private final JButton editButton = new JButton("Edit");
-    private final JButton removeButton = new JButton("Remove");
+    private final JButton addButton = new JButton();
+    private final JButton editButton = new JButton();
+    private final JButton removeButton = new JButton();
     
+    /**
+     * The title <code>String</code>.
+     * <p>This is used for the add/edit window title.</p>
+     */
     private String title = "";
     
     /**
@@ -66,46 +71,71 @@ public class SwingCollectionContainer extends SwingNestedContainer
         
         component.setModel(model);
         
-        //addButton.setText(resources.getString(MagicResources.STRING_OKBUTTON));
+        addButton.setText(resources.getString(MagicResources.STRING_ADDBUTTON));
         addButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                model.addElement("Yoooooo!!");
+                addButtonActionPerformed(evt);
             }
         });
-        // addButton.setText(resources.getString(MagicResources.STRING_OKBUTTON));
+        editButton.setText(resources.getString(MagicResources.STRING_EDITBUTTON));
         editButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                final MagicBean bean = (MagicBean) component.getSelectedValue();
-                try {
-                    // add listener to the update button
-                    final Container container = bean.render();
-                    ((MagicView) container).addUpdateButtonActionListener(
-                            SwingCollectionContainer.this);
-                    // create the dialog
-                    BasicDialog dialog =
-                        new BasicDialog(container, (Frame) null, title, false);
-                    // show dialog
-                    dialog.setVisible(true);
-                } catch (Exception e) {
-                    MagicUtils.debug(e);
-                }
+                editButtonActionPerformed(evt);
+            }
+        });
+        removeButton.setText(resources.getString(MagicResources.STRING_REMOVEBUTTON));
+        removeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            	removeButtonActionPerformed(evt);
             }
         });
         
         // add list
         final JScrollPane scrollPane = new JScrollPane();
-        //scrollPane.setBackground(Color.RED);
-        //component.setBackground(Color.GREEN);
         scrollPane.getViewport().setView((Component) component);
-        addComponent(scrollPane, 1, line, GridBagConstraints.WEST,
-                GridBagConstraints.HORIZONTAL, 1, 3, insets);
-        // add buttons
-        addComponent(addButton, 2, line++, GridBagConstraints.WEST,
-                GridBagConstraints.HORIZONTAL, 1, 1, insets);
-        addComponent(editButton, 2, line++, GridBagConstraints.WEST,
-                GridBagConstraints.HORIZONTAL, 1, 1, insets);
-        addComponent(removeButton, 2, line++, GridBagConstraints.WEST,
-                GridBagConstraints.HORIZONTAL, 1, 1, insets);
+        scrollPane.setMinimumSize(new Dimension(
+        		MagicConfiguration.GUI_COMPONENT_MINIMUM_WIDTH,
+        		MagicConfiguration.GUI_COMPONENT_MINIMUM_WIDTH * 2));
+        // leave the dirty work to the layout manager :)
+        layout.addControledComponent(this, scrollPane,
+        		new Component[] {addButton, editButton, removeButton});
+    }
+    /**
+     * The addButton action.
+     * @param evt <code>ActionEvent</code> data
+     */
+    public void addButtonActionPerformed(ActionEvent evt) {
+    	model.addElement("Yoooooo!!");
+    }
+    /**
+     * The editButton action.
+     * @param evt <code>ActionEvent</code> data
+     */
+    public void editButtonActionPerformed(ActionEvent evt) {
+    	final MagicBean bean = (MagicBean) component.getSelectedValue();
+        try {
+            // add listener to the update button
+            final Container container = bean.render();
+            ((MagicView) container).addUpdateButtonActionListener(this);
+            // create the dialog
+            BasicDialog dialog =
+                new BasicDialog(container, (Frame) null, title, false);
+            // show dialog
+            dialog.setVisible(true);
+        } catch (Exception e) {
+            MagicUtils.debug(e);
+        }
+    }
+    /**
+     * The removeButton action.
+     * @param evt <code>ActionEvent</code> data
+     */
+    public void removeButtonActionPerformed(ActionEvent evt) {
+    	final Object [] items = component.getSelectedValues();
+    	// remove all the selected items
+    	for (int i = 0; i < items.length; i++) {
+    		model.removeElement(items[i]);
+    	}
     }
 
     /**
@@ -130,6 +160,9 @@ public class SwingCollectionContainer extends SwingNestedContainer
         }
     }
     
+    /**
+     * @see org.devyant.magicbeans.MagicComponent#update()
+     */
     public void update() throws Exception {
         // get the collection instance
         Collection collection = (Collection) this.property.get();

@@ -32,7 +32,8 @@ import org.devyant.magicbeans.swing.generalizers.list.ComboBoxGeneralizerImpl;
 import org.devyant.magicbeans.swing.generalizers.list.ListGeneralizerImpl;
 
 /**
- * SwingComponentFactory is a <b>cool</b> class.
+ * Factory for Swing components. This is used to get the right component
+ * for each property class.
  * 
  * @author Filipe Tavares
  * @version $Revision$ $Date$ ($Author$)
@@ -40,6 +41,16 @@ import org.devyant.magicbeans.swing.generalizers.list.ListGeneralizerImpl;
  */
 public abstract class SwingComponentFactory {
     /**
+	 * The COLLECTION_STYLE_COMBO <code>String</code>.
+	 */
+	private static final String COLLECTION_STYLE_COMBO = "combo";
+	/**
+	 * The COLLECTION_STYLE_LIST <code>String</code>.
+	 */
+	private static final String COLLECTION_STYLE_LIST = "list";
+
+
+	/**
      * Nested defaults to true.
      * @param property The property
      * @return A renderer for the property
@@ -62,8 +73,8 @@ public abstract class SwingComponentFactory {
      * @todo complete...
      * numbers, files, colors, ... timelines (a Collection of dates)...
      */
-    public static MagicComponent getBinderInstanceFor(
-            final Class type, final boolean nested) throws InvalidConfigurationException {
+    public static MagicComponent getBinderInstanceFor(final Class type,
+    		final boolean nested) throws InvalidConfigurationException {
         // java.lang.String
         if (type.isAssignableFrom(String.class)) {
             return new SwingStringComponent();
@@ -86,10 +97,10 @@ public abstract class SwingComponentFactory {
 
             // java.util.Collection
         } else if (type.isAssignableFrom(Collection.class)) {
-            if (MagicConfiguration.GUI_COLLECTIONS_STYLE.equals("list")) {
+            if (MagicConfiguration.GUI_COLLECTIONS_STYLE.equals(COLLECTION_STYLE_LIST)) {
                 // JList
                 return new SwingCollectionContainer(new ListGeneralizerImpl());
-            } else if (MagicConfiguration.GUI_COLLECTIONS_STYLE.equals("combo")) {
+            } else if (MagicConfiguration.GUI_COLLECTIONS_STYLE.equals(COLLECTION_STYLE_COMBO)) {
                 // JComboBox
                 return new SwingCollectionContainer(new ComboBoxGeneralizerImpl());
             } else {
