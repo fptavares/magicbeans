@@ -62,7 +62,7 @@ public class SwingCollectionContainer extends SwingNestedContainer
     /**
      * Creates a new <code>SwingCollectionContainer</code> instance.
      */
-    public SwingCollectionContainer(ListGeneralizer component) {
+    public SwingCollectionContainer(final ListGeneralizer component) {
         this.component = component;
     }
     
@@ -71,22 +71,22 @@ public class SwingCollectionContainer extends SwingNestedContainer
         
         component.setModel(model);
         
-        addButton.setText(resources.getString(MagicResources.STRING_ADDBUTTON));
+        addButton.setText(MagicConfiguration.resources.getString(MagicResources.STRING_ADDBUTTON));
         addButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addButtonActionPerformed(evt);
             }
         });
-        editButton.setText(resources.getString(MagicResources.STRING_EDITBUTTON));
+        editButton.setText(MagicConfiguration.resources.getString(MagicResources.STRING_EDITBUTTON));
         editButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 editButtonActionPerformed(evt);
             }
         });
-        removeButton.setText(resources.getString(MagicResources.STRING_REMOVEBUTTON));
+        removeButton.setText(MagicConfiguration.resources.getString(MagicResources.STRING_REMOVEBUTTON));
         removeButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-            	removeButtonActionPerformed(evt);
+                removeButtonActionPerformed(evt);
             }
         });
         
@@ -94,25 +94,27 @@ public class SwingCollectionContainer extends SwingNestedContainer
         final JScrollPane scrollPane = new JScrollPane();
         scrollPane.getViewport().setView((Component) component);
         scrollPane.setMinimumSize(new Dimension(
-        		MagicConfiguration.GUI_COMPONENT_MINIMUM_WIDTH,
-        		MagicConfiguration.GUI_COMPONENT_MINIMUM_WIDTH * 2));
+                this.property.getConfiguration()
+                    .getInt(MagicConfiguration.GUI_COMPONENT_MINIMUM_WIDTH_KEY),
+                this.property.getConfiguration()
+                    .getInt(MagicConfiguration.GUI_COMPONENT_MINIMUM_WIDTH_KEY) * 2));
         // leave the dirty work to the layout manager :)
         layout.addControledComponent(this, scrollPane,
-        		new Component[] {addButton, editButton, removeButton});
+                new Component[] {addButton, editButton, removeButton});
     }
     /**
      * The addButton action.
      * @param evt <code>ActionEvent</code> data
      */
     public void addButtonActionPerformed(ActionEvent evt) {
-    	model.addElement("Yoooooo!!");
+        model.addElement("Yoooooo!!");
     }
     /**
      * The editButton action.
      * @param evt <code>ActionEvent</code> data
      */
     public void editButtonActionPerformed(ActionEvent evt) {
-    	final MagicBean bean = (MagicBean) component.getSelectedValue();
+        final MagicBean bean = (MagicBean) component.getSelectedValue();
         try {
             // add listener to the update button
             final Container container = bean.render();
@@ -131,20 +133,20 @@ public class SwingCollectionContainer extends SwingNestedContainer
      * @param evt <code>ActionEvent</code> data
      */
     public void removeButtonActionPerformed(ActionEvent evt) {
-    	final Object [] items = component.getSelectedValues();
-    	// remove all the selected items
-    	for (int i = 0; i < items.length; i++) {
-    		model.removeElement(items[i]);
-    	}
+        final Object [] items = component.getSelectedValues();
+        // remove all the selected items
+        for (int i = 0; i < items.length; i++) {
+            model.removeElement(items[i]);
+        }
     }
 
     /**
      * @see org.devyant.magicbeans.swing.SwingContainer#bindTo(org.devyant.magicbeans.beans.MagicProperty)
      */
     public void bindTo(MagicProperty property) throws Exception {
-        init(); // init gui
-        
         this.property = property;
+        
+        init(); // init gui
         
         // fill with property's value
         final Collection collection = (Collection) this.property.get();
@@ -154,9 +156,7 @@ public class SwingCollectionContainer extends SwingNestedContainer
         
         // add elements to the list
         for (Iterator i = collection.iterator(); i.hasNext(); ) {
-            MagicBean bean = new MagicBean(i.next());
-            bean.setResources(resources);
-            model.addElement(bean);
+            model.addElement(new MagicBean(i.next()));
         }
     }
     

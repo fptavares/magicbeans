@@ -15,7 +15,6 @@
  */
 package org.devyant.magicbeans;
 
-import org.devyant.magicbeans.i18n.MagicResources;
 
 /**
  * MagicContainer is a <b>cool</b> class.
@@ -25,9 +24,4 @@ import org.devyant.magicbeans.i18n.MagicResources;
  * @since 11/Jun/2005 1:56:35
  */
 public interface MagicContainer extends MagicComponent {
-    /**
-     * Set the resource bundle which contains the messages for the form labels.
-     * @param resources The <code>MagicResources</code> to use.
-     */
-    public void setResources(MagicResources resources);
 }

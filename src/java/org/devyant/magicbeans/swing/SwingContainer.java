@@ -17,21 +17,21 @@ package org.devyant.magicbeans.swing;
 
 import java.awt.Component;
 import java.awt.Container;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
+import java.awt.Dimension;
 import java.util.Collection;
 import java.util.Iterator;
+
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.apache.commons.lang.StringUtils;
 import org.devyant.magicbeans.MagicComponent;
-import org.devyant.magicbeans.MagicContainer;
 import org.devyant.magicbeans.MagicLayout;
 import org.devyant.magicbeans.MagicUtils;
 import org.devyant.magicbeans.MagicView;
 import org.devyant.magicbeans.beans.MagicProperty;
+import org.devyant.magicbeans.conf.MagicConfiguration;
 import org.devyant.magicbeans.i18n.MagicResources;
 import org.devyant.magicbeans.layouts.GridBagMagicLayout;
 import org.devyant.magicbeans.swing.listeners.UpdateButtonActionListener;
@@ -63,11 +63,6 @@ public class SwingContainer extends JPanel implements MagicView {
     protected final MagicLayout layout = new GridBagMagicLayout();
     
     /**
-     * The default message resources.
-     */
-    protected MagicResources resources;
-    
-    /**
      * The property to bind to.
      */
     protected MagicProperty property;
@@ -87,7 +82,7 @@ public class SwingContainer extends JPanel implements MagicView {
         // gui initialization
         setLayout(layout);
         
-        okButton.setText(resources.getString(MagicResources.STRING_OKBUTTON));
+        okButton.setText(MagicConfiguration.resources.getString(MagicResources.STRING_OKBUTTON));
         okButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 try {
@@ -127,16 +122,20 @@ public class SwingContainer extends JPanel implements MagicView {
             return;
         }
         
-        final Collection properties = MagicUtils.getProperties(object);
+        final Collection properties = MagicUtils.getProperties(object, this.property);
         
         for (Iterator i = properties.iterator(); i.hasNext(); ) {
             final MagicProperty prop = (MagicProperty) i.next();
             final MagicComponent component = SwingComponentFactory
                 .getComponentInstanceFor(prop);
             
-            if (component instanceof MagicContainer) {
-                ((MagicContainer) component).setResources(resources);
-            }
+            ((Component) component).setMinimumSize(
+                    new Dimension(
+                            property.getConfiguration().getInt(
+                            MagicConfiguration.GUI_COMPONENT_MINIMUM_WIDTH_KEY),
+                            property.getConfiguration()
+                                .getInt(MagicConfiguration.GUI_COMPONENT_MINIMUM_HEIGHT_KEY))
+                    );
             
             component.bindTo(prop);
             
@@ -149,7 +148,7 @@ public class SwingContainer extends JPanel implements MagicView {
      * @param name The message's name
      */
     private void showMessage(String name) {
-        status.setText(resources.getMessage(name));
+        status.setText(MagicConfiguration.resources.getMessage(name));
     }
 
     /**
@@ -159,7 +158,7 @@ public class SwingContainer extends JPanel implements MagicView {
     public final void addMagicComponent(final MagicComponent component) {
         // get the property's name
         final String string =
-            resources.getProperty(component.getProperty().getName());
+            MagicConfiguration.resources.getProperty(component.getProperty().getName());
         
         if ((StringUtils.isBlank(string)) || (component instanceof UnlabeledComponent)) {
             addUnlabeledComponent(component, string);
@@ -188,7 +187,7 @@ public class SwingContainer extends JPanel implements MagicView {
             final String string) {
         // add label + magic component
         layout.addLabeledComponent(this, new JLabel(string),
-        		(Component) component);
+                (Component) component);
     }
 
     /**
@@ -220,13 +219,6 @@ public class SwingContainer extends JPanel implements MagicView {
      */
     public final MagicProperty getProperty() {
         return property;
-    }
-
-    /**
-     * @see org.devyant.magicbeans.MagicContainer#setResources(org.devyant.magicbeans.i18n.MagicResources)
-     */
-    public void setResources(MagicResources resources) {
-        this.resources = resources;
     }
     
     /**

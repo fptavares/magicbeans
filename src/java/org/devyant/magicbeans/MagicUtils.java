@@ -120,10 +120,12 @@ public abstract class MagicUtils {
     }
 
     /**
-     * @param theClass
+     * @param object The bean that contains the properties
+     * @param parent The parent property
      * @return The class's accessible properties
      */
-    public static final Collection getProperties(final Object object) {
+    public static final Collection getProperties(final Object object,
+            final MagicProperty parent) {
         final Method [] methods = object.getClass().getMethods();
         
         final Hashtable getters = new Hashtable();
@@ -151,7 +153,7 @@ public abstract class MagicUtils {
             // if exists both setter and getter methods...
             if (setters.containsKey(key)) {
                 // create a Collection of MagicProperties
-                properties.add(new MagicProperty(object,
+                properties.add(new MagicProperty(parent, object,
                         (Method) getters.get(key), (Method) setters.get(key)));
             }
         }
@@ -169,9 +171,19 @@ public abstract class MagicUtils {
         }
     }
     /**
-     * @param string The debug text
+     * @param e The exception for debugging
      */
     public static final void debug(Throwable e) {
+        if (DEBUG) {
+            e.printStackTrace();
+        }
+    }
+    /**
+     * This exception should be handled.
+     * @param e The exception
+     * @todo handle?
+     */
+    public static final void error(Throwable e) {
         if (DEBUG) {
             e.printStackTrace();
         }

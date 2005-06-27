@@ -45,11 +45,11 @@ public class ComboBoxGeneralizerImpl extends JComboBox implements
         this.setModel((ComboBoxModel) model);
     }
 
-	/**
-	 * @see org.devyant.magicbeans.swing.generalizers.ListGeneralizer#getSelectedValues()
-	 */
-	public Object[] getSelectedValues() {
-		return this.getSelectedObjects();
-	}
+    /**
+     * @see org.devyant.magicbeans.swing.generalizers.ListGeneralizer#getSelectedValues()
+     */
+    public Object[] getSelectedValues() {
+        return this.getSelectedObjects();
+    }
 
 }

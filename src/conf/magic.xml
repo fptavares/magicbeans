@@ -1,0 +1,49 @@
+<magic>
+  <!-- Dummy -->
+  <bean class="org.devyant.magicbeans.AppTest$Dummy">
+    <name>
+    
+    </name>
+    <description>
+    
+    </description>
+    <bye>
+      
+    </bye>
+    <date>
+    
+      <Configuration>
+        <validate>true</validate>
+        <validationClass>org.devyant.AppTest</validationClass>
+      </Configuration>
+      
+    </date>
+    <dummy>
+    
+      <!-- configuration -->
+    
+      <Configuration>
+        <validate>true</validate>
+        <nested>false</nested> <!-- TODO -->
+      </Configuration>
+      
+      <!-- bean's properties -->
+      
+      <collection>
+      
+        <!-- configuration -->
+        
+        <Configuration>
+          <validate>true</validate>
+          <!-- property overrides -->
+          <magic>
+            <gui><collections><style>combo</style></collections></gui>
+            <stuff>yeh</stuff>
+          </magic>
+        </Configuration>
+        
+      </collection>
+      
+    </dummy>
+  </bean>
+</magic>

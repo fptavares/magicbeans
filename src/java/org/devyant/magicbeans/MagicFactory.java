@@ -41,12 +41,14 @@ public abstract class MagicFactory {
      * returns an invalid value
      */
     protected static final MagicView getContainerInstanceFor(
-            final Class beanClass) throws ConfigurationException {
-        if (MagicConfiguration.GUI_TYPE.equalsIgnoreCase(SWING)) {
+            final Class beanClass, final MagicConfiguration configuration)
+            throws ConfigurationException {
+        if (configuration.get(MagicConfiguration.GUI_TYPE_KEY)
+                .equalsIgnoreCase(SWING)) {
             // Swing
             //return new SwingContainer();
             final MagicComponent component = SwingComponentFactory
-                .getBinderInstanceFor(beanClass, false);
+                .getBinderInstanceFor(beanClass, configuration, false);
             
             if (component instanceof MagicView) {
                 return (MagicView) component;
@@ -54,15 +56,16 @@ public abstract class MagicFactory {
                 return null;
             }
             
-        } else if (MagicConfiguration.GUI_TYPE.equalsIgnoreCase(AWT)) {
+        } else if (configuration.get(MagicConfiguration.GUI_TYPE_KEY)
+                .equalsIgnoreCase(AWT)) {
             // AWT
             throw new UnavailableConfigurationException(
                     MagicConfiguration.GUI_TYPE_KEY,
-                    MagicConfiguration.GUI_TYPE);
+                    configuration.get(MagicConfiguration.GUI_TYPE_KEY));
         } else {
             throw new InvalidConfigurationException(
                     MagicConfiguration.GUI_TYPE_KEY,
-                    MagicConfiguration.GUI_TYPE);
+                    configuration.get(MagicConfiguration.GUI_TYPE_KEY));
         }
     }
 }

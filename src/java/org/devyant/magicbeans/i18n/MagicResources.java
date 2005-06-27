@@ -40,8 +40,11 @@ public class MagicResources {
     public static final String MESSAGE_KEY_PREFIX = BASE_KEY_PREFIX + "message.";
     /**
      * The PROPERTY_KEY_PREFIX.
+     * @todo could this become non-static?
      */
-    public static final String PROPERTY_KEY_PREFIX = MagicConfiguration.RESOURCES_PROPERTY_PREFIX;
+    public static final String PROPERTY_KEY_PREFIX =
+        MagicConfiguration.getFromDefault(
+                MagicConfiguration.RESOURCES_PROPERTY_PREFIX_KEY);
     
     // messages
     
@@ -52,9 +55,9 @@ public class MagicResources {
     public static final String STRING_TITLE = "title";
     
     public static final String STRING_OKBUTTON = "button.ok";
-	public static final String STRING_ADDBUTTON = "button.add";
-	public static final String STRING_EDITBUTTON = "button.edit";
-	public static final String STRING_REMOVEBUTTON = "button.remove";
+    public static final String STRING_ADDBUTTON = "button.add";
+    public static final String STRING_EDITBUTTON = "button.edit";
+    public static final String STRING_REMOVEBUTTON = "button.remove";
     
     /**
      * The resources to use.
@@ -70,6 +73,10 @@ public class MagicResources {
         this.bundle = bundle;
     }
     
+    /**
+     * Creates a new <code>MagicResources</code> instance.
+     * @param bundle The resources file
+     */
     public MagicResources(final String bundle) {
         this.bundle = ResourceBundle.getBundle(bundle);
     }

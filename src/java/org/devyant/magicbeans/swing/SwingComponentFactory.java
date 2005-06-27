@@ -41,16 +41,16 @@ import org.devyant.magicbeans.swing.generalizers.list.ListGeneralizerImpl;
  */
 public abstract class SwingComponentFactory {
     /**
-	 * The COLLECTION_STYLE_COMBO <code>String</code>.
-	 */
-	private static final String COLLECTION_STYLE_COMBO = "combo";
-	/**
-	 * The COLLECTION_STYLE_LIST <code>String</code>.
-	 */
-	private static final String COLLECTION_STYLE_LIST = "list";
+     * The COLLECTION_STYLE_COMBO <code>String</code>.
+     */
+    private static final String COLLECTION_STYLE_COMBO = "combo";
+    /**
+     * The COLLECTION_STYLE_LIST <code>String</code>.
+     */
+    private static final String COLLECTION_STYLE_LIST = "list";
 
 
-	/**
+    /**
      * Nested defaults to true.
      * @param property The property
      * @return A renderer for the property
@@ -60,7 +60,8 @@ public abstract class SwingComponentFactory {
     protected static final MagicComponent getComponentInstanceFor(
             final MagicProperty property) throws InvalidConfigurationException {
         
-        return getBinderInstanceFor(property.getType(), true);
+        return getBinderInstanceFor(property.getType(),
+                property.getConfiguration(), true);
     }
     
 
@@ -74,7 +75,8 @@ public abstract class SwingComponentFactory {
      * numbers, files, colors, ... timelines (a Collection of dates)...
      */
     public static MagicComponent getBinderInstanceFor(final Class type,
-    		final boolean nested) throws InvalidConfigurationException {
+            final MagicConfiguration configuration, final boolean nested)
+            throws InvalidConfigurationException {
         // java.lang.String
         if (type.isAssignableFrom(String.class)) {
             return new SwingStringComponent();
@@ -97,17 +99,19 @@ public abstract class SwingComponentFactory {
 
             // java.util.Collection
         } else if (type.isAssignableFrom(Collection.class)) {
-            if (MagicConfiguration.GUI_COLLECTIONS_STYLE.equals(COLLECTION_STYLE_LIST)) {
+            if (configuration.get(MagicConfiguration.GUI_COLLECTIONS_STYLE_KEY)
+                    .equals(COLLECTION_STYLE_LIST)) {
                 // JList
                 return new SwingCollectionContainer(new ListGeneralizerImpl());
-            } else if (MagicConfiguration.GUI_COLLECTIONS_STYLE.equals(COLLECTION_STYLE_COMBO)) {
+            } else if (configuration.get(MagicConfiguration.GUI_COLLECTIONS_STYLE_KEY)
+                    .equals(COLLECTION_STYLE_COMBO)) {
                 // JComboBox
                 return new SwingCollectionContainer(new ComboBoxGeneralizerImpl());
             } else {
                 // invalid style
                 throw new InvalidConfigurationException(
                         MagicConfiguration.GUI_COLLECTIONS_STYLE_KEY,
-                        MagicConfiguration.GUI_COLLECTIONS_STYLE);
+                        configuration.get(MagicConfiguration.GUI_COLLECTIONS_STYLE_KEY));
             }
             
             // complex data

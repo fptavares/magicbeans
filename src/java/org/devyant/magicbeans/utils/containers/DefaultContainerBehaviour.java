@@ -48,7 +48,7 @@ public abstract class DefaultContainerBehaviour {
             if (components[i] instanceof MagicComponent) {
                 MagicUtils.debug(components[i].getClass());
                 try {
-                	// do layer-by-layer update
+                    // do layer-by-layer update
                     ((MagicComponent) components[i]).update();
                     // debug
                     MagicUtils.debug(
@@ -57,7 +57,7 @@ public abstract class DefaultContainerBehaviour {
                             + ((MagicComponent) components[i]).getProperty().get()
                             );
                 } catch(Exception e) {
-                	MagicUtils.debug(e);
+                    MagicUtils.debug(e);
                 }
             }
         }

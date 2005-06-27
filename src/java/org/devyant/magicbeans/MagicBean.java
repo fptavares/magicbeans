@@ -24,6 +24,7 @@ import java.util.ResourceBundle;
 import javax.swing.JFrame;
 
 import org.devyant.magicbeans.beans.MagicProperty;
+import org.devyant.magicbeans.conf.MagicConfiguration;
 import org.devyant.magicbeans.i18n.MagicResources;
 import org.devyant.magicbeans.observer.Observer;
 import org.devyant.magicbeans.observer.Subject;
@@ -49,17 +50,30 @@ public class MagicBean extends Observable implements Observer {
      */
     private Object object;
     /**
-     * The message resources.
+     * The configuration.
      */
-    private MagicResources resources;
+    private MagicConfiguration configuration;
+    
+    private final String beanPath;
     
     /**
      * Creates a new <code>MagicBean</code> instance.
      * @param object The object to map
      */
     public MagicBean(Object object) {
+        this(object, null);
+    }
+    
+    /**
+     * Creates a new <code>MagicBean</code> instance.
+     * @param object The object to map
+     */
+    public MagicBean(Object object, String beanPath) {
         super();
         this.object = object;
+        this.beanPath = beanPath;
+        this.configuration =
+            new MagicConfiguration(object.getClass().getName(), beanPath);
     }
     
     /**
@@ -70,7 +84,8 @@ public class MagicBean extends Observable implements Observer {
     public Container render() throws Exception {
         // get the base container
         MagicView container =
-            MagicFactory.getContainerInstanceFor(object.getClass());
+            MagicFactory.getContainerInstanceFor(object.getClass(),
+                    configuration);
         
         if (container == null) {
             // no container could be found for this bean
@@ -79,16 +94,13 @@ public class MagicBean extends Observable implements Observer {
             object = new SinglePropertyWrapper(object);
             
             // now we should be able to retrive the correct container
-            container = MagicFactory.getContainerInstanceFor(object.getClass());
-        }
-        
-        // i18n resources
-        if (resources != null) {
-            container.setResources(resources);
+            container = MagicFactory.getContainerInstanceFor(object.getClass(),
+                    configuration);
         }
         
         // bind container to this MagicBean's bean
-        container.bindTo(new MagicProperty(this, "object", true));
+        container.bindTo(new MagicProperty(
+                this.getRealValue().getClass().getName(), beanPath, this, "object", true));
         
         return container.render();
     }
@@ -107,7 +119,7 @@ public class MagicBean extends Observable implements Observer {
      */
     public final void showDialog(Frame parent, boolean modal) throws Exception {
         new BasicDialog(this.render(), parent,
-                resources.getString(MagicResources.STRING_TITLE),
+                MagicConfiguration.resources.getString(MagicResources.STRING_TITLE),
                 modal).setVisible(true);
     }
     
@@ -117,7 +129,7 @@ public class MagicBean extends Observable implements Observer {
      */
     public final void showFrame(Component parent) throws Exception {
         JFrame frame =
-            new JFrame(resources.getString(MagicResources.STRING_TITLE));
+            new JFrame(MagicConfiguration.resources.getString(MagicResources.STRING_TITLE));
         frame.addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 MagicUtils.debug(object.toString());
@@ -132,16 +144,17 @@ public class MagicBean extends Observable implements Observer {
 
     /**
      * @param resources The resource bundle to use
+     * @todo can include at runtime?
      */
     public void includeResources(ResourceBundle resources) {
-        this.resources = new MagicResources(resources);
+        //this.resources = new MagicResources(resources);
     }
 
     /**
      * @param baseName The base name of the resource bundle to use
      */
     public void includeResources(String baseName) {
-        includeResources(ResourceBundle.getBundle(baseName));
+        //includeResources(ResourceBundle.getBundle(baseName));
     }
     
     /**
@@ -155,9 +168,6 @@ public class MagicBean extends Observable implements Observer {
      */
     public final void setValidate(boolean validate) {
         this.validate = validate;
-    }
-    public final void setResources(MagicResources resources) {
-        this.resources = resources;
     }
 
     /**

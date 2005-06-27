@@ -27,40 +27,40 @@ import java.awt.LayoutManager;
  * @since Jun 24, 2005 9:52:07 PM
  */
 public interface MagicLayout extends LayoutManager {
-	/**
-	 * Add a pair of components (label + MagicComponent)
-	 * that represent a property.
-	 * @param container The container
-	 * @param label The label component
-	 * @param component The magic component
-	 */
-	public void addLabeledComponent(final Container container,
-			final Component label, final Component component);
-	/**
-	 * Add a single magic component that represent a property.
-	 * @param container The container
-	 * @param component The magic component
-	 */
-	public void addUnlabeledComponent(final Container container,
-			final Component component);
-	/**
-	 * Add a component which is controlled by a series of components.
-	 * @param container The container
-	 * @param component The magic component
-	 * @param controllers The control components
-	 */
-	public void addControledComponent(final Container container,
-			final Component component, final Component [] controllers);
-	/**
-	 * Add the update button.
-	 * @param container The container
-	 * @param button The button component
-	 */
-	public void addButton(final Container container, final Component button);
-	/**
-	 * Add the status bar.
-	 * @param container The container
-	 * @param status The status bar
-	 */
-	public void addStatus(final Container container, final Component status);
+    /**
+     * Add a pair of components (label + MagicComponent)
+     * that represent a property.
+     * @param container The container
+     * @param label The label component
+     * @param component The magic component
+     */
+    public void addLabeledComponent(final Container container,
+            final Component label, final Component component);
+    /**
+     * Add a single magic component that represent a property.
+     * @param container The container
+     * @param component The magic component
+     */
+    public void addUnlabeledComponent(final Container container,
+            final Component component);
+    /**
+     * Add a component which is controlled by a series of components.
+     * @param container The container
+     * @param component The magic component
+     * @param controllers The control components
+     */
+    public void addControledComponent(final Container container,
+            final Component component, final Component [] controllers);
+    /**
+     * Add the update button.
+     * @param container The container
+     * @param button The button component
+     */
+    public void addButton(final Container container, final Component button);
+    /**
+     * Add the status bar.
+     * @param container The container
+     * @param status The status bar
+     */
+    public void addStatus(final Container container, final Component status);
 }
