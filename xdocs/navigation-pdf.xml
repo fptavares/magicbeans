@@ -23,27 +23,17 @@
  *
  */
 -->
-<project name="Decorator Utilities">
+<project name="Magic Beans">
 
-    <title>Decorator Utilities</title>
+    <title>Magic Beans</title>
 
     <body>
 
         <menu name="Overview">
             <item name="Introduction" href="/index.html" />
-            <item name="Dependencies" href="/dependency.html" />
+            <item name="Dependencies" href="/dependencies.html" />
             <item name="Mailing Lists" href="/mail-lists.html" />
             <item name="FAQ" href="/faq.html" />
-        </menu>
-
-        <menu name="Tag Reference">
-            <item name="Decorator" href="/tagreference-decorutils-decorator.html" />
-            <item name="XML-Decorator" href="/tagreference-decorutils-xmldecorator.html" />
-        </menu>
-
-        <menu name="Cookbook">
-            <item name="Introduction" href="/cookbook/introduction.html" />
-            <item name="Decorator" href="/cookbook/decorator.html" />
         </menu>
 
     </body>
