@@ -1,17 +1,24 @@
 /*
- * Copyright 2005 Filipe Tavares
+ * Magic Beans: a library for GUI generation and component-bean mapping.
+ * Copyright (C) 2005  Filipe Tavares
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * devYant, devyant@devyant.org
+ * Rua Simao Bolivar 203 6C, 4470-214 Maia, Portugal.
+ *
  */
 package org.devyant.magicbeans.layouts;
 
@@ -38,21 +45,18 @@ public class GridBagMagicLayout extends GridBagLayout implements MagicLayout {
     /**
      * The insets for the components.
      */
-    protected final Insets insets = new Insets(5, 5, 5, 5);
+    private final Insets insets = new Insets(5, 5, 5, 5);
     /**
      * The current line being filled at the <code>GridBagLayout</code>.
      */
-    protected int line = 0;
+    private int line = 0;
 
     /**
      * @see org.devyant.magicbeans.MagicLayout#addLabeledComponent(java.awt.Container, java.awt.Component, java.awt.Component)
      */
     public void addLabeledComponent(final Container container,
             final Component label, final Component component) {
-        // add label
-        addComponent(container, label, 0, line);
-        // add magic component
-        addComponent(container, component, 1, line++);
+        addComponentPair(container, label, component);
     }
 
     /**
@@ -143,6 +147,17 @@ public class GridBagMagicLayout extends GridBagLayout implements MagicLayout {
         gridBagConstraints.gridy = y;
         gridBagConstraints.insets = insets;
         container.add(component, gridBagConstraints);
+    }
+
+    /**
+     * @see org.devyant.magicbeans.MagicLayout#addComponentPair(java.awt.Container, java.awt.Component, java.awt.Component)
+     */
+    public void addComponentPair(final Container container,
+            final Component leftComponent, final Component rightComponent) {
+        // add leftComponent
+        addComponent(container, leftComponent, 0, line);
+        // add rightComponent
+        addComponent(container, rightComponent, 1, line++);
     }
 
 }

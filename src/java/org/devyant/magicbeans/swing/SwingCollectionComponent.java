@@ -1,17 +1,24 @@
 /*
- * Copyright 2005 Filipe Tavares
+ * Magic Beans: a library for GUI generation and component-bean mapping.
+ * Copyright (C) 2005  Filipe Tavares
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * devYant, devyant@devyant.org
+ * Rua Simao Bolivar 203 6C, 4470-214 Maia, Portugal.
+ *
  */
 package org.devyant.magicbeans.swing;
 
@@ -33,19 +40,20 @@ import org.devyant.magicbeans.MagicUtils;
 import org.devyant.magicbeans.MagicView;
 import org.devyant.magicbeans.beans.MagicProperty;
 import org.devyant.magicbeans.conf.MagicConfiguration;
+import org.devyant.magicbeans.exceptions.MagicException;
 import org.devyant.magicbeans.i18n.MagicResources;
 import org.devyant.magicbeans.swing.generalizers.ListGeneralizer;
 import org.devyant.magicbeans.swing.listeners.UpdateButtonActionListener;
 import org.devyant.magicbeans.swing.utils.BasicDialog;
 
 /**
- * SwingCollectionContainer is a <b>cool</b> class.
+ * SwingCollectionComponent is a <b>cool</b> class.
  * 
  * @author Filipe Tavares
  * @version $Revision$ $Date$ ($Author$)
  * @since 17/Jun/2005 2:41:31
  */
-public class SwingCollectionContainer extends SwingNestedContainer
+public class SwingCollectionComponent extends SwingNestedContainer
         implements UpdateButtonActionListener {
     private final ListGeneralizer component;
     private final DefaultComboBoxModel model = new DefaultComboBoxModel();
@@ -60,9 +68,9 @@ public class SwingCollectionContainer extends SwingNestedContainer
     private String title = "";
     
     /**
-     * Creates a new <code>SwingCollectionContainer</code> instance.
+     * Creates a new <code>SwingCollectionComponent</code> instance.
      */
-    public SwingCollectionContainer(final ListGeneralizer component) {
+    public SwingCollectionComponent(final ListGeneralizer component) {
         this.component = component;
     }
     
@@ -105,6 +113,7 @@ public class SwingCollectionContainer extends SwingNestedContainer
     /**
      * The addButton action.
      * @param evt <code>ActionEvent</code> data
+     * @todo how?
      */
     public void addButtonActionPerformed(ActionEvent evt) {
         model.addElement("Yoooooo!!");
@@ -114,8 +123,8 @@ public class SwingCollectionContainer extends SwingNestedContainer
      * @param evt <code>ActionEvent</code> data
      */
     public void editButtonActionPerformed(ActionEvent evt) {
-        final MagicBean bean = (MagicBean) component.getSelectedValue();
         try {
+            final MagicBean bean = (MagicBean) component.getSelectedValue();
             // add listener to the update button
             final Container container = bean.render();
             ((MagicView) container).addUpdateButtonActionListener(this);
@@ -124,10 +133,12 @@ public class SwingCollectionContainer extends SwingNestedContainer
                 new BasicDialog(container, (Frame) null, title, false);
             // show dialog
             dialog.setVisible(true);
-        } catch (Exception e) {
+        } catch (MagicException e) {
             MagicUtils.debug(e);
+            showErrorMessage(e.toString());
         }
     }
+
     /**
      * The removeButton action.
      * @param evt <code>ActionEvent</code> data
@@ -143,7 +154,7 @@ public class SwingCollectionContainer extends SwingNestedContainer
     /**
      * @see org.devyant.magicbeans.swing.SwingContainer#bindTo(org.devyant.magicbeans.beans.MagicProperty)
      */
-    public void bindTo(MagicProperty property) throws Exception {
+    public void bindTo(MagicProperty property) throws MagicException {
         this.property = property;
         
         init(); // init gui
@@ -163,7 +174,7 @@ public class SwingCollectionContainer extends SwingNestedContainer
     /**
      * @see org.devyant.magicbeans.MagicComponent#update()
      */
-    public void update() throws Exception {
+    public void update() throws MagicException {
         // get the collection instance
         Collection collection = (Collection) this.property.get();
         if (collection == null) {

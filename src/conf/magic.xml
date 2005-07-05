@@ -1,8 +1,18 @@
 <magic>
   <!-- Dummy -->
   <bean class="org.devyant.magicbeans.AppTest$Dummy">
+    <Configuration>
+      <selective>true</selective>
+    </Configuration>
+  
     <name>
-    
+      <Configuration>
+        <visible>true</visible>
+      </Configuration>
+      
+      <color>
+      
+      </color>
     </name>
     <description>
     

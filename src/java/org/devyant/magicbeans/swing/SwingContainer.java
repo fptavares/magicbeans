@@ -1,17 +1,24 @@
 /*
- * Copyright 2005 Filipe Tavares
+ * Magic Beans: a library for GUI generation and component-bean mapping.
+ * Copyright (C) 2005  Filipe Tavares
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * devYant, devyant@devyant.org
+ * Rua Simao Bolivar 203 6C, 4470-214 Maia, Portugal.
+ *
  */
 package org.devyant.magicbeans.swing;
 
@@ -32,6 +39,7 @@ import org.devyant.magicbeans.MagicUtils;
 import org.devyant.magicbeans.MagicView;
 import org.devyant.magicbeans.beans.MagicProperty;
 import org.devyant.magicbeans.conf.MagicConfiguration;
+import org.devyant.magicbeans.exceptions.MagicException;
 import org.devyant.magicbeans.i18n.MagicResources;
 import org.devyant.magicbeans.layouts.GridBagMagicLayout;
 import org.devyant.magicbeans.swing.listeners.UpdateButtonActionListener;
@@ -51,11 +59,11 @@ public class SwingContainer extends JPanel implements MagicView {
     /**
      * The status <code>JLabel</code>.
      */
-    private final JLabel status = new JLabel(" ");
+    private JLabel status;
     /**
      * The okButton <code>JButton</code>.
      */
-    private final JButton okButton = new JButton();
+    private JButton okButton;
     
     /**
      * The <code>MagicLayout</code>.
@@ -81,29 +89,12 @@ public class SwingContainer extends JPanel implements MagicView {
     protected void init() {
         // gui initialization
         setLayout(layout);
-        
-        okButton.setText(MagicConfiguration.resources.getString(MagicResources.STRING_OKBUTTON));
-        okButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                try {
-                    update();
-                    fireUpdateButtonAction();
-                    showMessage(MagicResources.MESSAGE_UPDATED);
-                } catch (Exception e) {
-                    MagicUtils.debug(e);
-                    showMessage(e.toString());
-                }
-            }
-        });
-        
-        // object properties
-        //@todo properties?...
     }
 
     /**
      * @see org.devyant.magicbeans.MagicComponent#update()
      */
-    public void update() throws Exception {
+    public void update() throws MagicException {
         // do common update
         DefaultContainerBehaviour.doUpdateForContainer(this);
     }
@@ -111,7 +102,7 @@ public class SwingContainer extends JPanel implements MagicView {
     /**
      * @see org.devyant.magicbeans.MagicComponent#bindTo(org.devyant.magicbeans.beans.MagicProperty)
      */
-    public void bindTo(MagicProperty property) throws Exception {
+    public void bindTo(MagicProperty property) throws MagicException {
         init(); // init gui
         
         this.property = property;
@@ -137,6 +128,7 @@ public class SwingContainer extends JPanel implements MagicView {
                                 .getInt(MagicConfiguration.GUI_COMPONENT_MINIMUM_HEIGHT_KEY))
                     );
             
+            MagicUtils.info("Binding the generated component to the property.");
             component.bindTo(prop);
             
             addMagicComponent(component);
@@ -147,8 +139,16 @@ public class SwingContainer extends JPanel implements MagicView {
      * Show a message in the status bar.
      * @param name The message's name
      */
-    private void showMessage(String name) {
+    protected void showMessage(String name) {
         status.setText(MagicConfiguration.resources.getMessage(name));
+    }
+    /**
+     * Show an error message in the status bar.
+     * @param string The message
+     * @todo use icon for error
+     */
+    protected void showErrorMessage(String string) {
+        status.setText("[ERROR] " + string);
     }
 
     /**
@@ -207,6 +207,22 @@ public class SwingContainer extends JPanel implements MagicView {
      * @see org.devyant.magicbeans.MagicView#render()
      */
     public final Container render() {
+        status = new JLabel(" ");
+        okButton = new JButton();
+        okButton.setText(MagicConfiguration.resources.getString(MagicResources.STRING_OKBUTTON));
+        okButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                try {
+                    update();
+                    fireUpdateButtonAction();
+                    showMessage(MagicResources.MESSAGE_UPDATED);
+                } catch (MagicException e) {
+                    MagicUtils.debug(e);
+                    showErrorMessage(e.toString());
+                }
+            }
+        });
+        
         // add final components
         addOKButton();
         addStatusBar();

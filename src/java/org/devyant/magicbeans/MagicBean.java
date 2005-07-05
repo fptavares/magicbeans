@@ -1,23 +1,31 @@
 /*
- * Copyright 2005 Filipe Tavares
+ * Magic Beans: a library for GUI generation and component-bean mapping.
+ * Copyright (C) 2005  Filipe Tavares
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * devYant, devyant@devyant.org
+ * Rua Simao Bolivar 203 6C, 4470-214 Maia, Portugal.
+ *
  */
 package org.devyant.magicbeans;
 
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Frame;
+import java.awt.event.WindowAdapter;
 import java.util.Observable;
 import java.util.ResourceBundle;
 
@@ -25,11 +33,13 @@ import javax.swing.JFrame;
 
 import org.devyant.magicbeans.beans.MagicProperty;
 import org.devyant.magicbeans.conf.MagicConfiguration;
+import org.devyant.magicbeans.exceptions.MagicException;
 import org.devyant.magicbeans.i18n.MagicResources;
 import org.devyant.magicbeans.observer.Observer;
 import org.devyant.magicbeans.observer.Subject;
 import org.devyant.magicbeans.swing.utils.BasicDialog;
 import org.devyant.magicbeans.utils.beans.SinglePropertyWrapper;
+import org.devyant.magicbeans.utils.containers.NonStandaloneContainer;
 
 
 /**
@@ -70,6 +80,7 @@ public class MagicBean extends Observable implements Observer {
      */
     public MagicBean(Object object, String beanPath) {
         super();
+        MagicUtils.debug(object.getClass().getName());
         this.object = object;
         this.beanPath = beanPath;
         this.configuration =
@@ -77,17 +88,20 @@ public class MagicBean extends Observable implements Observer {
     }
     
     /**
-     * @throws Exception
-     * @todo finish...
-     * @todo replace Exception with something like MagicException
+     * @throws MagicException Thrown if something goes wrong
+     *  during the GUI generation process.
      */
-    public Container render() throws Exception {
+    public Container render() throws MagicException {
         // get the base container
+        MagicUtils.info("Generating the base container.");
         MagicView container =
             MagicFactory.getContainerInstanceFor(object.getClass(),
                     configuration);
         
-        if (container == null) {
+        if (container == null
+                || container instanceof NonStandaloneContainer) {
+            MagicUtils.info("The object cannot be mapped to a standalone container."
+                    + " Using a wrapper...");
             // no container could be found for this bean
             // it is a simple property
             // we have to tranform it into a bean
@@ -99,44 +113,44 @@ public class MagicBean extends Observable implements Observer {
         }
         
         // bind container to this MagicBean's bean
+        MagicUtils.info("Binding the base container to a new MagicProperty"
+                + " containing the bean.");
         container.bindTo(new MagicProperty(
-                this.getRealValue().getClass().getName(), beanPath, this, "object", true));
-        
+                this.getRealValue().getClass().getName(), beanPath, this, "object", false));
+
+        MagicUtils.info("Rendering the base container.");
         return container.render();
     }
     
     /**
      * @param parent Parent container
-     * @throws Exception
+     * @throws MagicException {@link #render()}
      */
-    public final void showDialog(Frame parent) throws Exception {
+    public final void showDialog(Frame parent) throws MagicException {
         showDialog(parent, false);
     }
     /**
      * @param parent Parent container
      * @param modal Whether it is modal
-     * @throws Exception
+     * @throws MagicException {@link #render()}
      */
-    public final void showDialog(Frame parent, boolean modal) throws Exception {
+    public final void showDialog(Frame parent, boolean modal) throws MagicException {
         new BasicDialog(this.render(), parent,
                 MagicConfiguration.resources.getString(MagicResources.STRING_TITLE),
                 modal).setVisible(true);
     }
     
     /**
+     * Show a frame containing the resulting interface.
      * @param parent Parent container
-     * @throws Exception
+     * @throws MagicException {@link #render()}
      */
-    public final void showFrame(Component parent) throws Exception {
+    public final void showFrame(Component parent, WindowAdapter adapter)
+            throws MagicException {
         JFrame frame =
             new JFrame(MagicConfiguration.resources.getString(MagicResources.STRING_TITLE));
-        frame.addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowClosing(java.awt.event.WindowEvent evt) {
-                MagicUtils.debug(object.toString());
-                System.exit(0);
-            }
-        });
-        frame.setContentPane(render());
+        frame.addWindowListener(adapter);
+        frame.setContentPane(this.render());
         frame.pack();
         frame.setLocationRelativeTo(parent);
         frame.setVisible(true);
@@ -171,12 +185,22 @@ public class MagicBean extends Observable implements Observer {
     }
 
     /**
-     * @return Returns the object.
+     * The getter method for the object property.
+     * @return The property's <code>MagicBean</code> value
      */
-    public final Object getObject() {
+    public Object getObject() {
         return object;
     }
-    
+
+    /**
+     * The setter method for the object property.
+     * @param object The <code>Object</code> to set
+     */
+    public void setObject(Object object) {
+        this.object = object;
+        MagicUtils.debug("After set: " + this.object);
+    }
+
     /**
      * Returns the real value of this wrapped by this class. An object might
      * have been wrapped by a <code>SinglePropertyWrapper</code>

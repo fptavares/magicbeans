@@ -1,26 +1,35 @@
 /*
- * Copyright 2005 Filipe Tavares
+ * Magic Beans: a library for GUI generation and component-bean mapping.
+ * Copyright (C) 2005  Filipe Tavares
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * devYant, devyant@devyant.org
+ * Rua Simao Bolivar 203 6C, 4470-214 Maia, Portugal.
+ *
  */
 package org.devyant.magicbeans;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Random;
 
 import junit.framework.Test;
+import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 import org.apache.commons.lang.RandomStringUtils;
@@ -33,7 +42,7 @@ import org.apache.commons.lang.RandomStringUtils;
  * @since 19/Abr/2005 14:06:27
  */
 public class AppTest 
-    extends AbstractTestCase
+    extends TestCase
 {
     /**
      * Create the test case
@@ -62,7 +71,12 @@ public class AppTest
         final MagicBean bean = new MagicBean(new Dummy());
         bean.includeResources("org.devyant.magicbeans.Resources");
         
-        bean.showFrame(null);
+        bean.showFrame(null, new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                MagicUtils.debug(bean.getRealValue().toString());
+                System.exit(0);
+            }
+        });
         
         /*final Container c = bean.render();
         c.setPreferredSize(new Dimension(300, 600));
@@ -90,16 +104,10 @@ public class AppTest
     public static class Dummy {
         private String name = "Dummy";
         private String description = "A dummy class for testing";
-        private String bye;
+        private File bye = new File("/home/ftavares/ht-beeper.png");
         private Calendar date = Calendar.getInstance();
         private Dummy2 dummy = new Dummy2();
         
-        public String getBye() {
-            return bye;
-        }
-        public final void setBye(String bye) {
-            this.bye = bye;
-        }
         public String getDescription() {
             return description;
         }
@@ -131,6 +139,12 @@ public class AppTest
         public final void setDate(Calendar date) {
             this.date = date;
         }
+        public File getBye() {
+            return bye;
+        }
+        public void setBye(File bye) {
+            this.bye = bye;
+        }
         
         public final String toString() {
             return "\t" + name
@@ -143,7 +157,7 @@ public class AppTest
     public static class Dummy2 {
         private String name = "Dummy2";
         private String description = "A dummy2 class for testing";
-        private String bye;
+        private int bye = 3;
         private Collection collection = new ArrayList();
         
         public Dummy2() {
@@ -153,10 +167,10 @@ public class AppTest
             }
         }
         
-        public String getBye() {
+        public int getBye() {
             return bye;
         }
-        public final void setBye(String bye) {
+        public final void setBye(int bye) {
             this.bye = bye;
         }
         public String getDescription() {

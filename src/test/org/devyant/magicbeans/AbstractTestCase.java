@@ -1,23 +1,32 @@
 package org.devyant.magicbeans;
 
-import java.io.File;
+import java.awt.Component;
+import java.awt.Container;
 
-import junit.framework.TestCase;
+import javax.swing.AbstractButton;
+
+import junit.extensions.abbot.ComponentTestFixture;
+import abbot.finder.ComponentNotFoundException;
+import abbot.finder.Matcher;
+import abbot.finder.MultipleComponentsFoundException;
+import abbot.finder.matchers.ClassMatcher;
+import abbot.tester.ComponentTester;
 
 /**
- * Abstract base class for test cases.
- *
- * @author <a href="jason@zenplex.com">Jason van Zyl</a>
+ * AbstractTestCase is a <b>cool</b> class.
+ * 
+ * @author ftavares
+ * @version $Revision$ $Date$ ($Author$)
+ * @since Jul 3, 2005 4:57:23 AM
  */
 public abstract class AbstractTestCase
-    extends TestCase 
-{
-    /** 
-     * Basedir for all file I/O. Important when running tests from
-     * the reactor.
-     */
-    public String basedir = System.getProperty("basedir");
+    extends ComponentTestFixture {
     
+    /**
+     * The tester <code>ComponentTester</code>.
+     */
+    protected ComponentTester tester;
+
     /**
      * Constructor.
      */
@@ -25,15 +34,54 @@ public abstract class AbstractTestCase
     {
         super(testName);
     }
-    
+
     /**
-     * Get test input file.
-     *
-     * @param path Path to test input file.
+     * @see junit.framework.TestCase#setUp()
      */
-    public String getTestFile(String path)
-    {
-        return new File(basedir,path).getAbsolutePath();
+    protected void setUp() {
+        tester = new ComponentTester();
     }
+
+    /**
+     * @param bean
+     * @throws Exception
+     */
+    protected void testComponent(Object bean,
+            final Class componentClass, Object expected) throws Exception {
+        
+        final Container container = new MagicBean(bean).render();
+        showFrame(container);
+        
+        final Component component =
+            getFinder().find(new ClassMatcher(componentClass));
+        messWithComponent(component, expected);
+        
+        final Component button = getFinder().find(new Matcher() {
+                public boolean matches(Component c) {
+                    return AbstractButton.class.isAssignableFrom(c.getClass())
+                        && c.getParent() == container
+                        && "Update".equals(((AbstractButton) c).getText());
+                }
+            });
+        tester.actionClick(button);
+        
+        assertEquals("The component didn't return the expected value.",
+                expected, getValue(bean));
+    }
+
+    /**
+     * @see junit.framework.TestCase#tearDown()
+     */
+    protected void tearDown() {
+        // Default JUnit test runner keeps references to Tests for its
+        // lifetime, so TestCase fields won't be GC'd for the lifetime of the
+        // runner. 
+        tester = null;
+    }
+    
+    protected abstract void messWithComponent(
+            Component component, Object expected)
+            throws ComponentNotFoundException, MultipleComponentsFoundException;
+    protected abstract Object getValue(Object bean);
 }
 

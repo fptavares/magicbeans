@@ -1,18 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-   Copyright 2005 Filipe Tavares
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+/*
+ * Magic Beans: a library for GUI generation and component-bean mapping.
+ * Copyright (C) 2005  Filipe Tavares
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * devYant, devyant@devyant.org
+ * Rua Simao Bolivar 203 6C, 4470-214 Maia, Portugal.
+ *
+ */
 -->
 
 
@@ -69,11 +78,6 @@
   </repository>
   
   <versions>
-    <version>
-      <id>0.2</id>
-      <name>0.2</name>
-      <tag>HEAD</tag>
-    </version>
   </versions>
   
   <!-- any mailing lists for the project -->
@@ -112,25 +116,13 @@
   
   <licenses>
     <license>
-      <name>Apache License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+      <name>GNU Lesser General Public License</name>
+      <url>http://www.gnu.org/licenses/lgpl.html</url>
     </license>
   </licenses>
   
   <!-- jar files the project is dependent on -->
   <dependencies>
-  
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <type>jar</type>
-      <url>http://junit.sf.net/</url>
-      <properties>
-        <comment>Required to run all tests.</comment>
-      </properties>
-    </dependency>
-  
     <dependency>
       <groupId>commons-configuration</groupId>
       <artifactId>commons-configuration</artifactId>
@@ -174,11 +166,11 @@
     </dependency>
     
     <dependency>
-      <groupId>xalan</groupId>
-      <artifactId>xalan</artifactId>
-      <version>2.6.0</version>
+      <groupId>jaxen</groupId>
+      <artifactId>jaxen</artifactId>
+      <version>1.1-beta-6</version>
       <type>jar</type>
-      <url>http://xml.apache.org/xalan-j/</url>
+      <url>http://www.jaxen.org/</url>
       <properties>
         <comment>Required for XPath engine.</comment>
       </properties>
@@ -195,6 +187,24 @@
       </properties>
     </dependency>
     
+    <dependency>
+      <groupId>ant</groupId>
+      <artifactId>ant-optional</artifactId>
+      <version>1.5.3-1</version>
+      <properties>
+        <classloader>root</classloader>
+      </properties>
+    </dependency>
+    
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+       <properties>
+        <classloader>root</classloader>
+      </properties>
+    </dependency>
+    
   </dependencies>
   
   <!-- build information for the project -->
@@ -206,13 +216,9 @@
     <unitTest>
       <includes>
         <include>**/*Test.java</include>
+        <exclude>**/AppTest.java</exclude>
       </includes>
     </unitTest>
-    <resources>
-      <resource>
-        <directory>src/test-resources</directory>
-		<filtering>false</filtering>
-      </resource>
-    </resources>
+    <resources/>
   </build>
 </project>

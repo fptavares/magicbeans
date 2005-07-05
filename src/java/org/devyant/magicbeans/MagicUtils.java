@@ -1,17 +1,24 @@
 /*
- * Copyright 2005 Filipe Tavares
+ * Magic Beans: a library for GUI generation and component-bean mapping.
+ * Copyright (C) 2005  Filipe Tavares
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * devYant, devyant@devyant.org
+ * Rua Simao Bolivar 203 6C, 4470-214 Maia, Portugal.
+ *
  */
 package org.devyant.magicbeans;
 
@@ -42,7 +49,7 @@ public abstract class MagicUtils {
      * The getter method for certain property from a certain
      * class. The method can be an is or get method.
      *
-     * @param theClass The property's class
+     * @param theClass The bean's class
      * @param property The property
      * @return The getter method
      * @throws NoSuchMethodException Thrown if method does not exist
@@ -55,7 +62,7 @@ public abstract class MagicUtils {
         try {
             decorateMethod = theClass
                 .getMethod("is" + propertyName, new Class[]{});
-        } catch (Exception ex) {
+        } catch (NoSuchMethodException ex) {
             // no is method, so look for getter
             decorateMethod = theClass
                 .getMethod("get" + propertyName, new Class[]{});
@@ -64,21 +71,21 @@ public abstract class MagicUtils {
     }
     
     /**
-     * The setter method for certain property from a certain
-     * class.
-     *
-     * @param theClass The property's class
+     * The setter method for certain property from a certain class.
+     * 
+     * @param theClass The bean's class
      * @param property The property
+     * @param propertyClass The property's class
      * @return The getter method
      * @throws NoSuchMethodException Thrown if method does not exist
      */
     public static final Method getSetterMethod(
-            final Class theClass, final String property)
+            final Class theClass, final String property, Class propertyClass)
         throws NoSuchMethodException {
         Method decorateMethod;
         final String propertyName = capitalize(property);
         decorateMethod = theClass
-            .getMethod("set" + propertyName, new Class[]{});
+            .getMethod("set" + propertyName, new Class[]{propertyClass});
         return decorateMethod;
     }
     
@@ -134,7 +141,6 @@ public abstract class MagicUtils {
         String name = "";
         for (int i = 0; i < methods.length; i++) {
             name = methods[i].getName();
-            System.out.println(name);
             if (name.startsWith("is")) {
                 getters.put(name.substring(2), methods[i]);
             } else if (name.startsWith("get")) {
@@ -152,6 +158,7 @@ public abstract class MagicUtils {
             key = i.nextElement();
             // if exists both setter and getter methods...
             if (setters.containsKey(key)) {
+                debug("Found a property: " + key);
                 // create a Collection of MagicProperties
                 properties.add(new MagicProperty(parent, object,
                         (Method) getters.get(key), (Method) setters.get(key)));
@@ -160,14 +167,20 @@ public abstract class MagicUtils {
         
         return properties;
     }
-    
+
+    /**
+     * @param string The info text
+     */
+    public static final void info(Object string) {
+        System.out.println("[INFO] " + string);
+    }
     private static final boolean DEBUG = true;
     /**
      * @param string The debug text
      */
     public static final void debug(Object string) {
         if (DEBUG) {
-            System.out.println(string);
+            System.out.println("[DEBUG] " + string);
         }
     }
     /**
