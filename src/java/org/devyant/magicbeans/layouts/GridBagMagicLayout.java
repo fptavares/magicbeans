@@ -41,7 +41,8 @@ public class GridBagMagicLayout extends GridBagLayout implements MagicLayout {
     /**
      * The <code>GridBagConstraints</code>.
      */
-    private GridBagConstraints gridBagConstraints;
+    private final GridBagConstraints gridBagConstraints =
+        new GridBagConstraints();
     /**
      * The insets for the components.
      */
@@ -50,13 +51,24 @@ public class GridBagMagicLayout extends GridBagLayout implements MagicLayout {
      * The current line being filled at the <code>GridBagLayout</code>.
      */
     private int line = 0;
+    /**
+     * The STANDARD_WEIGHTX <code>double</code>.
+     */
+    private final static double STANDARD_WEIGHTX = 1.0;
+    /**
+     * The NO_WEIGHTX <code>double</code>.
+     */
+    private final static double NO_WEIGHTX = 0.0;
 
     /**
      * @see org.devyant.magicbeans.MagicLayout#addLabeledComponent(java.awt.Container, java.awt.Component, java.awt.Component)
      */
     public void addLabeledComponent(final Container container,
             final Component label, final Component component) {
-        addComponentPair(container, label, component);
+        // add label
+        addComponent(container, label, 0, line, NO_WEIGHTX);
+        // add magic component
+        addComponent(container, component, 1, line++, STANDARD_WEIGHTX);
     }
 
     /**
@@ -64,7 +76,7 @@ public class GridBagMagicLayout extends GridBagLayout implements MagicLayout {
      */
     public void addUnlabeledComponent(Container container, Component component) {
         // add magic component
-        addComponent(container, component, 0, line++,
+        addComponent(container, component, 0, line++, STANDARD_WEIGHTX,
                 GridBagConstraints.WEST, GridBagConstraints.BOTH, 2, 1, insets);
     }
 
@@ -74,79 +86,15 @@ public class GridBagMagicLayout extends GridBagLayout implements MagicLayout {
     public void addControledComponent(Container container, Component component,
             Component[] controllers) {
         // add main component
-        addComponent(container, component, 1, line, GridBagConstraints.WEST,
-                GridBagConstraints.HORIZONTAL, 1, 3, insets);
+        addComponent(container, component, 1, line, STANDARD_WEIGHTX,
+                GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,
+                1, controllers.length, insets);
         // add controllers
         for (int i = 0; i < controllers.length; i++) {
-            addComponent(container, controllers[i], 2, line++,
+            addComponent(container, controllers[i], 2, line++, NO_WEIGHTX,
                     GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,
                     1, 1, insets);
         }
-    }
-
-    /**
-     * @see org.devyant.magicbeans.MagicLayout#addButton(java.awt.Container, java.awt.Component)
-     */
-    public void addButton(final Container container, final Component button) {
-        addComponent(container, button, 1, line++,
-                GridBagConstraints.EAST, GridBagConstraints.NONE);
-    }
-
-    /**
-     * @see org.devyant.magicbeans.MagicLayout#addStatus(java.awt.Container, java.awt.Component)
-     */
-    public void addStatus(final Container container, final Component status) {
-        addComponent(container, status, 0, line++, GridBagConstraints.CENTER,
-                GridBagConstraints.BOTH, GridBagConstraints.REMAINDER, 1,
-                new Insets(0, 5, 0, 5));
-    }
-    
-    // utility methods
-    
-    /**
-     * Add a component to the panel.
-     * @param container The container to add to
-     * @param component The component to add
-     * @param x The x coordinate
-     * @param y The y coordinate
-     */
-    private final void addComponent(final Container container,
-            final Component component, int x, int y) {
-        addComponent(container, component, x, y,
-                GridBagConstraints.WEST, GridBagConstraints.BOTH);
-    }
-    
-    /**
-     * @param container The container to add to
-     * @param component The component to add
-     * @param x The x coordinate
-     * @param y The y coordinate
-     * @param anchor The <code>GridBagConstraints</code>'s anchor to use
-     */
-    private final void addComponent(final Container container,
-            final Component component, int x, int y, int anchor, int fill) {
-        addComponent(container, component, x, y, anchor, fill, 1, 1, insets);
-    }
-    
-    /**
-     * @param container The container to add to
-     * @param component The component to add
-     * @param x The x coordinate
-     * @param y The y coordinate
-     * @param anchor The <code>GridBagConstraints</code>'s anchor to use
-     */
-    protected final void addComponent(final Container container,
-            final Component component, int x, int y, int anchor, int fill,
-            int gridwidth, int gridheight, Insets insets) {
-        gridBagConstraints = new GridBagConstraints();
-        gridBagConstraints.anchor = anchor;
-        gridBagConstraints.fill = fill;
-        gridBagConstraints.gridwidth = gridwidth;
-        gridBagConstraints.gridheight = gridheight;
-        gridBagConstraints.gridx = x;
-        gridBagConstraints.gridy = y;
-        gridBagConstraints.insets = insets;
-        container.add(component, gridBagConstraints);
     }
 
     /**
@@ -155,9 +103,86 @@ public class GridBagMagicLayout extends GridBagLayout implements MagicLayout {
     public void addComponentPair(final Container container,
             final Component leftComponent, final Component rightComponent) {
         // add leftComponent
-        addComponent(container, leftComponent, 0, line);
+        addComponent(container, leftComponent, 0, line, STANDARD_WEIGHTX);
         // add rightComponent
-        addComponent(container, rightComponent, 1, line++);
+        addComponent(container, rightComponent, 1, line++, STANDARD_WEIGHTX);
+    }
+
+    /**
+     * @see org.devyant.magicbeans.MagicLayout#addButton(java.awt.Container, java.awt.Component)
+     */
+    public void addButton(final Container container, final Component button) {
+        addComponent(container, button, 1, line++, NO_WEIGHTX,
+                GridBagConstraints.EAST, GridBagConstraints.NONE);
+    }
+
+    /**
+     * @see org.devyant.magicbeans.MagicLayout#addStatus(java.awt.Container, java.awt.Component)
+     */
+    public void addStatus(final Container container, final Component status) {
+        addComponent(container, status, 0, line++, STANDARD_WEIGHTX,
+                GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+                GridBagConstraints.REMAINDER, 1, new Insets(0, 5, 0, 5));
+    }
+    
+    /*
+     * utility methods
+     */
+    
+    /**
+     * Add a component to the panel.
+     * @param container The container to add to
+     * @param component The component to add
+     * @param x The x coordinate
+     * @param y The y coordinate
+     * @param weightx The <code>GridBagConstraints</code>'s weightx value
+     */
+    private final void addComponent(final Container container,
+            final Component component, int x, int y, double weightx) {
+        addComponent(container, component, x, y, weightx,
+                GridBagConstraints.LINE_START, GridBagConstraints.BOTH);
+    }
+    
+    /**
+     * @param container The container to add to
+     * @param component The component to add
+     * @param x The x coordinate
+     * @param y The y coordinate
+     * @param weightx The <code>GridBagConstraints</code>'s weightx value
+     * @param anchor The <code>GridBagConstraints</code>'s anchor to use
+     * @param fill The <code>GridBagConstraints</code>'s fill to use
+     */
+    private final void addComponent(final Container container,
+            final Component component, int x, int y,
+            double weightx, int anchor, int fill) {
+        addComponent(container, component,
+                x, y, weightx, anchor, fill, 1, 1, insets);
+    }
+    
+    /**
+     * @param container The container to add to
+     * @param component The component to add
+     * @param x The x coordinate
+     * @param y The y coordinate
+     * @param weightx The <code>GridBagConstraints</code>'s weightx value
+     * @param anchor The <code>GridBagConstraints</code>'s anchor to use
+     * @param fill The <code>GridBagConstraints</code>'s fill to use
+     * @param gridwidth The <code>GridBagConstraints</code>'s gridwidth to use
+     * @param gridheight The <code>GridBagConstraints</code>'s gridheight to use
+     * @param insets The <code>GridBagConstraints</code>'s insets to use
+     */
+    protected final void addComponent(final Container container,
+            final Component component, int x, int y, double weightx, int anchor,
+            int fill, int gridwidth, int gridheight, Insets insets) {
+        gridBagConstraints.anchor = anchor;
+        gridBagConstraints.fill = fill;
+        gridBagConstraints.gridwidth = gridwidth;
+        gridBagConstraints.gridheight = gridheight;
+        gridBagConstraints.gridx = x;
+        gridBagConstraints.gridy = y;
+        gridBagConstraints.insets = insets;
+        gridBagConstraints.weightx = weightx;
+        container.add(component, gridBagConstraints);
     }
 
 }

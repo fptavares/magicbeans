@@ -26,6 +26,7 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import org.apache.commons.lang.StringUtils;
+import org.devyant.magicbeans.beans.MagicProperty;
 import org.devyant.magicbeans.conf.MagicConfiguration;
 
 /**
@@ -97,14 +98,14 @@ public class MagicResources {
     }
     
     /**
-     * @param name The property's name
-     * @return The resource
+     * @param property The property
+     * @return The property's "display name"
      */
-    public final String getProperty(final String name) {
+    public final String getProperty(final MagicProperty property) {
         try {
-            return bundle.getString(PROPERTY_KEY_PREFIX + name);
+            return bundle.getString(PROPERTY_KEY_PREFIX + property.getBeanPath());
         } catch (MissingResourceException e) {
-            return StringUtils.capitalize(name);
+            return StringUtils.capitalize(property.getName());
         }
     }
     

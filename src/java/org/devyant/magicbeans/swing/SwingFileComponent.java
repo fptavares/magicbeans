@@ -22,6 +22,7 @@
  */
 package org.devyant.magicbeans.swing;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.io.File;
 
@@ -59,7 +60,7 @@ public class SwingFileComponent extends SwingContainer
             }
         });
         
-        layout.addComponentPair(this, textField, button);
+        layout.addControledComponent(this, textField, new Component[] {button});
     }
 
     /**

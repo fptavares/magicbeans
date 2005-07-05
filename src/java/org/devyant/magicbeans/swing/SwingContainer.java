@@ -103,9 +103,9 @@ public class SwingContainer extends JPanel implements MagicView {
      * @see org.devyant.magicbeans.MagicComponent#bindTo(org.devyant.magicbeans.beans.MagicProperty)
      */
     public void bindTo(MagicProperty property) throws MagicException {
-        init(); // init gui
-        
         this.property = property;
+
+        init(); // init gui
         
         // fill with property's value
         final Object object = this.property.get();
@@ -117,6 +117,13 @@ public class SwingContainer extends JPanel implements MagicView {
         
         for (Iterator i = properties.iterator(); i.hasNext(); ) {
             final MagicProperty prop = (MagicProperty) i.next();
+            
+            // verify if is visible
+            if (!prop.getConfiguration()
+                    .getSpecialBoolean(MagicConfiguration.XML_VISIBLE)) {
+                continue; // not visible, so continue to the next property
+            }
+            
             final MagicComponent component = SwingComponentFactory
                 .getComponentInstanceFor(prop);
             
@@ -159,7 +166,7 @@ public class SwingContainer extends JPanel implements MagicView {
     public final void addMagicComponent(final MagicComponent component) {
         // get the property's name
         final String string =
-            MagicConfiguration.resources.getProperty(component.getProperty().getName());
+            MagicConfiguration.resources.getProperty(component.getProperty());
         
         if ((StringUtils.isBlank(string)) || (component instanceof UnlabeledComponent)) {
             addUnlabeledComponent(component, string);

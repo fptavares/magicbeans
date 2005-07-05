@@ -167,9 +167,22 @@ public class MagicConfiguration {
     public final int getInt(String key) {
         return conf.getInt(KEY_PREFIX + key);
     }
+    public final boolean getBoolean(String key) {
+        return conf.getBoolean(KEY_PREFIX + key);
+    }
+    
+    public final String getSpecial(String key) {
+        return conf.getString(key);
+    }
+    public final int getSpecialInt(String key) {
+        return conf.getInt(key);
+    }
+    public final boolean getSpecialBoolean(String key) {
+        return conf.getBoolean(key);
+    }
     
     /*
-     * PUBLIC CONSTANTS
+     * DEFAULT PROPERTIES KEYS
      */
 
     public static final String GUI_TYPE_KEY = "gui.type";
@@ -187,6 +200,11 @@ public class MagicConfiguration {
 
     public static final String RESOURCES_PROPERTY_PREFIX_KEY = "resources.property.prefix";
     
+    /*
+     * XML (SPECIAL) PROPERTIES KEYS
+     */
+
+    public static final String XML_VISIBLE = "visible";
     
     /*
      * i18n
