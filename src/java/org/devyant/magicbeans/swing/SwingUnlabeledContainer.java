@@ -22,14 +22,24 @@
  */
 package org.devyant.magicbeans.swing;
 
+import javax.swing.border.TitledBorder;
+
+import org.devyant.magicbeans.utils.components.UnlabeledComponent;
 
 /**
- * SwingNestedContainer is a <b>cool</b> class.
+ * SwingUnlabeledContainer is a <b>cool</b> class.
  * 
- * @author Filipe Tavares
+ * @author ftavares
  * @version $Revision$ $Date$ ($Author$)
- * @since 12/Jun/2005 6:54:31
+ * @since Jul 5, 2005 1:54:41 AM
  */
-public class SwingNestedContainer extends SwingUnlabeledContainer {
-        
+public class SwingUnlabeledContainer extends SwingContainer
+        implements UnlabeledComponent {
+    /**
+     * @see org.devyant.magicbeans.utils.components.UnlabeledComponent#setTitle(java.lang.String)
+     */
+    public void setTitle(String title) {
+        setBorder(new TitledBorder(null, " " + title + " ",
+                TitledBorder.LEFT, TitledBorder.TOP));
+    }
 }

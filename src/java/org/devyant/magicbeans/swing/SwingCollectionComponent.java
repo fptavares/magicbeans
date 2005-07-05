@@ -53,7 +53,7 @@ import org.devyant.magicbeans.swing.utils.BasicDialog;
  * @version $Revision$ $Date$ ($Author$)
  * @since 17/Jun/2005 2:41:31
  */
-public class SwingCollectionComponent extends SwingNestedContainer
+public class SwingCollectionComponent extends SwingUnlabeledContainer
         implements UpdateButtonActionListener {
     private final ListGeneralizer component;
     private final DefaultComboBoxModel model = new DefaultComboBoxModel();
