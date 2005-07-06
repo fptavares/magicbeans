@@ -124,8 +124,7 @@ public class MagicBean extends Observable implements Observer {
             MagicFactory.getContainerInstanceFor(object.getClass(),
                     configuration);
         
-        if (container == null
-                || container instanceof NonStandaloneContainer) {
+        if (MagicUtils.cannotStandalone(container)) {
             MagicUtils.info("The object cannot be mapped to a standalone container."
                     + " Using a wrapper...");
             // no container could be found for this bean

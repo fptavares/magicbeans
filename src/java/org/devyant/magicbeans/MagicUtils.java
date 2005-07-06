@@ -29,6 +29,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 
 import org.devyant.magicbeans.beans.MagicProperty;
+import org.devyant.magicbeans.utils.containers.NonStandaloneContainer;
 
 /**
  * MagicUtils is a <b>cool</b> class.
@@ -43,6 +44,13 @@ public abstract class MagicUtils {
      */
     protected MagicUtils() {
         throw new UnsupportedOperationException();
+    }
+    
+    public static final boolean cannotStandalone(
+            final MagicComponent component) {
+        return (component == null
+                || component instanceof NonStandaloneContainer
+                || (!(component instanceof MagicView)));
     }
     
     /**

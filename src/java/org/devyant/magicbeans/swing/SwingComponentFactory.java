@@ -157,10 +157,10 @@ public abstract class SwingComponentFactory {
     public static final MagicComponent getIsolatedComponent(
             final MagicProperty property) throws InvalidConfigurationException {
         final MagicComponent component = getComponentInstanceFor(property);
-        if (component instanceof NestedBeanContainer) {
-            return new SwingIsolatedComponent();
-        } else {
+        if (MagicUtils.cannotStandalone(component)) {
             return component;
+        } else {
+            return new SwingIsolatedComponent();
         }
     }
 }

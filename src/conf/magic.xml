@@ -46,6 +46,7 @@
         <!-- configuration -->
         
         <Configuration>
+          <nested>false</nested>
           <validate>true</validate>
           <!-- property overrides -->
           <magic>
