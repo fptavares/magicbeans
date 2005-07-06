@@ -34,6 +34,8 @@ import org.devyant.magicbeans.i18n.MagicResources;
 
 /**
  * A link to an isolated property (not nested).
+ * <p>A JPanel had to be used because we don't want the button to occupy
+ * the whole width of the</p>
  * 
  * @author ftavares
  * @version $Revision$ $Date$ ($Author$)

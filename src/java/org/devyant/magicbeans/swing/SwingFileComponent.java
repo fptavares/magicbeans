@@ -60,7 +60,8 @@ public class SwingFileComponent extends SwingContainer
             }
         });
         
-        layout.addControledComponent(this, textField, new Component[] {button});
+        layout.addControledComponent(this, textField,
+                new Component[] {button}, false);
     }
 
     /**

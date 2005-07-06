@@ -60,13 +60,19 @@ public interface MagicLayout extends LayoutManager {
     public void addUnlabeledComponent(final Container container,
             final Component component);
     /**
-     * Add a component which is controlled by a series of components.
+     * Add a component which is controlled by a series of other components.
+     * <p>
+     * As the controllers may be many, they could force the main component
+     * to expand in height. This method does not allow the component to expand
+     * if the expand parameter is set to <code>true</code>.
+     * </p>
      * @param container The container
      * @param component The magic component
      * @param controllers The control components
+     * @param expand 
      */
     public void addControledComponent(final Container container,
-            final Component component, final Component [] controllers);
+            final Component component, final Component[] controllers, boolean expand);
     /**
      * Add the update button.
      * @param container The container

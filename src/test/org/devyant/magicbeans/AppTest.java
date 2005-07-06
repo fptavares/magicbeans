@@ -63,7 +63,7 @@ public class AppTest
     }
 
     /**
-     * Rigourous Test :-)
+     * Visually test Magic Beans...
      * @throws Exception
      */
     public static void testApp() throws Exception
@@ -79,7 +79,6 @@ public class AppTest
         });
         
         /*final Container c = bean.render();
-        c.setPreferredSize(new Dimension(300, 600));
         JFrame frame =
             new JFrame("test");
         frame.addWindowListener(new java.awt.event.WindowAdapter() {
@@ -87,6 +86,7 @@ public class AppTest
                 System.exit(0);
             }
         });
+        frame.setPreferredSize(new Dimension(300, 600));
         frame.setContentPane(c);
         frame.pack();
         frame.setLocationRelativeTo(null);
@@ -104,7 +104,7 @@ public class AppTest
     public static class Dummy {
         private String name = "Dummy";
         private String description = "A dummy class for testing";
-        private File bye = new File("/home/ftavares/ht-beeper.png");
+        private File bye = new File("/home/ftavares/someFile");
         private Calendar date = Calendar.getInstance();
         private Dummy2 dummy = new Dummy2();
         

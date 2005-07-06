@@ -64,6 +64,10 @@ public class MagicBean extends Observable implements Observer {
      * The beanPath <code>String</code>.
      */
     private final String beanPath;
+    /**
+     * The superBeanClassName <code>String</code>.
+     */
+    private String superBeanClassName;
     
     /**
      * Creates a new <code>MagicBean</code> instance.
@@ -87,13 +91,24 @@ public class MagicBean extends Observable implements Observer {
      * Creates a new <code>MagicBean</code> instance.
      * @param object The object to map
      * @param beanPath The bean path to use
+     */
+    public MagicBean(Object object, String beanPath) {
+        this(object, object.getClass().getName(), beanPath);
+    }
+    
+    /**
+     * Creates a new <code>MagicBean</code> instance.
+     * @param object The object to map
+     * @param beanPath The bean path to use
      * @param superBeanClassName The base bean's class name
      */
-    public MagicBean(Object object, String superBeanClassName, String beanPath) {
+    public MagicBean(Object object,
+            String superBeanClassName, String beanPath) {
         super();
         MagicUtils.debug(object.getClass().getName());
         this.object = object;
         this.beanPath = beanPath;
+        this.superBeanClassName = superBeanClassName;
         this.configuration =
             new MagicConfiguration(superBeanClassName, beanPath);
     }
@@ -126,8 +141,8 @@ public class MagicBean extends Observable implements Observer {
         // bind container to this MagicBean's bean
         MagicUtils.info("Binding the base container to a new MagicProperty"
                 + " containing the bean.");
-        container.bindTo(new MagicProperty(
-                this.getRealValue().getClass().getName(), beanPath, this, "object", false));
+        container.bindTo(new MagicProperty(this.superBeanClassName,
+                this.beanPath, this, "object", true, false));
 
         MagicUtils.info("Rendering the base container.");
         return container.render();

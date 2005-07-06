@@ -35,4 +35,5 @@ public interface ListGeneralizer {
     public void setModel(ListModel model);
     public Object getSelectedValue();
     public Object [] getSelectedValues();
+    public boolean isExpandable();
 }

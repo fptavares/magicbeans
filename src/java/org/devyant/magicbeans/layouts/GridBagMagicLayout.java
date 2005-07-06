@@ -79,7 +79,8 @@ public class GridBagMagicLayout extends GridBagLayout implements MagicLayout {
         // add label
         addComponent(container, label, 0, line, NO_WEIGHTX);
         // add magic component
-        addComponent(container, component, 1, line++, NO_WEIGHTX);
+        addComponent(container, component, 1, line++, NO_WEIGHTX,
+                GridBagConstraints.EAST, GridBagConstraints.VERTICAL);
     }
 
     /**
@@ -92,14 +93,19 @@ public class GridBagMagicLayout extends GridBagLayout implements MagicLayout {
     }
 
     /**
-     * @see org.devyant.magicbeans.MagicLayout#addControledComponent(java.awt.Container, java.awt.Component, java.awt.Component[])
+     * @see org.devyant.magicbeans.MagicLayout#addControledNotExpandedComponent(java.awt.Container, java.awt.Component, java.awt.Component[])
      */
     public void addControledComponent(Container container, Component component,
-            Component[] controllers) {
+            Component[] controllers, boolean expand) {
+        final int fill;
+        if (expand) {
+            fill = GridBagConstraints.BOTH;
+        } else {
+            fill = GridBagConstraints.HORIZONTAL;
+        }
         // add main component
         addComponent(container, component, 1, line, STANDARD_WEIGHTX,
-                GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,
-                1, controllers.length, insets);
+                GridBagConstraints.WEST, fill, 1, controllers.length, insets);
         // add controllers
         for (int i = 0; i < controllers.length; i++) {
             addComponent(container, controllers[i], 2, line++, NO_WEIGHTX,

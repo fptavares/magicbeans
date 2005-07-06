@@ -24,7 +24,6 @@ package org.devyant.magicbeans.swing;
 
 import java.awt.Component;
 import java.awt.Container;
-import java.awt.Dimension;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -134,17 +133,6 @@ public class SwingContainer extends JPanel implements MagicView {
                 // isolated component
                 component = SwingComponentFactory.getIsolatedComponent();
             }
-            
-            
-            
-            ((Component) component).setMinimumSize(new Dimension(
-                            property.getConfiguration().getInt(
-                                    MagicConfiguration
-                                        .GUI_COMPONENT_MINIMUM_WIDTH_KEY),
-                            property.getConfiguration().getInt(
-                                    MagicConfiguration
-                                        .GUI_COMPONENT_MINIMUM_HEIGHT_KEY))
-                    );
             
             MagicUtils.info("Binding the generated component to the property.");
             component.bindTo(prop);

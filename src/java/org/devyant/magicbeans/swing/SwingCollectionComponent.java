@@ -24,7 +24,6 @@ package org.devyant.magicbeans.swing;
 
 import java.awt.Component;
 import java.awt.Container;
-import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.util.Collection;
@@ -101,14 +100,15 @@ public class SwingCollectionComponent extends SwingUnlabeledContainer
         // add list
         final JScrollPane scrollPane = new JScrollPane();
         scrollPane.getViewport().setView((Component) component);
-        scrollPane.setMinimumSize(new Dimension(
+        /*scrollPane.setMinimumSize(new Dimension(
                 this.property.getConfiguration()
                     .getInt(MagicConfiguration.GUI_COMPONENT_MINIMUM_WIDTH_KEY),
                 this.property.getConfiguration()
-                    .getInt(MagicConfiguration.GUI_COMPONENT_MINIMUM_WIDTH_KEY) * 2));
+                    .getInt(MagicConfiguration.GUI_COMPONENT_MINIMUM_WIDTH_KEY) * 2));*/
         // leave the dirty work to the layout manager :)
         layout.addControledComponent(this, scrollPane,
-                new Component[] {addButton, editButton, removeButton});
+                new Component[] {addButton, editButton, removeButton},
+                component.isExpandable());
     }
     /**
      * The addButton action.
@@ -129,7 +129,7 @@ public class SwingCollectionComponent extends SwingUnlabeledContainer
             final Container container = bean.render();
             ((MagicView) container).addUpdateButtonActionListener(this);
             // create the dialog
-            BasicDialog dialog =
+            final BasicDialog dialog =
                 new BasicDialog(container, (Frame) null, title, false);
             // show dialog
             dialog.setVisible(true);

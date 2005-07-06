@@ -161,7 +161,8 @@ public abstract class MagicUtils {
                 debug("Found a property: " + key);
                 // create a Collection of MagicProperties
                 properties.add(new MagicProperty(parent, object,
-                        (Method) getters.get(key), (Method) setters.get(key)));
+                        (Method) getters.get(key), (Method) setters.get(key),
+                        false));
             }
         }
         

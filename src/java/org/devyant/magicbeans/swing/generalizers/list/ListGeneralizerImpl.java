@@ -33,4 +33,11 @@ import org.devyant.magicbeans.swing.generalizers.ListGeneralizer;
  * @since 19/Jun/2005 2:45:58
  */
 public class ListGeneralizerImpl extends JList implements ListGeneralizer {
+
+    /**
+     * @see org.devyant.magicbeans.swing.generalizers.ListGeneralizer#isExpandable()
+     */
+    public boolean isExpandable() {
+        return true;
+    }
 }

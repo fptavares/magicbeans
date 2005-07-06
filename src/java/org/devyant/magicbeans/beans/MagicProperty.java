@@ -89,12 +89,13 @@ public class MagicProperty {
      * @param parent The parent property
      * @param object The object that contains the property
      * @param property The property
+     * @param ignore Do not include this property in the bean path
      * @throws PropertyException
      */
     public MagicProperty(final MagicProperty parent, Object object,
-            final String property) throws PropertyException {
+            final String property, final boolean ignore) throws PropertyException {
         this(parent.getSuperBeanClassName(), parent.getBeanPath(),
-                object, property, false);
+                object, property, ignore, false);
     }
     
     /**
@@ -103,9 +104,10 @@ public class MagicProperty {
      * @param object The object that contains the property
      * @param getter The getter method for the property
      * @param setter The setter method for the property
+     * @param ignore Do not include this property in the bean path
      */
     public MagicProperty(final MagicProperty parent, final Object object,
-            final Method getter, final Method setter) {
+            final Method getter, final Method setter, final boolean ignore) {
         this.object = object;
         this.getter = getter;
         this.setter = setter;
@@ -114,6 +116,8 @@ public class MagicProperty {
         this.superBeanClassName = parent.getSuperBeanClassName();
         if (parent.getBeanPath() == null) {                     // first node
             this.beanPath = "";
+        } else if (ignore) {                              // ignore this node
+            this.beanPath = parent.getBeanPath();
         } else if (StringUtils.isBlank(parent.getBeanPath())) { // 2nd (avoid initial '.')
             this.beanPath = this.name;
         } else {                       // third node (simple append situation)
@@ -129,29 +133,32 @@ public class MagicProperty {
      * @param parent The parent property
      * @param object The object that contains the property
      * @param property The property
+     * @param ignore Do not include this property in the bean path
      * @param allowNullMethods Getter and setter methods may be unavailable
      * @throws PropertyException
      */
     public MagicProperty(final MagicProperty parent, Object object,
-            String property, boolean allowNullMethods)
+            String property, final boolean ignore, boolean allowNullMethods)
             throws PropertyException {
         this(parent.getSuperBeanClassName(), parent.getBeanPath(),
-                object, property, allowNullMethods);
+                object, property, ignore, allowNullMethods);
     }
 
     /**
      * Creates a new <code>MagicProperty</code> instance.
      * @param className The class name of the original <code>MagicBean</code>
-     * @param beanPath The parent's beanPath
+     * @param beanPath The parent's bean path
      * @param object The object that contains the property
      * @param property The property
      * @param allowNullMethods Getter and setter methods may be unavailable
+     * @param ignore Do not include this property in the bean path
      * @throws PropertyException
      * {@link MagicUtils#getGetterMethod(Class, String)}
      * {@link MagicUtils#getSetterMethod(Class, String, Class)}
      */
-    public MagicProperty(String className, String beanPath, Object object,
-            String property, boolean allowNullMethods)
+    public MagicProperty(final String className, final String beanPath,
+            Object object, final String property,
+            final boolean ignore, final boolean allowNullMethods)
             throws PropertyException {
         
         this.object = object;
@@ -187,6 +194,8 @@ public class MagicProperty {
         this.superBeanClassName = className;
         if (beanPath == null) {                     // first node
             this.beanPath = "";
+        } else if (ignore) {                        // ignore this node
+            this.beanPath = beanPath;
         } else if (StringUtils.isBlank(beanPath)) { // 2nd (avoid initial '.')
             this.beanPath = this.name;
         } else {                       // third node (simple append situation)

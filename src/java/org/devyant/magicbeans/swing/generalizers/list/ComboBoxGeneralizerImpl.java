@@ -59,4 +59,11 @@ public class ComboBoxGeneralizerImpl extends JComboBox implements
         return this.getSelectedObjects();
     }
 
+    /**
+     * @see org.devyant.magicbeans.swing.generalizers.ListGeneralizer#isExpandable()
+     */
+    public boolean isExpandable() {
+        return false;
+    }
+
 }
