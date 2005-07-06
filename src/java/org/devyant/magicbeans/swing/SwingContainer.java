@@ -117,6 +117,7 @@ public class SwingContainer extends JPanel implements MagicView {
         
         for (Iterator i = properties.iterator(); i.hasNext(); ) {
             final MagicProperty prop = (MagicProperty) i.next();
+            final MagicComponent component;
             
             // verify if is visible
             if (!prop.getConfiguration()
@@ -124,8 +125,17 @@ public class SwingContainer extends JPanel implements MagicView {
                 continue; // not visible, so continue to the next property
             }
             
-            final MagicComponent component = SwingComponentFactory
-                .getComponentInstanceFor(prop);
+            // verify if is nested
+            if (prop.getConfiguration()
+                    .getSpecialBoolean(MagicConfiguration.XML_NESTED)) {
+                // basic nested component
+                component = SwingComponentFactory.getComponentInstanceFor(prop);
+            } else {
+                // isolated component
+                component = SwingComponentFactory.getIsolatedComponent();
+            }
+            
+            
             
             ((Component) component).setMinimumSize(new Dimension(
                             property.getConfiguration().getInt(
@@ -166,9 +176,10 @@ public class SwingContainer extends JPanel implements MagicView {
     public final void addMagicComponent(final MagicComponent component) {
         // get the property's name
         final String string =
-            MagicConfiguration.resources.getProperty(component.getProperty());
+            MagicConfiguration.resources.getNameFor(component.getProperty());
         
-        if ((StringUtils.isBlank(string)) || (component instanceof UnlabeledComponent)) {
+        if (StringUtils.isBlank(string)
+                        || component instanceof UnlabeledComponent) {
             addUnlabeledComponent(component, string);
         } else {
             addLabeledComponent(component, string);
@@ -194,8 +205,14 @@ public class SwingContainer extends JPanel implements MagicView {
     private void addLabeledComponent(final MagicComponent component,
             final String string) {
         // add label + magic component
-        layout.addLabeledComponent(this, new JLabel(string),
-                (Component) component);
+        if (component instanceof SwingIsolatedComponent) {
+            MagicUtils.debug("----------------" + component.getClass());
+            layout.addLabeledIsolatedComponent(this, new JLabel(string),
+                    (Component) component);
+        } else {
+            layout.addLabeledComponent(this, new JLabel(string),
+                    (Component) component);
+        }
     }
 
     /**
@@ -217,7 +234,7 @@ public class SwingContainer extends JPanel implements MagicView {
     public final Container render() {
         status = new JLabel(" ");
         okButton = new JButton();
-        okButton.setText(MagicConfiguration.resources.getString(MagicResources.STRING_OKBUTTON));
+        okButton.setText(MagicConfiguration.resources.get(MagicResources.STRING_OKBUTTON));
         okButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 try {

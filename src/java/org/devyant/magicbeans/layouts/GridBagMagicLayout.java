@@ -72,6 +72,17 @@ public class GridBagMagicLayout extends GridBagLayout implements MagicLayout {
     }
 
     /**
+     * @see org.devyant.magicbeans.MagicLayout#addLabeledIsolatedComponent(java.awt.Container, java.awt.Component, java.awt.Component)
+     */
+    public void addLabeledIsolatedComponent(final Container container,
+            final Component label, final Component component) {
+        // add label
+        addComponent(container, label, 0, line, NO_WEIGHTX);
+        // add magic component
+        addComponent(container, component, 1, line++, NO_WEIGHTX);
+    }
+
+    /**
      * @see org.devyant.magicbeans.MagicLayout#addUnlabeledComponent(java.awt.Container, java.awt.Component)
      */
     public void addUnlabeledComponent(Container container, Component component) {

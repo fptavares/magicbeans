@@ -44,6 +44,15 @@ public interface MagicLayout extends LayoutManager {
     public void addLabeledComponent(final Container container,
             final Component label, final Component component);
     /**
+     * Add a pair of components (label + IsolatedComponent)
+     * that represent a property.
+     * @param container The container
+     * @param label The label component
+     * @param component The isolated magic component
+     */
+    public void addLabeledIsolatedComponent(final Container container,
+            final Component label, final Component component);
+    /**
      * Add a single magic component that represent a property.
      * @param container The container
      * @param component The magic component

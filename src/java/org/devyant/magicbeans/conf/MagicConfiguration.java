@@ -110,7 +110,7 @@ public class MagicConfiguration {
     
     /**
      * Creates a new <code>MagicConfiguration</code> instance.
-     * @param className The class's canonical name
+     * @param className The class's fully qualified name
      * @param beanPath The path between properties.
      * <p>Example: <code>property1.property2.property3</code></p>
      */
@@ -205,6 +205,8 @@ public class MagicConfiguration {
      */
 
     public static final String XML_VISIBLE = "visible";
+
+    public static final String XML_NESTED = "nested";
     
     /*
      * i18n

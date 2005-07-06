@@ -79,19 +79,19 @@ public class SwingCollectionComponent extends SwingUnlabeledContainer
         
         component.setModel(model);
         
-        addButton.setText(MagicConfiguration.resources.getString(MagicResources.STRING_ADDBUTTON));
+        addButton.setText(MagicConfiguration.resources.get(MagicResources.STRING_ADDBUTTON));
         addButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addButtonActionPerformed(evt);
             }
         });
-        editButton.setText(MagicConfiguration.resources.getString(MagicResources.STRING_EDITBUTTON));
+        editButton.setText(MagicConfiguration.resources.get(MagicResources.STRING_EDITBUTTON));
         editButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 editButtonActionPerformed(evt);
             }
         });
-        removeButton.setText(MagicConfiguration.resources.getString(MagicResources.STRING_REMOVEBUTTON));
+        removeButton.setText(MagicConfiguration.resources.get(MagicResources.STRING_REMOVEBUTTON));
         removeButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 removeButtonActionPerformed(evt);

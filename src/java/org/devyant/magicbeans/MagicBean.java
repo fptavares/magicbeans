@@ -34,6 +34,7 @@ import javax.swing.JFrame;
 import org.devyant.magicbeans.beans.MagicProperty;
 import org.devyant.magicbeans.conf.MagicConfiguration;
 import org.devyant.magicbeans.exceptions.MagicException;
+import org.devyant.magicbeans.exceptions.PropertyException;
 import org.devyant.magicbeans.i18n.MagicResources;
 import org.devyant.magicbeans.observer.Observer;
 import org.devyant.magicbeans.observer.Subject;
@@ -51,11 +52,6 @@ import org.devyant.magicbeans.utils.containers.NonStandaloneContainer;
  */
 public class MagicBean extends Observable implements Observer {
     /**
-     * The <code>boolean</code> that tells whether to validate or not.
-     * <p>Defaults to <code>true</code>.</p>
-     */
-    private boolean validate = true;
-    /**
      * The object <code>Object</code>.
      */
     private Object object;
@@ -64,6 +60,9 @@ public class MagicBean extends Observable implements Observer {
      */
     private MagicConfiguration configuration;
     
+    /**
+     * The beanPath <code>String</code>.
+     */
     private final String beanPath;
     
     /**
@@ -71,20 +70,32 @@ public class MagicBean extends Observable implements Observer {
      * @param object The object to map
      */
     public MagicBean(Object object) {
-        this(object, null);
+        this(object, object.getClass().getName(), null);
+    }
+    
+    /**
+     * Creates a new <code>MagicBean</code> instance.
+     * @param property The property who's object we want to map
+     * @throws PropertyException {@link MagicProperty#get()}
+     */
+    public MagicBean(MagicProperty property) throws PropertyException {
+        this(property.get(),
+                property.getSuperBeanClassName(), property.getBeanPath());
     }
     
     /**
      * Creates a new <code>MagicBean</code> instance.
      * @param object The object to map
+     * @param beanPath The bean path to use
+     * @param superBeanClassName The base bean's class name
      */
-    public MagicBean(Object object, String beanPath) {
+    public MagicBean(Object object, String superBeanClassName, String beanPath) {
         super();
         MagicUtils.debug(object.getClass().getName());
         this.object = object;
         this.beanPath = beanPath;
         this.configuration =
-            new MagicConfiguration(object.getClass().getName(), beanPath);
+            new MagicConfiguration(superBeanClassName, beanPath);
     }
     
     /**
@@ -136,7 +147,7 @@ public class MagicBean extends Observable implements Observer {
      */
     public final void showDialog(Frame parent, boolean modal) throws MagicException {
         new BasicDialog(this.render(), parent,
-                MagicConfiguration.resources.getString(MagicResources.STRING_TITLE),
+                MagicConfiguration.resources.get(MagicResources.STRING_TITLE),
                 modal).setVisible(true);
     }
     
@@ -148,7 +159,7 @@ public class MagicBean extends Observable implements Observer {
     public final void showFrame(Component parent, WindowAdapter adapter)
             throws MagicException {
         JFrame frame =
-            new JFrame(MagicConfiguration.resources.getString(MagicResources.STRING_TITLE));
+            new JFrame(MagicConfiguration.resources.get(MagicResources.STRING_TITLE));
         frame.addWindowListener(adapter);
         frame.setContentPane(this.render());
         frame.pack();
@@ -170,19 +181,6 @@ public class MagicBean extends Observable implements Observer {
     public void includeResources(String baseName) {
         //includeResources(ResourceBundle.getBundle(baseName));
     }
-    
-    /**
-     * @return Returns whether to validate or not.
-     */
-    public final boolean isValidate() {
-        return validate;
-    }
-    /**
-     * @param validate The validate <code>boolean</code> to set.
-     */
-    public final void setValidate(boolean validate) {
-        this.validate = validate;
-    }
 
     /**
      * The getter method for the object property.
@@ -198,7 +196,6 @@ public class MagicBean extends Observable implements Observer {
      */
     public void setObject(Object object) {
         this.object = object;
-        MagicUtils.debug("After set: " + this.object);
     }
 
     /**

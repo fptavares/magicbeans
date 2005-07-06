@@ -145,4 +145,12 @@ public abstract class SwingComponentFactory {
             }
         }
     }
+
+
+    /**
+     * @return
+     */
+    public static final MagicComponent getIsolatedComponent() {
+        return new SwingIsolatedComponent();
+    }
 }

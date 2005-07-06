@@ -66,6 +66,7 @@ public class MagicResources {
     public static final String STRING_ADDBUTTON = "button.add";
     public static final String STRING_EDITBUTTON = "button.edit";
     public static final String STRING_REMOVEBUTTON = "button.remove";
+    public static final String STRING_INDIVIDUALBUTTON = "button.individual";
     
     /**
      * The resources to use.
@@ -101,7 +102,7 @@ public class MagicResources {
      * @param property The property
      * @return The property's "display name"
      */
-    public final String getProperty(final MagicProperty property) {
+    public final String getNameFor(final MagicProperty property) {
         try {
             return bundle.getString(PROPERTY_KEY_PREFIX + property.getBeanPath());
         } catch (MissingResourceException e) {
@@ -110,10 +111,10 @@ public class MagicResources {
     }
     
     /**
-     * @param name The string's name
+     * @param name The resource's key
      * @return The resource
      */
-    public final String getString(final String name) {
+    public final String get(final String name) {
         return bundle.getString(BASE_KEY_PREFIX + name);
     }
 }
