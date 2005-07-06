@@ -30,6 +30,7 @@ import java.util.Date;
 
 import org.devyant.magicbeans.MagicComponent;
 import org.devyant.magicbeans.MagicUtils;
+import org.devyant.magicbeans.MagicView;
 import org.devyant.magicbeans.beans.MagicProperty;
 import org.devyant.magicbeans.conf.InvalidConfigurationException;
 import org.devyant.magicbeans.conf.MagicConfiguration;
@@ -39,6 +40,7 @@ import org.devyant.magicbeans.generalizers.date.NoNeedForGeneralizerImpl;
 import org.devyant.magicbeans.generalizers.date.TimestampGeneralizerImpl;
 import org.devyant.magicbeans.swing.generalizers.list.ComboBoxGeneralizerImpl;
 import org.devyant.magicbeans.swing.generalizers.list.ListGeneralizerImpl;
+import org.devyant.magicbeans.utils.containers.NestedBeanContainer;
 
 /**
  * Factory for Swing components. This is used to get the right component
@@ -114,19 +116,18 @@ public abstract class SwingComponentFactory {
 
             // java.util.Collection
         } else if (Collection.class.isAssignableFrom(type)) {
-            if (configuration.get(MagicConfiguration.GUI_COLLECTIONS_STYLE_KEY)
-                    .equals(COLLECTION_STYLE_LIST)) {
+            final String style =
+                configuration.get(MagicConfiguration.GUI_COLLECTIONS_STYLE_KEY);
+            if (style.equals(COLLECTION_STYLE_LIST)) {
                 // JList
                 return new SwingCollectionComponent(new ListGeneralizerImpl());
-            } else if (configuration.get(MagicConfiguration.GUI_COLLECTIONS_STYLE_KEY)
-                    .equals(COLLECTION_STYLE_COMBO)) {
+            } else if (style.equals(COLLECTION_STYLE_COMBO)) {
                 // JComboBox
                 return new SwingCollectionComponent(new ComboBoxGeneralizerImpl());
             } else {
                 // invalid style
                 throw new InvalidConfigurationException(
-                        MagicConfiguration.GUI_COLLECTIONS_STYLE_KEY,
-                        configuration.get(MagicConfiguration.GUI_COLLECTIONS_STYLE_KEY));
+                        MagicConfiguration.GUI_COLLECTIONS_STYLE_KEY, style);
             }
             
             // java.io.File
@@ -148,9 +149,18 @@ public abstract class SwingComponentFactory {
 
 
     /**
-     * @return
+     * @return An isolated component if the property is mapped to an
+     *  instance of a MagicView. If not, the normal component is returned.
+     * @throws InvalidConfigurationException The configuration specified
+     *  an invalid value.
      */
-    public static final MagicComponent getIsolatedComponent() {
-        return new SwingIsolatedComponent();
+    public static final MagicComponent getIsolatedComponent(
+            final MagicProperty property) throws InvalidConfigurationException {
+        final MagicComponent component = getComponentInstanceFor(property);
+        if (component instanceof NestedBeanContainer) {
+            return new SwingIsolatedComponent();
+        } else {
+            return component;
+        }
     }
 }

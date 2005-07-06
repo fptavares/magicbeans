@@ -2,7 +2,6 @@
   <!-- Dummy -->
   <bean class="org.devyant.magicbeans.AppTest$Dummy">
     <Configuration>
-      <selective>true</selective>
     </Configuration>
   
     <name>
@@ -15,6 +14,9 @@
       </color>
     </name>
     <description>
+      <Configuration>
+        <nested>false</nested>
+      </Configuration>
     
     </description>
     <bye>

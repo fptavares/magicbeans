@@ -131,7 +131,7 @@ public class SwingContainer extends JPanel implements MagicView {
                 component = SwingComponentFactory.getComponentInstanceFor(prop);
             } else {
                 // isolated component
-                component = SwingComponentFactory.getIsolatedComponent();
+                component = SwingComponentFactory.getIsolatedComponent(prop);
             }
             
             MagicUtils.info("Binding the generated component to the property.");

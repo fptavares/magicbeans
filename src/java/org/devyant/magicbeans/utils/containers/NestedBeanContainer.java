@@ -20,19 +20,15 @@
  * Rua Simao Bolivar 203 6C, 4470-214 Maia, Portugal.
  *
  */
-package org.devyant.magicbeans.swing;
-
-import org.devyant.magicbeans.utils.containers.NestedBeanContainer;
-
+package org.devyant.magicbeans.utils.containers;
 
 /**
- * SwingNestedContainer is a <b>cool</b> class.
+ * NestedBeanContainer is a <b>cool</b> class.
  * 
- * @author Filipe Tavares
+ * @author ftavares
  * @version $Revision$ $Date$ ($Author$)
- * @since 12/Jun/2005 6:54:31
+ * @since Jul 6, 2005 6:30:37 PM
  */
-public class SwingNestedContainer extends SwingUnlabeledContainer
-        implements NestedBeanContainer {
-        
+public interface NestedBeanContainer {
+
 }
