@@ -35,6 +35,7 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.lang.StringUtils;
 import org.devyant.magicbeans.MagicUtils;
+import org.devyant.magicbeans.exceptions.MagicException;
 import org.devyant.magicbeans.i18n.MagicResources;
 import org.jaxen.JaxenException;
 import org.jaxen.XPath;
@@ -51,6 +52,12 @@ import org.xml.sax.SAXException;
  * @since 11/Jun/2005 2:06:33
  */
 public class MagicConfiguration {
+    /**
+     * The INSTANTIATION_EXCEPTION_MESSAGE <code>String</code>.
+     */
+    private static final String INSTANTIATION_EXCEPTION_MESSAGE =
+        "A problem occured while trying to instantiate the configured layout.";
+    
     /**
      * The CONFIGURATION_NODE <code>String</code>.
      */
@@ -154,30 +161,62 @@ public class MagicConfiguration {
         ((CompositeConfiguration) conf).addConfiguration(DEFAULT_CONF);
     }
 
-    public static final String getFromDefault(String key) {
+    /*
+     * Get properties from the default configuration only.
+     */
+    public static final String getFromDefault(final String key) {
         return DEFAULT_CONF.getString(KEY_PREFIX + key);
     }
-    public static final int getIntFromDefault(String key) {
+    public static final int getIntFromDefault(final String key) {
         return DEFAULT_CONF.getInt(KEY_PREFIX + key);
     }
     
-    public final String get(String key) {
+    /*
+     * Basic get properties.
+     */
+    public final String get(final String key) {
         return conf.getString(KEY_PREFIX + key);
     }
-    public final int getInt(String key) {
+    public final int getInt(final String key) {
         return conf.getInt(KEY_PREFIX + key);
     }
-    public final boolean getBoolean(String key) {
+    public final boolean getBoolean(final String key) {
         return conf.getBoolean(KEY_PREFIX + key);
     }
+    public Class getClass(final String key) throws InvalidConfigurationException {
+        final String name = get(key);
+        if (name == null) {
+            throw new InvalidConfigurationException(key, name);
+        }
+        try {
+            return Class.forName(name);
+        } catch (ClassNotFoundException e) {
+            throw new InvalidConfigurationException(key, name);
+        }
+    }
+
+    public Object getClassInstance(final String key) throws MagicException {
+        try {
+            return getClass(key).newInstance();
+        } catch (InvalidConfigurationException e) {
+            throw new MagicException(INSTANTIATION_EXCEPTION_MESSAGE, e);
+        } catch (InstantiationException e) {
+            throw new MagicException(INSTANTIATION_EXCEPTION_MESSAGE, e);
+        } catch (IllegalAccessException e) {
+            throw new MagicException(INSTANTIATION_EXCEPTION_MESSAGE, e);
+        }
+    }
     
-    public final String getSpecial(String key) {
+    /*
+     * Get special properties (no prefix added).
+     */
+    public final String getSpecial(final String key) {
         return conf.getString(key);
     }
-    public final int getSpecialInt(String key) {
+    public final int getSpecialInt(final String key) {
         return conf.getInt(key);
     }
-    public final boolean getSpecialBoolean(String key) {
+    public final boolean getSpecialBoolean(final String key) {
         return conf.getBoolean(key);
     }
     
@@ -187,13 +226,11 @@ public class MagicConfiguration {
 
     public static final String GUI_TYPE_KEY = "gui.type";
     
-    public static final String GUI_COMPONENT_MINIMUM_WIDTH_KEY = "gui.component.minimum.width";
-    
-    public static final String GUI_COMPONENT_MINIMUM_HEIGHT_KEY = "gui.component.minimum.height";
-    
     public static final String GUI_STACKING_TOLERANCE_KEY = "gui.stacking.tolerance";
 
     public static final String GUI_COLLECTIONS_STYLE_KEY = "gui.collections.style";
+
+    public static final String GUI_LAYOUT_IMPL = "gui.layout.impl";
 
     public static final String RESOURCES_FILE_KEY = "resources.file";
     public static final String RESOURCES_FILE = getFromDefault(RESOURCES_FILE_KEY);

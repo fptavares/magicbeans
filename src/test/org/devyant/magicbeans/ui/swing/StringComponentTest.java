@@ -20,17 +20,44 @@
  * Rua Simao Bolivar 203 6C, 4470-214 Maia, Portugal.
  *
  */
-package org.devyant.magicbeans.swing.listeners;
+package org.devyant.magicbeans.ui.swing;
 
-import java.util.EventListener;
+
+
+import java.awt.Component;
+
+import org.devyant.magicbeans.WrapperTestCase;
+
 
 /**
- * UpdateButtonActionListener is a <b>cool</b> class.
+ * StringComponentTest is a <b>cool</b> class.
  * 
- * @author Filipe Tavares
+ * @author ftavares
  * @version $Revision$ $Date$ ($Author$)
- * @since 20/Jun/2005 1:12:12
+ * @since Jul 3, 2005 2:28:26 AM
  */
-public interface UpdateButtonActionListener extends EventListener {
-    public void updateButtonActionPerformed();
+public class StringComponentTest extends WrapperTestCase {
+    /**
+     * Creates a new <code>StringComponentTest</code> instance.
+     * @param name
+     */
+    public StringComponentTest(String name) {
+        super(name);
+    }
+    
+    /**
+     * Tests the StringComponent
+     * @throws Exception
+     */
+    public void testComponent() throws Exception {
+        testComponent("Foo",
+                SwingStringComponent.class, "Bar");
+    }
+
+    /**
+     * @see org.devyant.magicbeans.AbstractTestCase#messWithComponent(java.awt.Component, java.lang.Object)
+     */
+    protected void messWithComponent(Component component, Object expected) {
+        ((SwingStringComponent) component).setText((String) expected);
+    }
 }

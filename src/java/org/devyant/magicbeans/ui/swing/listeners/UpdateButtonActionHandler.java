@@ -20,45 +20,22 @@
  * Rua Simao Bolivar 203 6C, 4470-214 Maia, Portugal.
  *
  */
-package org.devyant.magicbeans.swing;
-
-
-
-import java.awt.Component;
-import java.util.Date;
-
-import org.devyant.magicbeans.BasicTestCase;
-
+package org.devyant.magicbeans.ui.swing.listeners;
 
 /**
- * DateComponentTest is a <b>cool</b> class.
+ * UpdateButtonActionHandler is a <b>cool</b> class.
  * 
- * @author ftavares
+ * @author Filipe Tavares
  * @version $Revision$ $Date$ ($Author$)
- * @since Jul 3, 2005 5:10:22 AM
+ * @since 20/Jun/2005 1:21:16
  */
-public class DateComponentTest extends BasicTestCase {
+public interface UpdateButtonActionHandler {
     /**
-     * Creates a new <code>StringComponentTest</code> instance.
-     * @param name
+     * Add a listener for the update button.
      */
-    public DateComponentTest(String name) {
-        super(name);
-    }
-    
+    public void addUpdateButtonActionListener(final UpdateButtonActionListener l);
     /**
-     * Tests the SwingDateComponent
-     * @throws Exception
+     * Reports an update button action.
      */
-    public void testComponent() throws Exception {
-        testComponent(new Date(),
-                SwingDateComponent.class, new Date(0));
-    }
-    
-    /**
-     * @see org.devyant.magicbeans.AbstractTestCase#messWithComponent(java.awt.Component, java.lang.Object)
-     */
-    protected void messWithComponent(Component component, Object expected) {
-        ((SwingDateComponent) component).setValue(expected);
-    }
+    public void fireUpdateButtonAction();
 }

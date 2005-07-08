@@ -22,13 +22,27 @@
  */
 package org.devyant.magicbeans;
 
+import java.awt.Container;
+
+import org.devyant.magicbeans.ui.swing.listeners.UpdateButtonActionHandler;
 
 /**
  * MagicContainer is a <b>cool</b> class.
  * 
  * @author Filipe Tavares
  * @version $Revision$ $Date$ ($Author$)
- * @since 11/Jun/2005 1:56:35
+ * @since 17/Jun/2005 3:35:04
  */
-public interface MagicContainer extends MagicComponent {
+public interface MagicContainer extends MagicComponent, UpdateButtonActionHandler {
+    /**
+     * Performs last minute UI settings and returns the the container,
+     * usually it self.
+     * @return A <code>Container</code> containing the forms
+     */
+    public Container render();
+    /**
+     * Tells the container which layout manager to use.
+     * @param layout The <code>MagicLayout</code> instance
+     */
+    public void setMagicLayout(final MagicLayout layout);
 }

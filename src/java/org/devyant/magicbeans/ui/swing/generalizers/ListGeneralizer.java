@@ -20,19 +20,20 @@
  * Rua Simao Bolivar 203 6C, 4470-214 Maia, Portugal.
  *
  */
-package org.devyant.magicbeans.swing;
+package org.devyant.magicbeans.ui.swing.generalizers;
 
-import org.devyant.magicbeans.utils.containers.NestedBeanContainer;
-
+import javax.swing.ListModel;
 
 /**
- * SwingNestedContainer is a <b>cool</b> class.
+ * ListGeneralizer is a <b>cool</b> class.
  * 
  * @author Filipe Tavares
  * @version $Revision$ $Date$ ($Author$)
- * @since 12/Jun/2005 6:54:31
+ * @since 19/Jun/2005 2:43:00
  */
-public class SwingNestedContainer extends SwingUnlabeledContainer
-        implements NestedBeanContainer {
-        
+public interface ListGeneralizer {
+    public void setModel(ListModel model);
+    public Object getSelectedValue();
+    public Object [] getSelectedValues();
+    public boolean isExpandable();
 }

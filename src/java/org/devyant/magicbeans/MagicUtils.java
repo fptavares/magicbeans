@@ -50,7 +50,7 @@ public abstract class MagicUtils {
             final MagicComponent component) {
         return (component == null
                 || component instanceof NonStandaloneContainer
-                || (!(component instanceof MagicView)));
+                || (!(component instanceof MagicContainer)));
     }
     
     /**

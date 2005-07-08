@@ -150,8 +150,8 @@ public class MagicProperty {
      * @param beanPath The parent's bean path
      * @param object The object that contains the property
      * @param property The property
-     * @param allowNullMethods Getter and setter methods may be unavailable
      * @param ignore Do not include this property in the bean path
+     * @param allowNullMethods Getter and setter methods may be unavailable
      * @throws PropertyException
      * {@link MagicUtils#getGetterMethod(Class, String)}
      * {@link MagicUtils#getSetterMethod(Class, String, Class)}

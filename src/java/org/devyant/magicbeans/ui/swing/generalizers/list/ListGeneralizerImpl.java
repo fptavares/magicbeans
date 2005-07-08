@@ -20,26 +20,24 @@
  * Rua Simao Bolivar 203 6C, 4470-214 Maia, Portugal.
  *
  */
-package org.devyant.magicbeans.swing;
+package org.devyant.magicbeans.ui.swing.generalizers.list;
 
-import javax.swing.border.TitledBorder;
-
-import org.devyant.magicbeans.utils.components.UnlabeledComponent;
+import javax.swing.JList;
+import org.devyant.magicbeans.ui.swing.generalizers.ListGeneralizer;
 
 /**
- * SwingUnlabeledContainer is a <b>cool</b> class.
+ * ListGeneralizerImpl is a <b>cool</b> class.
  * 
- * @author ftavares
+ * @author Filipe Tavares
  * @version $Revision$ $Date$ ($Author$)
- * @since Jul 5, 2005 1:54:41 AM
+ * @since 19/Jun/2005 2:45:58
  */
-public class SwingUnlabeledContainer extends SwingContainer
-        implements UnlabeledComponent {
+public class ListGeneralizerImpl extends JList implements ListGeneralizer {
+
     /**
-     * @see org.devyant.magicbeans.utils.components.UnlabeledComponent#setTitle(java.lang.String)
+     * @see org.devyant.magicbeans.ui.swing.generalizers.ListGeneralizer#isExpandable()
      */
-    public void setTitle(String title) {
-        setBorder(new TitledBorder(null, " " + title + " ",
-                TitledBorder.LEFT, TitledBorder.TOP));
+    public boolean isExpandable() {
+        return true;
     }
 }

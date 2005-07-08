@@ -85,12 +85,4 @@ public interface MagicLayout extends LayoutManager {
      * @param status The status bar
      */
     public void addStatus(final Container container, final Component status);
-    /**
-     * Add a pair of components side by side.
-     * @param container The container
-     * @param leftComponent The component to the left
-     * @param rightComponent The component to the right
-     */
-    public void addComponentPair(final Container container,
-            final Component leftComponent, final Component rightComponent);
 }

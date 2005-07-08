@@ -22,11 +22,12 @@
  */
 package org.devyant.magicbeans;
 
-import org.devyant.magicbeans.conf.ConfigurationException;
+import org.devyant.magicbeans.beans.MagicProperty;
 import org.devyant.magicbeans.conf.InvalidConfigurationException;
 import org.devyant.magicbeans.conf.MagicConfiguration;
 import org.devyant.magicbeans.conf.UnavailableConfigurationException;
-import org.devyant.magicbeans.swing.SwingComponentFactory;
+import org.devyant.magicbeans.exceptions.MagicException;
+import org.devyant.magicbeans.ui.swing.SwingComponentFactory;
 
 /**
  * MagicFactory is a <b>cool</b> class.
@@ -44,35 +45,38 @@ public abstract class MagicFactory {
      * <code>MagicContainer</code> instance.
      * @param beanClass The bean's class
      * @return A <code>MagicContainer</code> instance
-     * @throws ConfigurationException When the configuration
-     * returns an invalid value
+     * @throws MagicException When the configuration returns an invalid value
+     *  or when that layout could not be instantiated
      */
-    protected static final MagicView getContainerInstanceFor(
-            final Class beanClass, final MagicConfiguration configuration)
-            throws ConfigurationException {
-        if (configuration.get(MagicConfiguration.GUI_TYPE_KEY)
-                .equalsIgnoreCase(SWING)) {
+    protected static final MagicContainer getContainerInstanceFor(
+            final MagicProperty property) throws MagicException {
+        final MagicComponent component;
+        if (property.getConfiguration()
+                .get(MagicConfiguration.GUI_TYPE_KEY).equalsIgnoreCase(SWING)) {
             // Swing
-            //return new SwingContainer();
-            final MagicComponent component = SwingComponentFactory
-                .getBinderInstanceFor(beanClass, configuration, false);
+            component =
+                SwingComponentFactory.getBaseComponentInstanceFor(property);
             
-            if (component instanceof MagicView) {
-                return (MagicView) component;
-            } else {
-                return null;
-            }
-            
-        } else if (configuration.get(MagicConfiguration.GUI_TYPE_KEY)
-                .equalsIgnoreCase(AWT)) {
+        } else if (property.getConfiguration()
+                .get(MagicConfiguration.GUI_TYPE_KEY).equalsIgnoreCase(AWT)) {
             // AWT
             throw new UnavailableConfigurationException(
                     MagicConfiguration.GUI_TYPE_KEY,
-                    configuration.get(MagicConfiguration.GUI_TYPE_KEY));
+                    property.getConfiguration().get(
+                            MagicConfiguration.GUI_TYPE_KEY));
         } else {
             throw new InvalidConfigurationException(
                     MagicConfiguration.GUI_TYPE_KEY,
-                    configuration.get(MagicConfiguration.GUI_TYPE_KEY));
+                    property.getConfiguration().get(
+                            MagicConfiguration.GUI_TYPE_KEY));
+        }
+        
+        if (component instanceof MagicContainer) {
+            // return the component
+            return (MagicContainer) component;
+        } else {
+            // not a container, so return null
+            return null;
         }
     }
 }

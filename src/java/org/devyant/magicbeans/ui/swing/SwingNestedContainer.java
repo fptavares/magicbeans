@@ -20,50 +20,19 @@
  * Rua Simao Bolivar 203 6C, 4470-214 Maia, Portugal.
  *
  */
-package org.devyant.magicbeans.swing.utils;
+package org.devyant.magicbeans.ui.swing;
 
-import java.awt.Container;
-import java.awt.Dialog;
-import java.awt.Frame;
+import org.devyant.magicbeans.utils.containers.NestedBeanContainer;
+
 
 /**
- * BasicDialog is a <b>cool</b> class.
+ * SwingNestedContainer is a <b>cool</b> class.
  * 
  * @author Filipe Tavares
  * @version $Revision$ $Date$ ($Author$)
- * @since 19/Jun/2005 4:02:55
+ * @since 12/Jun/2005 6:54:31
  */
-public class BasicDialog extends AbstractDialog {
-
-    /**
-     * Creates a new <code>BasicDialog</code> instance.
-     * @param bean
-     * @param parent
-     * @param title
-     * @param modal
-     */
-    public BasicDialog(Container container, Dialog parent, String title,
-            boolean modal) {
-        super(container, parent, title, modal);
-    }
-
-    /**
-     * Creates a new <code>BasicDialog</code> instance.
-     * @param bean
-     * @param parent
-     * @param title
-     * @param modal
-     */
-    public BasicDialog(Container container, Frame parent, String title,
-            boolean modal) {
-        super(container, parent, title, modal);
-    }
-
-    /**
-     * Does nothing.
-     * @see org.devyant.magicbeans.swing.utils.AbstractDialog#closeWindowEvent()
-     */
-    public void closeWindowEvent() {
-    }
-
+public class SwingNestedContainer extends SwingUnlabeledContainer
+        implements NestedBeanContainer {
+        
 }

@@ -20,11 +20,10 @@
  * Rua Simao Bolivar 203 6C, 4470-214 Maia, Portugal.
  *
  */
-package org.devyant.magicbeans.swing;
+package org.devyant.magicbeans.ui.swing;
 
 import java.awt.Component;
 import java.awt.Container;
-import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.util.Collection;
 import java.util.Iterator;
@@ -35,15 +34,14 @@ import javax.swing.JButton;
 import javax.swing.JScrollPane;
 
 import org.devyant.magicbeans.MagicBean;
+import org.devyant.magicbeans.MagicContainer;
 import org.devyant.magicbeans.MagicUtils;
-import org.devyant.magicbeans.MagicView;
 import org.devyant.magicbeans.beans.MagicProperty;
 import org.devyant.magicbeans.conf.MagicConfiguration;
 import org.devyant.magicbeans.exceptions.MagicException;
 import org.devyant.magicbeans.i18n.MagicResources;
-import org.devyant.magicbeans.swing.generalizers.ListGeneralizer;
-import org.devyant.magicbeans.swing.listeners.UpdateButtonActionListener;
-import org.devyant.magicbeans.swing.utils.BasicDialog;
+import org.devyant.magicbeans.ui.swing.generalizers.ListGeneralizer;
+import org.devyant.magicbeans.ui.swing.listeners.UpdateButtonActionListener;
 
 /**
  * SwingCollectionComponent is a <b>cool</b> class.
@@ -100,11 +98,6 @@ public class SwingCollectionComponent extends SwingUnlabeledContainer
         // add list
         final JScrollPane scrollPane = new JScrollPane();
         scrollPane.getViewport().setView((Component) component);
-        /*scrollPane.setMinimumSize(new Dimension(
-                this.property.getConfiguration()
-                    .getInt(MagicConfiguration.GUI_COMPONENT_MINIMUM_WIDTH_KEY),
-                this.property.getConfiguration()
-                    .getInt(MagicConfiguration.GUI_COMPONENT_MINIMUM_WIDTH_KEY) * 2));*/
         // leave the dirty work to the layout manager :)
         layout.addControledComponent(this, scrollPane,
                 new Component[] {addButton, editButton, removeButton},
@@ -113,7 +106,7 @@ public class SwingCollectionComponent extends SwingUnlabeledContainer
     /**
      * The addButton action.
      * @param evt <code>ActionEvent</code> data
-     * @todo how?
+     * @todo how? there may be more than one type...
      */
     public void addButtonActionPerformed(ActionEvent evt) {
         model.addElement("Yoooooo!!");
@@ -125,14 +118,14 @@ public class SwingCollectionComponent extends SwingUnlabeledContainer
     public void editButtonActionPerformed(ActionEvent evt) {
         try {
             final MagicBean bean = (MagicBean) component.getSelectedValue();
+            if (bean == null) {
+                return; // no item has been selected
+            }
             // add listener to the update button
             final Container container = bean.render();
-            ((MagicView) container).addUpdateButtonActionListener(this);
+            ((MagicContainer) container).addUpdateButtonActionListener(this);
             // create the dialog
-            final BasicDialog dialog =
-                new BasicDialog(container, (Frame) null, title, false);
-            // show dialog
-            dialog.setVisible(true);
+            bean.showFrame(this, title);
         } catch (MagicException e) {
             MagicUtils.debug(e);
             showErrorMessage(e.toString());
@@ -152,7 +145,7 @@ public class SwingCollectionComponent extends SwingUnlabeledContainer
     }
 
     /**
-     * @see org.devyant.magicbeans.swing.SwingContainer#bindTo(org.devyant.magicbeans.beans.MagicProperty)
+     * @see org.devyant.magicbeans.ui.swing.SwingContainer#bindTo(org.devyant.magicbeans.beans.MagicProperty)
      */
     public void bindTo(MagicProperty property) throws MagicException {
         this.property = property;
@@ -192,7 +185,7 @@ public class SwingCollectionComponent extends SwingUnlabeledContainer
     }
     
     /**
-     * @see org.devyant.magicbeans.swing.SwingNestedContainer#setTitle(java.lang.String)
+     * @see org.devyant.magicbeans.ui.swing.SwingNestedContainer#setTitle(java.lang.String)
      */
     public void setTitle(String title) {
         super.setTitle(title);
@@ -200,7 +193,7 @@ public class SwingCollectionComponent extends SwingUnlabeledContainer
     }
 
     /**
-     * @see org.devyant.magicbeans.swing.listeners.UpdateButtonActionListener#updateButtonActionPerformed()
+     * @see org.devyant.magicbeans.ui.swing.listeners.UpdateButtonActionListener#updateButtonActionPerformed()
      */
     public void updateButtonActionPerformed() {
         ((Component) component).repaint();

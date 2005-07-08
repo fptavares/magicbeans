@@ -20,22 +20,23 @@
  * Rua Simao Bolivar 203 6C, 4470-214 Maia, Portugal.
  *
  */
-package org.devyant.magicbeans.swing;
+package org.devyant.magicbeans.ui.swing;
 
-import javax.swing.JTextField;
+import javax.swing.JFormattedTextField;
 
 import org.devyant.magicbeans.MagicComponent;
 import org.devyant.magicbeans.beans.MagicProperty;
 import org.devyant.magicbeans.exceptions.MagicException;
 
 /**
- * SwingStringComponent is a <b>cool</b> class.
+ * SwingNumberComponent is a <b>cool</b> class.
  * 
- * @author Filipe Tavares
- * @version $Revision$ ($Author$)
- * @since 18/Abr/2005 19:36:41
+ * @author ftavares
+ * @version $Revision$ $Date$ ($Author$)
+ * @since Jul 5, 2005 12:52:15 AM
  */
-public class SwingStringComponent extends JTextField implements MagicComponent {
+public class SwingNumberComponent extends JFormattedTextField implements
+        MagicComponent {
     /**
      * The property to bind to.
      */
@@ -43,10 +44,12 @@ public class SwingStringComponent extends JTextField implements MagicComponent {
     
     /**
      * @see org.devyant.magicbeans.MagicComponent#update()
+     * @todo commit?
      */
     public void update() throws MagicException {
-        this.property.set(getText());
+        this.property.set(this.getValue());
     }
+
     /**
      * @see org.devyant.magicbeans.MagicComponent#bindTo(org.devyant.magicbeans.beans.MagicProperty)
      */
@@ -55,13 +58,14 @@ public class SwingStringComponent extends JTextField implements MagicComponent {
         // fill with property's value
         final Object value = this.property.get();
         if (value != null) {
-            setText(value.toString());
+            this.setValue(value);
         }
     }
+
     /**
      * @see org.devyant.magicbeans.MagicComponent#getProperty()
      */
-    public final MagicProperty getProperty() {
+    public MagicProperty getProperty() {
         return property;
     }
 }

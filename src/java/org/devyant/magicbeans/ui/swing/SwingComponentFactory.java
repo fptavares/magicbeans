@@ -20,7 +20,7 @@
  * Rua Simao Bolivar 203 6C, 4470-214 Maia, Portugal.
  *
  */
-package org.devyant.magicbeans.swing;
+package org.devyant.magicbeans.ui.swing;
 
 import java.io.File;
 import java.sql.Timestamp;
@@ -29,18 +29,19 @@ import java.util.Collection;
 import java.util.Date;
 
 import org.devyant.magicbeans.MagicComponent;
+import org.devyant.magicbeans.MagicContainer;
 import org.devyant.magicbeans.MagicUtils;
-import org.devyant.magicbeans.MagicView;
 import org.devyant.magicbeans.beans.MagicProperty;
 import org.devyant.magicbeans.conf.InvalidConfigurationException;
 import org.devyant.magicbeans.conf.MagicConfiguration;
+import org.devyant.magicbeans.exceptions.MagicException;
 import org.devyant.magicbeans.generalizers.date.CalendarGeneralizerImpl;
 import org.devyant.magicbeans.generalizers.date.DateGeneralizerImpl;
 import org.devyant.magicbeans.generalizers.date.NoNeedForGeneralizerImpl;
 import org.devyant.magicbeans.generalizers.date.TimestampGeneralizerImpl;
-import org.devyant.magicbeans.swing.generalizers.list.ComboBoxGeneralizerImpl;
-import org.devyant.magicbeans.swing.generalizers.list.ListGeneralizerImpl;
-import org.devyant.magicbeans.utils.containers.NestedBeanContainer;
+import org.devyant.magicbeans.layouts.LayoutFactory;
+import org.devyant.magicbeans.ui.swing.generalizers.list.ComboBoxGeneralizerImpl;
+import org.devyant.magicbeans.ui.swing.generalizers.list.ListGeneralizerImpl;
 
 /**
  * Factory for Swing components. This is used to get the right component
@@ -62,20 +63,56 @@ public abstract class SwingComponentFactory {
 
 
     /**
-     * Nested defaults to true.
+     * This method returns a nested component for the specified property.
      * @param property The property
      * @return A renderer for the property
-     * @throws InvalidConfigurationException The configuration specified
-     *  an invalid value.
+     * @throws MagicException
+     *  {@link #getComponentInstanceFor(MagicProperty, boolean)}
      */
-    protected static final MagicComponent getComponentInstanceFor(
-            final MagicProperty property) throws InvalidConfigurationException {
-        MagicComponent c = getBinderInstanceFor(property.getType(),
-                property.getConfiguration(), true);
-        MagicUtils.debug("Generated a new SwingComponent: " + c);
-        return c;
+    protected static final MagicComponent getNestedComponentInstanceFor(
+            final MagicProperty property) throws MagicException {
+        return getComponentInstanceFor(property, true);
+    }
+
+    /**
+     * This method returns a nested component for the specified property.
+     * @param property The property
+     * @return A renderer for the property
+     * @throws MagicException
+     *  {@link #getComponentInstanceFor(MagicProperty, boolean)}
+     */
+    public static final MagicComponent getBaseComponentInstanceFor(
+            final MagicProperty property) throws MagicException {
+        return getComponentInstanceFor(property, false);
     }
     
+    /**
+     * This method returns a magic component for the specified property.
+     * @param property The property
+     * @param nested Whether it is a nested component or not
+     * @return A renderer for the property
+     * @throws MagicException
+     *  {@link #getBaseComponentInstanceFor(MagicProperty)}
+     *  {@link LayoutFactory#createLayout(MagicConfiguration)}
+     */
+    protected static final MagicComponent getComponentInstanceFor(
+            final MagicProperty property, final boolean nested)
+            throws MagicException {
+        
+        final MagicComponent c = getBinderInstanceFor(property.getType(),
+                property.getConfiguration(), nested);
+        MagicUtils.debug("Generated a new SwingComponent: " + c);
+        
+        if (c instanceof MagicContainer) {
+            // instantiate the layout manager
+            ((MagicContainer) c).setMagicLayout(
+                    LayoutFactory.createLayout(property.getConfiguration()));
+        }
+        
+        // return the component
+        return c;
+        
+    }
 
     /**
      * @param type The class of the object to bind to
@@ -86,7 +123,7 @@ public abstract class SwingComponentFactory {
      * @todo complete...
      * numbers, files, colors, ... timelines (a Collection of dates)...
      */
-    public static MagicComponent getBinderInstanceFor(final Class type,
+    private static final MagicComponent getBinderInstanceFor(final Class type,
             final MagicConfiguration configuration, final boolean nested)
             throws InvalidConfigurationException {
         MagicUtils.debug("Type for SwingComponent: " + type.getName());
@@ -150,17 +187,18 @@ public abstract class SwingComponentFactory {
 
     /**
      * @return An isolated component if the property is mapped to an
-     *  instance of a MagicView. If not, the normal component is returned.
-     * @throws InvalidConfigurationException The configuration specified
-     *  an invalid value.
+     *  instance of a MagicContainer. If not, the normal component is returned.
+     * @throws MagicException
+     *  {@link #getNestedComponentInstanceFor(MagicProperty)}
      */
     public static final MagicComponent getIsolatedComponent(
-            final MagicProperty property) throws InvalidConfigurationException {
-        final MagicComponent component = getComponentInstanceFor(property);
+            final MagicProperty property) throws MagicException {
+        final MagicComponent component = getNestedComponentInstanceFor(property);
         if (MagicUtils.cannotStandalone(component)) {
             return component;
         } else {
             return new SwingIsolatedComponent();
         }
     }
+
 }

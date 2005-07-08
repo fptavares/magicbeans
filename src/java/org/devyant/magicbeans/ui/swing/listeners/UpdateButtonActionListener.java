@@ -20,24 +20,17 @@
  * Rua Simao Bolivar 203 6C, 4470-214 Maia, Portugal.
  *
  */
-package org.devyant.magicbeans.swing.generalizers.list;
+package org.devyant.magicbeans.ui.swing.listeners;
 
-import javax.swing.JList;
-import org.devyant.magicbeans.swing.generalizers.ListGeneralizer;
+import java.util.EventListener;
 
 /**
- * ListGeneralizerImpl is a <b>cool</b> class.
+ * UpdateButtonActionListener is a <b>cool</b> class.
  * 
  * @author Filipe Tavares
  * @version $Revision$ $Date$ ($Author$)
- * @since 19/Jun/2005 2:45:58
+ * @since 20/Jun/2005 1:12:12
  */
-public class ListGeneralizerImpl extends JList implements ListGeneralizer {
-
-    /**
-     * @see org.devyant.magicbeans.swing.generalizers.ListGeneralizer#isExpandable()
-     */
-    public boolean isExpandable() {
-        return true;
-    }
+public interface UpdateButtonActionListener extends EventListener {
+    public void updateButtonActionPerformed();
 }

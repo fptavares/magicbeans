@@ -20,78 +20,48 @@
  * Rua Simao Bolivar 203 6C, 4470-214 Maia, Portugal.
  *
  */
-package org.devyant.magicbeans.swing;
+package org.devyant.magicbeans.ui.swing;
 
-import javax.swing.JButton;
+import javax.swing.JTextField;
 
-import org.devyant.magicbeans.MagicBean;
 import org.devyant.magicbeans.MagicComponent;
-import org.devyant.magicbeans.MagicUtils;
 import org.devyant.magicbeans.beans.MagicProperty;
-import org.devyant.magicbeans.conf.MagicConfiguration;
 import org.devyant.magicbeans.exceptions.MagicException;
-import org.devyant.magicbeans.i18n.MagicResources;
 
 /**
- * A link to an isolated property (not nested).
- * <p>A JPanel had to be used because we don't want the button to occupy
- * the whole width of the</p>
+ * SwingStringComponent is a <b>cool</b> class.
  * 
- * @author ftavares
- * @version $Revision$ $Date$ ($Author$)
- * @since Jul 6, 2005 2:11:33 AM
+ * @author Filipe Tavares
+ * @version $Revision$ ($Author$)
+ * @since 18/Abr/2005 19:36:41
  */
-public class SwingIsolatedComponent extends JButton implements MagicComponent {
+public class SwingStringComponent extends JTextField implements MagicComponent {
     /**
      * The property to bind to.
      */
     private MagicProperty property;
     
     /**
-     * The <code>MagicBean</code> that will be used to generate the container.
-     */
-    private MagicBean magicBean;
-    
-    /**
      * @see org.devyant.magicbeans.MagicComponent#update()
      */
     public void update() throws MagicException {
-        this.property.set(magicBean.getRealValue());
+        this.property.set(getText());
     }
-
     /**
      * @see org.devyant.magicbeans.MagicComponent#bindTo(org.devyant.magicbeans.beans.MagicProperty)
      */
     public void bindTo(MagicProperty property) throws MagicException {
         this.property = property;
-        // create the magic bean
-        magicBean = new MagicBean(property);
-        
-        init(); // init gui stuff
+        // fill with property's value
+        final Object value = this.property.get();
+        if (value != null) {
+            setText(value.toString());
+        }
     }
-
-    /**
-     * GUI initialization.
-     */
-    private void init() {
-        this.setText(MagicConfiguration.resources
-                .get(MagicResources.STRING_INDIVIDUALBUTTON));
-        this.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                try {
-                    magicBean.showFrame(SwingIsolatedComponent.this, null);
-                } catch (MagicException e) {
-                    MagicUtils.debug(e);
-                }
-            }
-        });
-    }
-
     /**
      * @see org.devyant.magicbeans.MagicComponent#getProperty()
      */
-    public MagicProperty getProperty() {
-        return this.property;
+    public final MagicProperty getProperty() {
+        return property;
     }
-
 }

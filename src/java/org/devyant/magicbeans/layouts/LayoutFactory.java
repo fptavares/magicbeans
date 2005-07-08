@@ -20,44 +20,29 @@
  * Rua Simao Bolivar 203 6C, 4470-214 Maia, Portugal.
  *
  */
-package org.devyant.magicbeans.swing;
+package org.devyant.magicbeans.layouts;
 
-
-
-import java.awt.Component;
-
-import org.devyant.magicbeans.WrapperTestCase;
-
+import org.devyant.magicbeans.MagicLayout;
+import org.devyant.magicbeans.conf.MagicConfiguration;
+import org.devyant.magicbeans.exceptions.MagicException;
 
 /**
- * StringComponentTest is a <b>cool</b> class.
+ * LayoutFactory is a <b>cool</b> class.
  * 
  * @author ftavares
  * @version $Revision$ $Date$ ($Author$)
- * @since Jul 3, 2005 2:28:26 AM
+ * @since Jul 7, 2005 7:13:06 PM
  */
-public class StringComponentTest extends WrapperTestCase {
+public class LayoutFactory {
     /**
-     * Creates a new <code>StringComponentTest</code> instance.
-     * @param name
+     * Instantiates the appropriate layout using the given configuration.
+     * @param conf The configuration
+     * @return The layout instance
+     * @throws MagicException Class not found or unable to instantiate it
      */
-    public StringComponentTest(String name) {
-        super(name);
-    }
-    
-    /**
-     * Tests the StringComponent
-     * @throws Exception
-     */
-    public void testComponent() throws Exception {
-        testComponent("Foo",
-                SwingStringComponent.class, "Bar");
-    }
-
-    /**
-     * @see org.devyant.magicbeans.AbstractTestCase#messWithComponent(java.awt.Component, java.lang.Object)
-     */
-    protected void messWithComponent(Component component, Object expected) {
-        ((SwingStringComponent) component).setText((String) expected);
+    public static final MagicLayout createLayout(final MagicConfiguration conf)
+            throws MagicException {
+        return (MagicLayout) conf.getClassInstance(
+                MagicConfiguration.GUI_LAYOUT_IMPL);
     }
 }

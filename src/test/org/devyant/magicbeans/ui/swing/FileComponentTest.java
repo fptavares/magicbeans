@@ -20,7 +20,7 @@
  * Rua Simao Bolivar 203 6C, 4470-214 Maia, Portugal.
  *
  */
-package org.devyant.magicbeans.swing;
+package org.devyant.magicbeans.ui.swing;
 
 import java.awt.Component;
 import java.io.File;

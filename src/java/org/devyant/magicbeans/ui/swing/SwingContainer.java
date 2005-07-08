@@ -20,7 +20,7 @@
  * Rua Simao Bolivar 203 6C, 4470-214 Maia, Portugal.
  *
  */
-package org.devyant.magicbeans.swing;
+package org.devyant.magicbeans.ui.swing;
 
 import java.awt.Component;
 import java.awt.Container;
@@ -33,15 +33,14 @@ import javax.swing.JPanel;
 
 import org.apache.commons.lang.StringUtils;
 import org.devyant.magicbeans.MagicComponent;
+import org.devyant.magicbeans.MagicContainer;
 import org.devyant.magicbeans.MagicLayout;
 import org.devyant.magicbeans.MagicUtils;
-import org.devyant.magicbeans.MagicView;
 import org.devyant.magicbeans.beans.MagicProperty;
 import org.devyant.magicbeans.conf.MagicConfiguration;
 import org.devyant.magicbeans.exceptions.MagicException;
 import org.devyant.magicbeans.i18n.MagicResources;
-import org.devyant.magicbeans.layouts.GridBagMagicLayout;
-import org.devyant.magicbeans.swing.listeners.UpdateButtonActionListener;
+import org.devyant.magicbeans.ui.swing.listeners.UpdateButtonActionListener;
 import org.devyant.magicbeans.utils.components.UnlabeledComponent;
 import org.devyant.magicbeans.utils.containers.DefaultContainerBehaviour;
 
@@ -54,7 +53,7 @@ import org.devyant.magicbeans.utils.containers.DefaultContainerBehaviour;
  * @todo maybe remove status bar....
  * replace by a simple -> title + "*" -> only at nested containers...:(
  */
-public class SwingContainer extends JPanel implements MagicView {
+public class SwingContainer extends JPanel implements MagicContainer {
     /**
      * The status <code>JLabel</code>.
      */
@@ -67,7 +66,7 @@ public class SwingContainer extends JPanel implements MagicView {
     /**
      * The <code>MagicLayout</code>.
      */
-    protected final MagicLayout layout = new GridBagMagicLayout();
+    protected MagicLayout layout;
     
     /**
      * The property to bind to.
@@ -112,7 +111,8 @@ public class SwingContainer extends JPanel implements MagicView {
             return;
         }
         
-        final Collection properties = MagicUtils.getProperties(object, this.property);
+        final Collection properties =
+            MagicUtils.getProperties(object, this.property);
         
         for (Iterator i = properties.iterator(); i.hasNext(); ) {
             final MagicProperty prop = (MagicProperty) i.next();
@@ -128,7 +128,8 @@ public class SwingContainer extends JPanel implements MagicView {
             if (prop.getConfiguration()
                     .getSpecialBoolean(MagicConfiguration.XML_NESTED)) {
                 // basic nested component
-                component = SwingComponentFactory.getComponentInstanceFor(prop);
+                component =
+                    SwingComponentFactory.getNestedComponentInstanceFor(prop);
             } else {
                 // isolated component
                 component = SwingComponentFactory.getIsolatedComponent(prop);
@@ -194,7 +195,6 @@ public class SwingContainer extends JPanel implements MagicView {
             final String string) {
         // add label + magic component
         if (component instanceof SwingIsolatedComponent) {
-            MagicUtils.debug("----------------" + component.getClass());
             layout.addLabeledIsolatedComponent(this, new JLabel(string),
                     (Component) component);
         } else {
@@ -215,9 +215,16 @@ public class SwingContainer extends JPanel implements MagicView {
     private final void addStatusBar() {
         layout.addStatus(this, status);
     }
+
+    /**
+     * @see org.devyant.magicbeans.MagicComponent#getProperty()
+     */
+    public final MagicProperty getProperty() {
+        return property;
+    }
     
     /**
-     * @see org.devyant.magicbeans.MagicView#render()
+     * @see org.devyant.magicbeans.MagicContainer#render()
      */
     public final Container render() {
         status = new JLabel(" ");
@@ -244,20 +251,20 @@ public class SwingContainer extends JPanel implements MagicView {
     }
 
     /**
-     * @see org.devyant.magicbeans.MagicComponent#getProperty()
+     * @see org.devyant.magicbeans.MagicContainer#setMagicLayout(org.devyant.magicbeans.MagicLayout)
      */
-    public final MagicProperty getProperty() {
-        return property;
+    public void setMagicLayout(final MagicLayout layout) {
+        this.layout = layout;
     }
     
     /**
-     * @see org.devyant.magicbeans.swing.listeners.UpdateButtonActionHandler#addUpdateButtonActionListener(org.devyant.magicbeans.swing.listeners.UpdateButtonActionListener)
+     * @see org.devyant.magicbeans.ui.swing.listeners.UpdateButtonActionHandler#addUpdateButtonActionListener(org.devyant.magicbeans.ui.swing.listeners.UpdateButtonActionListener)
      */
     public void addUpdateButtonActionListener(final UpdateButtonActionListener l) {
         listenerList.add(UpdateButtonActionListener.class, l);
     }
     /**
-     * @see org.devyant.magicbeans.swing.listeners.UpdateButtonActionHandler#fireUpdateButtonAction()
+     * @see org.devyant.magicbeans.ui.swing.listeners.UpdateButtonActionHandler#fireUpdateButtonAction()
      */
     public void fireUpdateButtonAction() {
         final UpdateButtonActionListener [] listeners =

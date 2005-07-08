@@ -20,24 +20,26 @@
  * Rua Simao Bolivar 203 6C, 4470-214 Maia, Portugal.
  *
  */
-package org.devyant.magicbeans;
+package org.devyant.magicbeans.ui.swing;
 
-import java.awt.Container;
+import javax.swing.border.TitledBorder;
 
-import org.devyant.magicbeans.swing.listeners.UpdateButtonActionHandler;
+import org.devyant.magicbeans.utils.components.UnlabeledComponent;
 
 /**
- * MagicView is a <b>cool</b> class.
+ * SwingUnlabeledContainer is a <b>cool</b> class.
  * 
- * @author Filipe Tavares
+ * @author ftavares
  * @version $Revision$ $Date$ ($Author$)
- * @since 17/Jun/2005 3:35:04
+ * @since Jul 5, 2005 1:54:41 AM
  */
-public interface MagicView extends MagicContainer, UpdateButtonActionHandler {
+public class SwingUnlabeledContainer extends SwingContainer
+        implements UnlabeledComponent {
     /**
-     * Performs last minute UI settings and returns the the container,
-     * usually it self.
-     * @return A <code>Container</code> containing the forms
+     * @see org.devyant.magicbeans.utils.components.UnlabeledComponent#setTitle(java.lang.String)
      */
-    public Container render();
+    public void setTitle(String title) {
+        setBorder(new TitledBorder(null, " " + title + " ",
+                TitledBorder.LEFT, TitledBorder.TOP));
+    }
 }

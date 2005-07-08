@@ -29,6 +29,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 
 import org.devyant.magicbeans.MagicLayout;
+import org.devyant.magicbeans.MagicUtils;
 
 /**
  * GridBagMagicLayout is a <b>cool</b> class.
@@ -44,9 +45,26 @@ public class GridBagMagicLayout extends GridBagLayout implements MagicLayout {
     private final GridBagConstraints gridBagConstraints =
         new GridBagConstraints();
     /**
+     * The top value for the default insets.
+     */
+    private static final int INSETS_TOP = 5;
+    /**
+     * The left value for the default insets.
+     */
+    private static final int INSETS_LEFT = 5;
+    /**
+     * The bottom value for the default insets.
+     */
+    private static final int INSETS_BOTTOM = 5;
+    /**
+     * The right value for the default insets.
+     */
+    private static final int INSETS_RIGHT = 5;
+    /**
      * The insets for the components.
      */
-    private final Insets insets = new Insets(5, 5, 5, 5);
+    private static final Insets insets =
+        new Insets(INSETS_TOP, INSETS_LEFT, INSETS_BOTTOM, INSETS_RIGHT);
     /**
      * The current line being filled at the <code>GridBagLayout</code>.
      */
@@ -115,22 +133,13 @@ public class GridBagMagicLayout extends GridBagLayout implements MagicLayout {
     }
 
     /**
-     * @see org.devyant.magicbeans.MagicLayout#addComponentPair(java.awt.Container, java.awt.Component, java.awt.Component)
-     */
-    public void addComponentPair(final Container container,
-            final Component leftComponent, final Component rightComponent) {
-        // add leftComponent
-        addComponent(container, leftComponent, 0, line, STANDARD_WEIGHTX);
-        // add rightComponent
-        addComponent(container, rightComponent, 1, line++, STANDARD_WEIGHTX);
-    }
-
-    /**
      * @see org.devyant.magicbeans.MagicLayout#addButton(java.awt.Container, java.awt.Component)
      */
     public void addButton(final Container container, final Component button) {
-        addComponent(container, button, 1, line++, NO_WEIGHTX,
-                GridBagConstraints.EAST, GridBagConstraints.NONE);
+        addComponent(container, button, 0, line++, NO_WEIGHTX,
+                GridBagConstraints.LINE_END, GridBagConstraints.NONE,
+                GridBagConstraints.REMAINDER, 1, new Insets(INSETS_TOP + 10,
+                        INSETS_LEFT, INSETS_BOTTOM, INSETS_RIGHT));
     }
 
     /**
@@ -139,7 +148,8 @@ public class GridBagMagicLayout extends GridBagLayout implements MagicLayout {
     public void addStatus(final Container container, final Component status) {
         addComponent(container, status, 0, line++, STANDARD_WEIGHTX,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
-                GridBagConstraints.REMAINDER, 1, new Insets(0, 5, 0, 5));
+                GridBagConstraints.REMAINDER, 1,
+                new Insets(0, INSETS_LEFT, 0, INSETS_RIGHT));
     }
     
     /*

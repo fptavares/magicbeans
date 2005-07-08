@@ -36,7 +36,7 @@
     
       <Configuration>
         <validate>true</validate>
-        <nested>false</nested> <!-- TODO -->
+        <!-- <nested>false</nested> -->
       </Configuration>
       
       <!-- bean's properties -->
@@ -50,7 +50,7 @@
           <validate>true</validate>
           <!-- property overrides -->
           <magic>
-            <gui><collections><style>combo</style></collections></gui>
+            <!-- <gui><collections><style>combo</style></collections></gui> -->
             <stuff>yeh</stuff>
           </magic>
         </Configuration>

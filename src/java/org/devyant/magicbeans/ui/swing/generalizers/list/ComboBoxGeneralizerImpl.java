@@ -20,13 +20,13 @@
  * Rua Simao Bolivar 203 6C, 4470-214 Maia, Portugal.
  *
  */
-package org.devyant.magicbeans.swing.generalizers.list;
+package org.devyant.magicbeans.ui.swing.generalizers.list;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.ListModel;
 
-import org.devyant.magicbeans.swing.generalizers.ListGeneralizer;
+import org.devyant.magicbeans.ui.swing.generalizers.ListGeneralizer;
 
 /**
  * ComboBoxGeneralizerImpl is a <b>cool</b> class.
@@ -39,28 +39,28 @@ public class ComboBoxGeneralizerImpl extends JComboBox implements
         ListGeneralizer {
 
     /**
-     * @see org.devyant.magicbeans.swing.generalizers.ListGeneralizer#getSelectedValue()
+     * @see org.devyant.magicbeans.ui.swing.generalizers.ListGeneralizer#getSelectedValue()
      */
     public Object getSelectedValue() {
         return this.getSelectedItem();
     }
 
     /**
-     * @see org.devyant.magicbeans.swing.generalizers.ListGeneralizer#setModel(javax.swing.ListModel)
+     * @see org.devyant.magicbeans.ui.swing.generalizers.ListGeneralizer#setModel(javax.swing.ListModel)
      */
     public void setModel(ListModel model) {
         this.setModel((ComboBoxModel) model);
     }
 
     /**
-     * @see org.devyant.magicbeans.swing.generalizers.ListGeneralizer#getSelectedValues()
+     * @see org.devyant.magicbeans.ui.swing.generalizers.ListGeneralizer#getSelectedValues()
      */
     public Object[] getSelectedValues() {
         return this.getSelectedObjects();
     }
 
     /**
-     * @see org.devyant.magicbeans.swing.generalizers.ListGeneralizer#isExpandable()
+     * @see org.devyant.magicbeans.ui.swing.generalizers.ListGeneralizer#isExpandable()
      */
     public boolean isExpandable() {
         return false;

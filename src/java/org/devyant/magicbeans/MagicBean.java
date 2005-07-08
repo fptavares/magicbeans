@@ -24,8 +24,8 @@ package org.devyant.magicbeans;
 
 import java.awt.Component;
 import java.awt.Container;
-import java.awt.Frame;
 import java.awt.event.WindowAdapter;
+import java.awt.event.WindowListener;
 import java.util.Observable;
 import java.util.ResourceBundle;
 
@@ -38,9 +38,8 @@ import org.devyant.magicbeans.exceptions.PropertyException;
 import org.devyant.magicbeans.i18n.MagicResources;
 import org.devyant.magicbeans.observer.Observer;
 import org.devyant.magicbeans.observer.Subject;
-import org.devyant.magicbeans.swing.utils.BasicDialog;
+import org.devyant.magicbeans.ui.swing.listeners.UpdateButtonActionListener;
 import org.devyant.magicbeans.utils.beans.SinglePropertyWrapper;
-import org.devyant.magicbeans.utils.containers.NonStandaloneContainer;
 
 
 /**
@@ -55,10 +54,6 @@ public class MagicBean extends Observable implements Observer {
      * The object <code>Object</code>.
      */
     private Object object;
-    /**
-     * The configuration.
-     */
-    private MagicConfiguration configuration;
     
     /**
      * The beanPath <code>String</code>.
@@ -105,12 +100,9 @@ public class MagicBean extends Observable implements Observer {
     public MagicBean(Object object,
             String superBeanClassName, String beanPath) {
         super();
-        MagicUtils.debug(object.getClass().getName());
         this.object = object;
         this.beanPath = beanPath;
         this.superBeanClassName = superBeanClassName;
-        this.configuration =
-            new MagicConfiguration(superBeanClassName, beanPath);
     }
     
     /**
@@ -118,11 +110,14 @@ public class MagicBean extends Observable implements Observer {
      *  during the GUI generation process.
      */
     public Container render() throws MagicException {
+        // create the magic property object
+        final MagicProperty property = new MagicProperty(this.superBeanClassName,
+                this.beanPath, this, "object", true, false);
+        
         // get the base container
         MagicUtils.info("Generating the base container.");
-        MagicView container =
-            MagicFactory.getContainerInstanceFor(object.getClass(),
-                    configuration);
+        MagicContainer container =
+            MagicFactory.getContainerInstanceFor(property);
         
         if (MagicUtils.cannotStandalone(container)) {
             MagicUtils.info("The object cannot be mapped to a standalone container."
@@ -130,52 +125,72 @@ public class MagicBean extends Observable implements Observer {
             // no container could be found for this bean
             // it is a simple property
             // we have to tranform it into a bean
-            object = new SinglePropertyWrapper(object);
+            this.object = new SinglePropertyWrapper(this.object);
             
             // now we should be able to retrive the correct container
-            container = MagicFactory.getContainerInstanceFor(object.getClass(),
-                    configuration);
+            container = MagicFactory.getContainerInstanceFor(property);
         }
         
         // bind container to this MagicBean's bean
         MagicUtils.info("Binding the base container to a new MagicProperty"
                 + " containing the bean.");
-        container.bindTo(new MagicProperty(this.superBeanClassName,
-                this.beanPath, this, "object", true, false));
+        container.bindTo(property);
 
         MagicUtils.info("Rendering the base container.");
         return container.render();
     }
     
     /**
-     * @param parent Parent container
-     * @throws MagicException {@link #render()}
+     * @see #showFrame(Component, String, UpdateButtonActionListener, WindowListener)
      */
-    public final void showDialog(Frame parent) throws MagicException {
-        showDialog(parent, false);
-    }
-    /**
-     * @param parent Parent container
-     * @param modal Whether it is modal
-     * @throws MagicException {@link #render()}
-     */
-    public final void showDialog(Frame parent, boolean modal) throws MagicException {
-        new BasicDialog(this.render(), parent,
+    public final void showFrame(final Component parent) throws MagicException {
+        showFrame(parent,
                 MagicConfiguration.resources.get(MagicResources.STRING_TITLE),
-                modal).setVisible(true);
+                null, null);
+    }
+    
+    /**
+     * @see #showFrame(Component, String, UpdateButtonActionListener, WindowListener)
+     */
+    public final void showFrame(final Component parent, final String title)
+            throws MagicException {
+        showFrame(parent, title, null, null);
+    }
+    
+    /**
+     * @see #showFrame(Component, String, UpdateButtonActionListener, WindowListener)
+     */
+    public final void showFrame(final Component parent,
+            final WindowAdapter adapter) throws MagicException {
+        showFrame(parent,
+                MagicConfiguration.resources.get(MagicResources.STRING_TITLE),
+                null, adapter);
     }
     
     /**
      * Show a frame containing the resulting interface.
-     * @param parent Parent container
+     * @param parent Parent component
+     * @param title Title for the window
+     * @param listener Listener for the update button
+     * @param windowListener Window listener
+     *  (you could listen to the window close action, for example)
      * @throws MagicException {@link #render()}
      */
-    public final void showFrame(Component parent, WindowAdapter adapter)
+    public final void showFrame(final Component parent, final String title,
+            final UpdateButtonActionListener listener,
+            final WindowListener windowListener)
             throws MagicException {
-        JFrame frame =
-            new JFrame(MagicConfiguration.resources.get(MagicResources.STRING_TITLE));
-        frame.addWindowListener(adapter);
-        frame.setContentPane(this.render());
+        // render the container
+        final Container container = this.render();
+        if (listener != null) {
+            ((MagicContainer) container).addUpdateButtonActionListener(listener);
+        }
+        // create and show frame
+        final JFrame frame = new JFrame(title);
+        if (windowListener != null) {
+            frame.addWindowListener(windowListener);
+        }
+        frame.setContentPane(container);
         frame.pack();
         frame.setLocationRelativeTo(parent);
         frame.setVisible(true);

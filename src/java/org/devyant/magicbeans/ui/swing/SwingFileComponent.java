@@ -20,7 +20,7 @@
  * Rua Simao Bolivar 203 6C, 4470-214 Maia, Portugal.
  *
  */
-package org.devyant.magicbeans.swing;
+package org.devyant.magicbeans.ui.swing;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -28,11 +28,14 @@ import java.io.File;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import org.devyant.magicbeans.MagicComponent;
+import org.devyant.magicbeans.MagicLayout;
 import org.devyant.magicbeans.beans.MagicProperty;
 import org.devyant.magicbeans.exceptions.MagicException;
-import org.devyant.magicbeans.utils.containers.NonStandaloneContainer;
+import org.devyant.magicbeans.layouts.GridBagMagicLayout;
 
 /**
  * SwingFileComponent is a <b>cool</b> class.
@@ -41,16 +44,30 @@ import org.devyant.magicbeans.utils.containers.NonStandaloneContainer;
  * @version $Revision$ $Date$ ($Author$)
  * @since Jul 4, 2005 2:31:29 AM
  */
-public class SwingFileComponent extends SwingContainer
-        implements NonStandaloneContainer {
+public class SwingFileComponent extends JPanel
+        implements MagicComponent {
     private final JTextField textField = new JTextField();
     private final JButton button = new JButton("...");
     private JFileChooser fileChooser;
     
+    /**
+     * The <code>MagicLayout</code>.
+     */
+    private final MagicLayout layout = new GridBagMagicLayout();
+    
+    /**
+     * The property to bind to.
+     */
+    private MagicProperty property;
+    
+    /**
+     * The selected file.
+     */
     private File currentFile = null;
     
     protected final void init() {
-        super.init(); // init super gui
+        // gui initialization
+        setLayout(layout);
         
         textField.setEditable(false);
         
@@ -90,7 +107,7 @@ public class SwingFileComponent extends SwingContainer
     }
     
     /**
-     * @see org.devyant.magicbeans.swing.SwingContainer#bindTo(org.devyant.magicbeans.beans.MagicProperty)
+     * @see org.devyant.magicbeans.ui.swing.SwingContainer#bindTo(org.devyant.magicbeans.beans.MagicProperty)
      */
     public void bindTo(MagicProperty property) throws MagicException {
         this.property = property;
@@ -101,9 +118,16 @@ public class SwingFileComponent extends SwingContainer
     }
     
     /**
-     * @see org.devyant.magicbeans.swing.SwingContainer#update()
+     * @see org.devyant.magicbeans.ui.swing.SwingContainer#update()
      */
     public void update() throws MagicException {
         this.property.set(currentFile);
+    }
+
+    /**
+     * @see org.devyant.magicbeans.MagicComponent#getProperty()
+     */
+    public MagicProperty getProperty() {
+        return this.property;
     }
 }
