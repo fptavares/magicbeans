@@ -33,7 +33,7 @@ import org.devyant.magicbeans.utils.components.UnlabeledComponent;
  * @version $Revision$ $Date$ ($Author$)
  * @since Jul 5, 2005 1:54:41 AM
  */
-public class SwingUnlabeledContainer extends SwingContainer
+public abstract class SwingUnlabeledContainer extends SwingContainer
         implements UnlabeledComponent {
     /**
      * @see org.devyant.magicbeans.utils.components.UnlabeledComponent#setTitle(java.lang.String)
