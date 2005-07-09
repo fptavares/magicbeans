@@ -79,7 +79,7 @@ public class MagicBean extends Observable implements Observer {
      * @param property The property who's object we want to map
      * @throws PropertyException {@link MagicProperty#get()}
      */
-    public MagicBean(MagicProperty property) throws PropertyException {
+    public MagicBean(final MagicProperty property) throws PropertyException {
         this(property.get(),
                 property.getSuperBeanClassName(), property.getBeanPath());
     }

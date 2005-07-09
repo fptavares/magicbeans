@@ -1,62 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*
+ * Magic Beans: a library for GUI generation and component-bean mapping.
+ * Copyright (C) 2005  Filipe Tavares
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ * devYant, devyant@devyant.org
+ * Rua Simao Bolivar 203 6C, 4470-214 Maia, Portugal.
+ *
+ */
+-->
 <magic>
-  <!-- Dummy -->
-  <bean class="org.devyant.magicbeans.AppTest$Dummy">
-    <Configuration>
-    </Configuration>
-  
-    <name>
-      <Configuration>
-        <visible>false</visible>
-      </Configuration>
-      
-      <color>
-      
-      </color>
-    </name>
-    <description>
-      <Configuration>
-        <nested>false</nested>
-      </Configuration>
-    
-    </description>
-    <bye>
-      
-    </bye>
-    <date>
-    
-      <Configuration>
-        <validate>true</validate>
-        <validationClass>org.devyant.AppTest</validationClass>
-      </Configuration>
-      
-    </date>
-    <dummy>
-    
-      <!-- configuration -->
-    
-      <Configuration>
-        <validate>true</validate>
-        <!-- <nested>false</nested> -->
-      </Configuration>
-      
-      <!-- bean's properties -->
-      
-      <collection>
-      
-        <!-- configuration -->
-        
+    <!-- Dummy -->
+    <bean class="org.devyant.magicbeans.AppTest$Dummy">
         <Configuration>
-          <nested>false</nested>
-          <validate>true</validate>
-          <!-- property overrides -->
-          <magic>
-            <!-- <gui><collections><style>combo</style></collections></gui> -->
-            <stuff>yeh</stuff>
-          </magic>
         </Configuration>
         
-      </collection>
-      
-    </dummy>
-  </bean>
+        <!-- Dummy.name -->
+        <name>
+            <Configuration>
+                <visible>false</visible>
+            </Configuration>
+        </name>
+        
+        <!-- Dummy.description -->
+        <description>
+            <Configuration>
+                <nested>false</nested>
+            </Configuration>
+        </description>
+        
+        <!-- Dummy.bye -->
+        <bye>
+        </bye>
+        
+        <!-- Dummy.date -->
+        <date>
+            <Configuration>
+                <validate>true</validate>
+                <validationClass>org.devyant.AppTest</validationClass>
+            </Configuration>
+        </date>
+        
+        <!-- Dummy.dummy -->
+        <dummy>
+            <Configuration>
+                <validate>true</validate>
+                <!-- <nested>false</nested> -->
+            </Configuration>
+            
+            <!-- Dummy.dummy.collection -->
+            <collection>
+                <Configuration>
+                    <nested>false</nested>
+                    <validate>true</validate>
+                    <!-- property overrides -->
+                    <magic>
+                        <!-- <gui><collections><style>combo</style></collections></gui> -->
+                        <stuff>yeh</stuff>
+                    </magic>
+                </Configuration>
+                
+            </collection>
+        </dummy>
+        
+    </bean>
 </magic>
