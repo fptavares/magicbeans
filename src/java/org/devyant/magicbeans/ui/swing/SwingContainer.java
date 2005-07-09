@@ -40,7 +40,7 @@ import org.devyant.magicbeans.beans.MagicProperty;
 import org.devyant.magicbeans.conf.MagicConfiguration;
 import org.devyant.magicbeans.exceptions.MagicException;
 import org.devyant.magicbeans.i18n.MagicResources;
-import org.devyant.magicbeans.ui.swing.listeners.UpdateButtonActionListener;
+import org.devyant.magicbeans.ui.listeners.UpdateButtonActionListener;
 import org.devyant.magicbeans.utils.components.UnlabeledComponent;
 import org.devyant.magicbeans.utils.containers.DefaultContainerBehaviour;
 
@@ -258,13 +258,13 @@ public class SwingContainer extends JPanel implements MagicContainer {
     }
     
     /**
-     * @see org.devyant.magicbeans.ui.swing.listeners.UpdateButtonActionHandler#addUpdateButtonActionListener(org.devyant.magicbeans.ui.swing.listeners.UpdateButtonActionListener)
+     * @see org.devyant.magicbeans.ui.listeners.UpdateButtonActionHandler#addUpdateButtonActionListener(org.devyant.magicbeans.ui.listeners.UpdateButtonActionListener)
      */
     public void addUpdateButtonActionListener(final UpdateButtonActionListener l) {
         listenerList.add(UpdateButtonActionListener.class, l);
     }
     /**
-     * @see org.devyant.magicbeans.ui.swing.listeners.UpdateButtonActionHandler#fireUpdateButtonAction()
+     * @see org.devyant.magicbeans.ui.listeners.UpdateButtonActionHandler#fireUpdateButtonAction()
      */
     public void fireUpdateButtonAction() {
         final UpdateButtonActionListener [] listeners =

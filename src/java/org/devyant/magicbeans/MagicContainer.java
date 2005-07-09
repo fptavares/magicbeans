@@ -24,7 +24,7 @@ package org.devyant.magicbeans;
 
 import java.awt.Container;
 
-import org.devyant.magicbeans.ui.swing.listeners.UpdateButtonActionHandler;
+import org.devyant.magicbeans.ui.listeners.UpdateButtonActionHandler;
 
 /**
  * MagicContainer is a <b>cool</b> class.

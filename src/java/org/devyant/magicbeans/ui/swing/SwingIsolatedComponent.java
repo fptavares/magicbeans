@@ -79,10 +79,12 @@ public class SwingIsolatedComponent extends JButton implements MagicComponent {
         this.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 try {
-                    magicBean.showFrame(SwingIsolatedComponent.this,
-                            MagicConfiguration.resources.getNameFor(property));
+                    magicBean.showInternalFrame(
+                            SwingIsolatedComponent.this,
+                            MagicConfiguration.resources.getNameFor(property),
+                            null);
                 } catch (MagicException e) {
-                    MagicUtils.debug(e);
+                    MagicUtils.error(e);
                 }
             }
         });

@@ -20,7 +20,7 @@
  * Rua Simao Bolivar 203 6C, 4470-214 Maia, Portugal.
  *
  */
-package org.devyant.magicbeans.utils.beans;
+package org.devyant.magicbeans.beans;
 
 /**
  * SinglePropertyWrapper is a <b>cool</b> class.

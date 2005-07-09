@@ -22,7 +22,6 @@
  */
 package org.devyant.magicbeans.ui.swing;
 
-import org.devyant.magicbeans.utils.containers.NestedBeanContainer;
 
 
 /**
@@ -32,7 +31,6 @@ import org.devyant.magicbeans.utils.containers.NestedBeanContainer;
  * @version $Revision$ $Date$ ($Author$)
  * @since 12/Jun/2005 6:54:31
  */
-public class SwingNestedContainer extends SwingUnlabeledContainer
-        implements NestedBeanContainer {
+public class SwingNestedContainer extends SwingUnlabeledContainer {
         
 }

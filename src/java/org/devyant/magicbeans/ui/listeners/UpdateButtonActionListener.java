@@ -20,22 +20,17 @@
  * Rua Simao Bolivar 203 6C, 4470-214 Maia, Portugal.
  *
  */
-package org.devyant.magicbeans.ui.swing.listeners;
+package org.devyant.magicbeans.ui.listeners;
+
+import java.util.EventListener;
 
 /**
- * UpdateButtonActionHandler is a <b>cool</b> class.
+ * UpdateButtonActionListener is a <b>cool</b> class.
  * 
  * @author Filipe Tavares
  * @version $Revision$ $Date$ ($Author$)
- * @since 20/Jun/2005 1:21:16
+ * @since 20/Jun/2005 1:12:12
  */
-public interface UpdateButtonActionHandler {
-    /**
-     * Add a listener for the update button.
-     */
-    public void addUpdateButtonActionListener(final UpdateButtonActionListener l);
-    /**
-     * Reports an update button action.
-     */
-    public void fireUpdateButtonAction();
+public interface UpdateButtonActionListener extends EventListener {
+    public void updateButtonActionPerformed();
 }

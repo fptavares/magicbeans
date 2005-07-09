@@ -40,8 +40,8 @@ import org.devyant.magicbeans.beans.MagicProperty;
 import org.devyant.magicbeans.conf.MagicConfiguration;
 import org.devyant.magicbeans.exceptions.MagicException;
 import org.devyant.magicbeans.i18n.MagicResources;
+import org.devyant.magicbeans.ui.listeners.UpdateButtonActionListener;
 import org.devyant.magicbeans.ui.swing.generalizers.ListGeneralizer;
-import org.devyant.magicbeans.ui.swing.listeners.UpdateButtonActionListener;
 
 /**
  * SwingCollectionComponent is a <b>cool</b> class.
@@ -50,8 +50,7 @@ import org.devyant.magicbeans.ui.swing.listeners.UpdateButtonActionListener;
  * @version $Revision$ $Date$ ($Author$)
  * @since 17/Jun/2005 2:41:31
  */
-public class SwingCollectionComponent extends SwingUnlabeledContainer
-        implements UpdateButtonActionListener {
+public class SwingCollectionComponent extends SwingUnlabeledContainer {
     private final ListGeneralizer component;
     private final DefaultComboBoxModel model = new DefaultComboBoxModel();
     private final JButton addButton = new JButton();
@@ -121,11 +120,13 @@ public class SwingCollectionComponent extends SwingUnlabeledContainer
             if (bean == null) {
                 return; // no item has been selected
             }
-            // add listener to the update button
-            final Container container = bean.render();
-            ((MagicContainer) container).addUpdateButtonActionListener(this);
             // create the dialog
-            bean.showFrame(this, title);
+            bean.showInternalFrame(this, title,
+                    new UpdateButtonActionListener() {
+                        public void updateButtonActionPerformed() {
+                            ((Component) component).repaint();
+                        }
+                    });
         } catch (MagicException e) {
             MagicUtils.debug(e);
             showErrorMessage(e.toString());
@@ -190,13 +191,6 @@ public class SwingCollectionComponent extends SwingUnlabeledContainer
     public void setTitle(String title) {
         super.setTitle(title);
         this.title = title;
-    }
-
-    /**
-     * @see org.devyant.magicbeans.ui.swing.listeners.UpdateButtonActionListener#updateButtonActionPerformed()
-     */
-    public void updateButtonActionPerformed() {
-        ((Component) component).repaint();
     }
 
 }

@@ -22,7 +22,7 @@
  */
 package org.devyant.magicbeans;
 
-import org.devyant.magicbeans.utils.beans.SinglePropertyWrapper;
+import org.devyant.magicbeans.beans.SinglePropertyWrapper;
 
 /**
  * WrapperTestCase is a <b>cool</b> class.

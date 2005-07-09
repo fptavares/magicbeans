@@ -225,12 +225,12 @@ public class MagicConfiguration {
      */
 
     public static final String GUI_TYPE_KEY = "gui.type";
-    
-    public static final String GUI_STACKING_TOLERANCE_KEY = "gui.stacking.tolerance";
 
     public static final String GUI_COLLECTIONS_STYLE_KEY = "gui.collections.style";
 
     public static final String GUI_LAYOUT_IMPL = "gui.layout.impl";
+
+    public static final String GUI_AUX_UPDATE_ACTION = "gui.aux.update.action";
 
     public static final String RESOURCES_FILE_KEY = "resources.file";
     public static final String RESOURCES_FILE = getFromDefault(RESOURCES_FILE_KEY);

@@ -24,6 +24,7 @@ package org.devyant.magicbeans;
 
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowListener;
 import java.util.Observable;
@@ -32,14 +33,15 @@ import java.util.ResourceBundle;
 import javax.swing.JFrame;
 
 import org.devyant.magicbeans.beans.MagicProperty;
+import org.devyant.magicbeans.beans.SinglePropertyWrapper;
 import org.devyant.magicbeans.conf.MagicConfiguration;
 import org.devyant.magicbeans.exceptions.MagicException;
 import org.devyant.magicbeans.exceptions.PropertyException;
 import org.devyant.magicbeans.i18n.MagicResources;
 import org.devyant.magicbeans.observer.Observer;
 import org.devyant.magicbeans.observer.Subject;
-import org.devyant.magicbeans.ui.swing.listeners.UpdateButtonActionListener;
-import org.devyant.magicbeans.utils.beans.SinglePropertyWrapper;
+import org.devyant.magicbeans.ui.listeners.UpdateButtonActionListener;
+import org.devyant.magicbeans.ui.listeners.UpdateListenerFactory;
 
 
 /**
@@ -186,14 +188,73 @@ public class MagicBean extends Observable implements Observer {
             ((MagicContainer) container).addUpdateButtonActionListener(listener);
         }
         // create and show frame
-        final JFrame frame = new JFrame(title);
+        createAndShowFrame(parent, container, title, windowListener);
+    }
+    
+    /**
+     * Show a frame containing the resulting interface.
+     * @param parent Parent component
+     * @param title Title for the window
+     * @param listener Listener for the update button
+     * @throws MagicException {@link #render()}
+     */
+    public final void showInternalFrame(final Component parent,
+            final String title, UpdateButtonActionListener listener)
+            throws MagicException {
+        // create frame
+        final Frame frame = createFrame(parent, title, null);
+        // render the container
+        final Container container = this.render();
+        // add user's listener
+        if (listener != null) {
+            ((MagicContainer) container).addUpdateButtonActionListener(listener);
+        }
+        // add update listener
+        ((MagicContainer) container).addUpdateButtonActionListener(
+                UpdateListenerFactory.createListenerInstance(frame));
+        // show frame
+        showFrame(parent, container, frame);
+    }
+
+    /**
+     * @param parent Parent component
+     * @param title Title for the window
+     * @param listener Listener for the update button
+     * @param windowListener Window listener
+     */
+    private Frame createFrame(final Component parent, final String title,
+            final WindowListener windowListener) {
+        final Frame frame = new JFrame(title);
         if (windowListener != null) {
             frame.addWindowListener(windowListener);
         }
-        frame.setContentPane(container);
+        return frame;
+    }
+
+    /**
+     * @param parent Parent component
+     * @param container The frame's content
+     * @param frame The frame instance
+     */
+    private void showFrame(final Component parent, final Container container, final Frame frame) {
+        frame.add(container);
         frame.pack();
         frame.setLocationRelativeTo(parent);
         frame.setVisible(true);
+    }
+    
+    /**
+     * @param parent Parent component
+     * @param container The frame's content
+     * @param title Title for the window
+     * @param listener Listener for the update button
+     * @param windowListener Window listener
+     */
+    private void createAndShowFrame(final Component parent,
+            final Container container, final String title,
+            final WindowListener windowListener) {
+        final Frame frame = createFrame(parent, title, windowListener);
+        showFrame(parent, container, frame);
     }
 
     /**
@@ -232,7 +293,7 @@ public class MagicBean extends Observable implements Observer {
      * have been wrapped by a <code>SinglePropertyWrapper</code>
      * if it wasn't a bean.
      * @return An object.
-     * @see org.devyant.magicbeans.utils.beans.SinglePropertyWrapper
+     * @see org.devyant.magicbeans.beans.SinglePropertyWrapper
      */
     public final Object getRealValue() {
         if (object instanceof SinglePropertyWrapper) {
