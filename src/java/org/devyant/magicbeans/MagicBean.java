@@ -28,7 +28,6 @@ import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowListener;
 import java.util.Observable;
-import java.util.ResourceBundle;
 
 import org.devyant.magicbeans.beans.AuxiliarBean;
 import org.devyant.magicbeans.beans.MagicProperty;

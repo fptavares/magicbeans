@@ -23,7 +23,6 @@
 package org.devyant.magicbeans;
 
 import java.beans.PropertyDescriptor;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -60,50 +59,6 @@ public abstract class MagicUtils {
             final MagicComponent component) {
         return (component == null
                 || (!(component instanceof MagicContainer)));
-    }
-    
-    /**
-     * The getter method for certain property from a certain
-     * class. The method can be an is or get method.
-     *
-     * @param theClass The bean's class
-     * @param property The property
-     * @return The getter method
-     * @throws NoSuchMethodException Thrown if method does not exist
-     */
-    public static final Method getGetterMethod(
-            final Class theClass, final String property)
-        throws NoSuchMethodException {
-        Method decorateMethod;
-        final String propertyName = capitalize(property);
-        try {
-            decorateMethod = theClass
-                .getMethod("is" + propertyName, new Class[]{});
-        } catch (NoSuchMethodException ex) {
-            // no is method, so look for getter
-            decorateMethod = theClass
-                .getMethod("get" + propertyName, new Class[]{});
-        }
-        return decorateMethod;
-    }
-    
-    /**
-     * The setter method for certain property from a certain class.
-     * 
-     * @param theClass The bean's class
-     * @param property The property
-     * @param propertyClass The property's class
-     * @return The getter method
-     * @throws NoSuchMethodException Thrown if method does not exist
-     */
-    public static final Method getSetterMethod(
-            final Class theClass, final String property, Class propertyClass)
-        throws NoSuchMethodException {
-        Method decorateMethod;
-        final String propertyName = capitalize(property);
-        decorateMethod = theClass
-            .getMethod("set" + propertyName, new Class[]{propertyClass});
-        return decorateMethod;
     }
     
     /**
@@ -279,49 +234,6 @@ public abstract class MagicUtils {
         return properties;
     }
     
-    /**
-     * @param object The bean that contains the properties
-     * @param parent The parent property
-     * @return The class's accessible properties
-     */
-    /*public static final Collection old_getProperties(final Object object,
-            final MagicProperty parent) {
-        final Method [] methods = object.getClass().getMethods();
-        
-        final Hashtable getters = new Hashtable();
-        final Hashtable setters = new Hashtable();
-        
-        String name = "";
-        for (int i = 0; i < methods.length; i++) {
-            name = methods[i].getName();
-            if (name.startsWith("is")) {
-                getters.put(name.substring(2), methods[i]);
-            } else if (name.startsWith("get")) {
-                getters.put(name.substring(3), methods[i]);
-            } else if (name.startsWith("set")) {
-                setters.put(name.substring(3), methods[i]);
-            }
-        }
-        
-        // Collection to return (size will never be greater than getters.size())
-        final Collection properties = new ArrayList(getters.size());
-        
-        Object key;
-        for (Enumeration i = getters.keys(); i.hasMoreElements(); ) {
-            key = i.nextElement();
-            // if exists both setter and getter methods...
-            if (setters.containsKey(key)) {
-                debug("Found a property: " + key);
-                // create a Collection of MagicProperties
-                properties.add(new MagicProperty(parent, object,
-                        (Method) getters.get(key), (Method) setters.get(key),
-                        false));
-            }
-        }
-        
-        return properties;
-    }*/
-
     /**
      * @param string The info text
      */

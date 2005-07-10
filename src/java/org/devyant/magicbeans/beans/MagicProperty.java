@@ -40,11 +40,6 @@ import org.devyant.magicbeans.exceptions.PropertyException;
  */
 public class MagicProperty {
     /**
-     * The ACCESS_ERROR_MESSAGE <code>String</code>.
-     */
-    private static final String ACCESS_ERROR_MESSAGE =
-        "Could not find one of the accessors for the property: ";
-    /**
      * The SETTER_EXCEPTION_MESSAGE <code>String</code>.
      */
     private static final String SETTER_EXCEPTION_MESSAGE =
@@ -82,7 +77,6 @@ public class MagicProperty {
      * @param parent The parent property
      * @param object The object that contains the property
      * @param property The property
-     * @throws PropertyException
      */
     public MagicProperty(final MagicProperty parent, Object object,
             final String property) {
@@ -96,11 +90,6 @@ public class MagicProperty {
      * @param beanPath The parent's bean path
      * @param object The object that contains the property
      * @param property The property
-     * @param ignore Do not include this property in the bean path
-     * @param allowNullMethods Getter and setter methods may be unavailable
-     * @throws PropertyException
-     * {@link MagicUtils#getGetterMethod(Class, String)}
-     * {@link MagicUtils#getSetterMethod(Class, String, Class)}
      */
     public MagicProperty(final String className, final String beanPath,
             Object object, final String property) {
