@@ -135,6 +135,10 @@ public abstract class SwingComponentFactory {
         } else if (Number.class.isAssignableFrom(type)) {
             return new SwingNumberComponent();
 
+            // java.lang.Boolean
+        } else if (Boolean.class.isAssignableFrom(type)) {
+            return new SwingBooleanComponent();
+
             // java.util.Date
         } else if (Date.class.isAssignableFrom(type)) {
             return new SwingDateComponent(new NoNeedForGeneralizerImpl());

@@ -20,39 +20,15 @@
  * Rua Simao Bolivar 203 6C, 4470-214 Maia, Portugal.
  *
  */
-package org.devyant.magicbeans;
-
-import org.devyant.magicbeans.beans.SinglePropertyWrapper;
+package org.devyant.magicbeans.beans;
 
 /**
- * WrapperTestCase is a <b>cool</b> class.
+ * AuxiliarBean is a <b>cool</b> class.
  * 
  * @author ftavares
  * @version $Revision$ $Date$ ($Author$)
- * @since Jul 3, 2005 5:33:48 AM
+ * @since Jul 9, 2005 8:30:22 PM
  */
-public abstract class WrapperTestCase extends AbstractTestCase {
-
-    /**
-     * Creates a new <code>WrapperTestCase</code> instance.
-     * @param testName
-     */
-    public WrapperTestCase(String testName) {
-        super(testName);
-    }
-    
-    /**
-     * @see org.devyant.magicbeans.AbstractTestCase#testComponent(java.lang.Object, java.lang.Class, java.lang.Object)
-     */
-    protected void testComponent(Object bean, Class componentClass, Object expected) throws Exception {
-        super.testComponent(new SinglePropertyWrapper(bean), componentClass, expected);
-    }
-
-    /**
-     * @see org.devyant.magicbeans.AbstractTestCase#getValue(java.lang.Object)
-     */
-    protected Object getValue(Object bean) {
-        return ((SinglePropertyWrapper) bean).getProperty();
-    }
+public interface AuxiliarBean {
 
 }

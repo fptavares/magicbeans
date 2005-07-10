@@ -20,39 +20,42 @@
  * Rua Simao Bolivar 203 6C, 4470-214 Maia, Portugal.
  *
  */
-package org.devyant.magicbeans;
+package org.devyant.magicbeans.conf;
 
-import org.devyant.magicbeans.beans.SinglePropertyWrapper;
+import org.apache.commons.collections.FastHashMap;
+import org.apache.commons.configuration.Configuration;
 
 /**
- * WrapperTestCase is a <b>cool</b> class.
+ * ConfigurationCache is a <b>cool</b> class.
  * 
  * @author ftavares
  * @version $Revision$ $Date$ ($Author$)
- * @since Jul 3, 2005 5:33:48 AM
+ * @since Jul 10, 2005 1:54:46 AM
  */
-public abstract class WrapperTestCase extends AbstractTestCase {
-
+public class ConfigurationCache extends FastHashMap {
     /**
-     * Creates a new <code>WrapperTestCase</code> instance.
-     * @param testName
+     * Creates a new <code>ConfigurationCache</code> instance.
      */
-    public WrapperTestCase(String testName) {
-        super(testName);
+    public ConfigurationCache() {
+        this.setFast(true);
     }
     
     /**
-     * @see org.devyant.magicbeans.AbstractTestCase#testComponent(java.lang.Object, java.lang.Class, java.lang.Object)
+     * @param className The super bean's class name
+     * @param beanPath The bean path
+     * @return The cached object
      */
-    protected void testComponent(Object bean, Class componentClass, Object expected) throws Exception {
-        super.testComponent(new SinglePropertyWrapper(bean), componentClass, expected);
+    public Configuration get(final String className, final String beanPath) {
+        return (Configuration) get(className + "." + beanPath);
     }
-
+    
     /**
-     * @see org.devyant.magicbeans.AbstractTestCase#getValue(java.lang.Object)
+     * @param className The super bean's class name
+     * @param beanPath The bean path
+     * @return The cached object
      */
-    protected Object getValue(Object bean) {
-        return ((SinglePropertyWrapper) bean).getProperty();
+    public void put(final String className, final String beanPath,
+            final Configuration configuration) {
+        put(className + "." + beanPath, configuration);
     }
-
 }

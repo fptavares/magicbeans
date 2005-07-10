@@ -37,9 +37,6 @@ import org.devyant.magicbeans.ui.swing.SwingComponentFactory;
  * @since 11/Jun/2005 2:04:14
  */
 public abstract class MagicFactory {
-    private static final String SWING = "swing";
-    private static final String AWT = "awt";
-
     /**
      * Returns, according to the configuration, an apropriate
      * <code>MagicContainer</code> instance.
@@ -50,25 +47,25 @@ public abstract class MagicFactory {
      */
     protected static final MagicContainer getContainerInstanceFor(
             final MagicProperty property) throws MagicException {
+        
         final MagicComponent component;
-        if (property.getConfiguration()
-                .get(MagicConfiguration.GUI_TYPE_KEY).equalsIgnoreCase(SWING)) {
+        
+        final String type = property.getConfiguration().get(
+                MagicConfiguration.GUI_TYPE_KEY);
+        
+        if (type.equalsIgnoreCase(MagicConfiguration.SWING_VALUE)) {
             // Swing
             component =
                 SwingComponentFactory.getBaseComponentInstanceFor(property);
             
-        } else if (property.getConfiguration()
-                .get(MagicConfiguration.GUI_TYPE_KEY).equalsIgnoreCase(AWT)) {
-            // AWT
+        } else if (type.equalsIgnoreCase(MagicConfiguration.AWT_VALUE)) {
+            // AWT_VALUE
             throw new UnavailableConfigurationException(
-                    MagicConfiguration.GUI_TYPE_KEY,
-                    property.getConfiguration().get(
-                            MagicConfiguration.GUI_TYPE_KEY));
+                    MagicConfiguration.GUI_TYPE_KEY, type);
+            
         } else {
             throw new InvalidConfigurationException(
-                    MagicConfiguration.GUI_TYPE_KEY,
-                    property.getConfiguration().get(
-                            MagicConfiguration.GUI_TYPE_KEY));
+                    MagicConfiguration.GUI_TYPE_KEY, type);
         }
         
         if (component instanceof MagicContainer) {

@@ -23,7 +23,6 @@
 package org.devyant.magicbeans.ui.swing;
 
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.util.Collection;
 import java.util.Iterator;
@@ -34,7 +33,6 @@ import javax.swing.JButton;
 import javax.swing.JScrollPane;
 
 import org.devyant.magicbeans.MagicBean;
-import org.devyant.magicbeans.MagicContainer;
 import org.devyant.magicbeans.MagicUtils;
 import org.devyant.magicbeans.beans.MagicProperty;
 import org.devyant.magicbeans.conf.MagicConfiguration;
@@ -121,7 +119,7 @@ public class SwingCollectionComponent extends SwingUnlabeledContainer {
                 return; // no item has been selected
             }
             // create the dialog
-            bean.showInternalFrame(this, title,
+            bean.showInternalFrame(this, this.title,
                     new UpdateButtonActionListener() {
                         public void updateButtonActionPerformed() {
                             ((Component) component).repaint();

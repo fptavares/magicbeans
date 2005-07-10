@@ -50,15 +50,18 @@
         <!-- Dummy.date -->
         <date>
             <Configuration>
-                <validate>true</validate>
-                <validationClass>org.devyant.AppTest</validationClass>
+            	<visible>true</visible>
+            	<validation enabled="true">
+                    <class>org.devyant.AppTest</class>
+                    <method>validateDate</method>
+            	</validation>
             </Configuration>
         </date>
         
         <!-- Dummy.dummy -->
         <dummy>
             <Configuration>
-                <validate>true</validate>
+                <validation enabled="true" />
                 <!-- <nested>false</nested> -->
             </Configuration>
             
@@ -69,7 +72,7 @@
                     <validate>true</validate>
                     <!-- property overrides -->
                     <magic>
-                        <!-- <gui><collections><style>combo</style></collections></gui> -->
+                        <gui><collections><style>combo</style></collections></gui>
                         <stuff>yeh</stuff>
                     </magic>
                 </Configuration>
@@ -78,4 +81,11 @@
         </dummy>
         
     </bean>
+    
+    <bean class="java.lang.String">
+        <Configuration>
+        	<visible>false</visible>
+        </Configuration>
+    </bean>
+    
 </magic>

@@ -69,7 +69,6 @@ public class AppTest
     public static void testApp() throws Exception
     {
         final MagicBean bean = new MagicBean(new Dummy());
-        bean.includeResources("org.devyant.magicbeans.Resources");
         
         bean.showFrame(null, new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
@@ -156,7 +155,7 @@ public class AppTest
     }
     public static class Dummy2 {
         private String name = "Dummy2";
-        private String description = "A dummy2 class for testing";
+        private boolean foo = true;
         private int bye = 3;
         private Collection collection = new ArrayList();
         
@@ -173,11 +172,11 @@ public class AppTest
         public final void setBye(int bye) {
             this.bye = bye;
         }
-        public String getDescription() {
-            return description;
+        public boolean isFoo() {
+            return this.foo;
         }
-        public final void setDescription(String description) {
-            this.description = description;
+        public void setFoo(boolean foo) {
+            this.foo = foo;
         }
         public String getName() {
             return name;
@@ -202,7 +201,7 @@ public class AppTest
         
         public final String toString() {
             return "\t" + name
-                + "\n\t" + description
+                + "\n\t" + foo
                 + "\n\t" + bye
                 + "\n\t" + collection;
         }

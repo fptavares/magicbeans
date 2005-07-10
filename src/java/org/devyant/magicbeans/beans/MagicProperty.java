@@ -23,11 +23,12 @@
 package org.devyant.magicbeans.beans;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringUtils;
 import org.devyant.magicbeans.MagicUtils;
 import org.devyant.magicbeans.conf.MagicConfiguration;
+import org.devyant.magicbeans.exceptions.MagicException;
 import org.devyant.magicbeans.exceptions.PropertyException;
 
 /**
@@ -53,14 +54,6 @@ public class MagicProperty {
      */
     private static final String GETTER_EXCEPTION_MESSAGE =
         "Couldn't call getter method for the property: ";
-    /**
-     * The getter <code>Method</code>.
-     */
-    private final Method getter;
-    /**
-     * The setter <code>Method</code>.
-     */
-    private final Method setter;
     /**
      * The object that contains the property.
      */
@@ -89,59 +82,12 @@ public class MagicProperty {
      * @param parent The parent property
      * @param object The object that contains the property
      * @param property The property
-     * @param ignore Do not include this property in the bean path
      * @throws PropertyException
      */
     public MagicProperty(final MagicProperty parent, Object object,
-            final String property, final boolean ignore) throws PropertyException {
+            final String property) {
         this(parent.getSuperBeanClassName(), parent.getBeanPath(),
-                object, property, ignore, false);
-    }
-    
-    /**
-     * Creates a new <code>MagicProperty</code> instance.
-     * @param parent The parent property
-     * @param object The object that contains the property
-     * @param getter The getter method for the property
-     * @param setter The setter method for the property
-     * @param ignore Do not include this property in the bean path
-     */
-    public MagicProperty(final MagicProperty parent, final Object object,
-            final Method getter, final Method setter, final boolean ignore) {
-        this.object = object;
-        this.getter = getter;
-        this.setter = setter;
-        this.name = MagicUtils.decapitalize(setter.getName().substring(3));
-        
-        this.superBeanClassName = parent.getSuperBeanClassName();
-        if (parent.getBeanPath() == null) {                     // first node
-            this.beanPath = "";
-        } else if (ignore) {                              // ignore this node
-            this.beanPath = parent.getBeanPath();
-        } else if (StringUtils.isBlank(parent.getBeanPath())) { // 2nd (avoid initial '.')
-            this.beanPath = this.name;
-        } else {                       // third node (simple append situation)
-            this.beanPath = parent.getBeanPath() + "." + this.name;
-        }
-        
-        this.configuration =
-            new MagicConfiguration(this.superBeanClassName, this.beanPath);
-    }
-    
-    /**
-     * Creates a new <code>MagicProperty</code> instance.
-     * @param parent The parent property
-     * @param object The object that contains the property
-     * @param property The property
-     * @param ignore Do not include this property in the bean path
-     * @param allowNullMethods Getter and setter methods may be unavailable
-     * @throws PropertyException
-     */
-    public MagicProperty(final MagicProperty parent, Object object,
-            String property, final boolean ignore, boolean allowNullMethods)
-            throws PropertyException {
-        this(parent.getSuperBeanClassName(), parent.getBeanPath(),
-                object, property, ignore, allowNullMethods);
+                object, property);
     }
 
     /**
@@ -157,53 +103,25 @@ public class MagicProperty {
      * {@link MagicUtils#getSetterMethod(Class, String, Class)}
      */
     public MagicProperty(final String className, final String beanPath,
-            Object object, final String property,
-            final boolean ignore, final boolean allowNullMethods)
-            throws PropertyException {
+            Object object, final String property) {
         
         this.object = object;
         this.name = MagicUtils.decapitalize(property);
         
-        if (allowNullMethods) {
-            Method getter = null;
-            try {
-                getter = MagicUtils.getGetterMethod(object.getClass(), property);
-            } catch (NoSuchMethodException e) {
-            } finally {
-                this.getter = getter;
-            }
-            Method setter = null;
-            try {
-                setter = MagicUtils.getSetterMethod(object.getClass(), property,
-                        getter.getReturnType());
-            } catch (NoSuchMethodException e) {
-            } finally {
-                this.setter = setter;
-            }
-        } else {
-            try {
-                this.getter = MagicUtils.getGetterMethod(
-                        object.getClass(), property);
-                this.setter = MagicUtils.getSetterMethod(
-                        object.getClass(), property, getter.getReturnType());
-            } catch (NoSuchMethodException e) {
-                throw new PropertyException(ACCESS_ERROR_MESSAGE + name, e);
-            }
-        }
+        
         
         this.superBeanClassName = className;
-        if (beanPath == null) {                     // first node
+        if (beanPath == null) {                      // first node
             this.beanPath = "";
-        } else if (ignore) {                        // ignore this node
+        } else if (object instanceof AuxiliarBean) { // ignore this node
             this.beanPath = beanPath;
-        } else if (StringUtils.isBlank(beanPath)) { // 2nd (avoid initial '.')
+        } else if (StringUtils.isBlank(beanPath)) {  // 2nd (avoid initial '.')
             this.beanPath = this.name;
         } else {                       // third node (simple append situation)
             this.beanPath = beanPath + "." + this.name;
         }
         
-        this.configuration =
-            new MagicConfiguration(this.superBeanClassName, this.beanPath);
+        this.configuration = new MagicConfiguration(this);
     }
 
     /**
@@ -213,12 +131,14 @@ public class MagicProperty {
      */
     public final Object get() throws PropertyException {
         try {
-            return getter.invoke(object, new Object[0]);
+            return PropertyUtils.getProperty(object, name);
         } catch (IllegalArgumentException e) {
             throw new PropertyException(GETTER_EXCEPTION_MESSAGE + name, e);
         } catch (IllegalAccessException e) {
             throw new PropertyException(GETTER_EXCEPTION_MESSAGE + name, e);
         } catch (InvocationTargetException e) {
+            throw new PropertyException(GETTER_EXCEPTION_MESSAGE + name, e);
+        } catch (NoSuchMethodException e) {
             throw new PropertyException(GETTER_EXCEPTION_MESSAGE + name, e);
         }
     }
@@ -229,23 +149,25 @@ public class MagicProperty {
      * @throws PropertyException Could not call setter
      */
     public final void set(final Object value) throws PropertyException {
-        if (setter != null) { // Objects need not to be set, they may be final
             try {
-                setter.invoke(object, new Object[] {value});
+                PropertyUtils.setProperty(object, name, value);
             } catch (IllegalArgumentException e) {
                 throw new PropertyException(SETTER_EXCEPTION_MESSAGE + name, e);
             } catch (IllegalAccessException e) {
                 throw new PropertyException(SETTER_EXCEPTION_MESSAGE + name, e);
             } catch (InvocationTargetException e) {
                 throw new PropertyException(SETTER_EXCEPTION_MESSAGE + name, e);
+            } catch (NoSuchMethodException e) {
+                throw new PropertyException(SETTER_EXCEPTION_MESSAGE + name, e);
             }
-        }
     }
     
     /**
      * @return The property's class
+     * @throws MagicException
+     *  When some problem occures while checking for the type
      */
-    public final Class getType() {
+    public final Class getType() throws MagicException {
         try {
             final Object o;
             o = this.get();
@@ -255,7 +177,15 @@ public class MagicProperty {
         } catch (final PropertyException e) {
         }
         
-        return getter.getReturnType();
+        try {
+            return PropertyUtils.getPropertyType(object, name);
+        } catch (IllegalAccessException e) {
+            throw new MagicException(e);
+        } catch (InvocationTargetException e) {
+            throw new MagicException(e);
+        } catch (NoSuchMethodException e) {
+            throw new MagicException(e);
+        }
     }
     
     /**
@@ -285,5 +215,9 @@ public class MagicProperty {
      */
     public MagicConfiguration getConfiguration() {
         return configuration;
+    }
+    
+    public boolean isAuxiliarBean() {
+        return (object instanceof AuxiliarBean);
     }
 }

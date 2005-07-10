@@ -22,13 +22,24 @@
  */
 package org.devyant.magicbeans;
 
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.devyant.magicbeans.beans.MagicProperty;
+import org.devyant.magicbeans.conf.MagicConfiguration;
+import org.devyant.magicbeans.exceptions.MagicException;
+import org.devyant.magicbeans.utils.BeanPathToXPathConverter;
+import org.jaxen.JaxenException;
+import org.jaxen.dom.DOMXPath;
+import org.w3c.dom.Node;
 
 /**
  * MagicUtils is a <b>cool</b> class.
@@ -131,13 +142,149 @@ public abstract class MagicUtils {
 
         return buf.toString();
     }
+    
+    public static final String XML_VALUE = "xml";
+    public static final String TYPE_VALUE = "type";
+    public static final String PROPERTY_VALUE = "property";
 
+    /**
+     * @param object The bean
+     * @param parent The parent property
+     * @return A collection of <code>MagicProperty</code>'s
+     * @throws MagicException XPath error
+     */
+    public static final Collection getProperties(
+            final Object object, final MagicProperty parent)
+            throws MagicException {
+        final String order =
+            parent.getConfiguration().get(MagicConfiguration.GUI_ORDER_KEY);
+        
+        if (XML_VALUE.equals(order)) {
+            try {
+                return getPropertiesFromXML(object, parent);
+            } catch (JaxenException e) {
+                throw new MagicException("XPath error.", e);
+            }
+        } else if (TYPE_VALUE.equals(order)) {
+            final List properties = getAllProperties(object, parent);
+            // sort the properties by their type
+            Collections.sort(properties, new Comparator() {
+                public int compare(final Object o1, final Object o2) {
+                    final Class class1;
+                    final Class class2;
+                    try {
+                        class1 = ((MagicProperty) o1).getType();
+                        class2 = ((MagicProperty) o2).getType();
+                    } catch (MagicException e) {
+                        return 0;
+                    }
+                    return class1.getName().compareTo(class2.getName());
+                }
+            });
+            // return the sorted collection
+            return properties;
+        } else if (PROPERTY_VALUE.equals(order)) {
+            // they already come ordered by name
+            return getAllProperties(object, parent);
+        } else {
+            // try instatiate a comparator with the configuration value
+            final Comparator comparator = (Comparator) parent.getConfiguration()
+                    .getClassInstance(MagicConfiguration.GUI_ORDER_KEY);
+            // get all the declared properties
+            final List properties = getAllProperties(object, parent);
+            // sort the properties by their type
+            Collections.sort(properties, comparator);
+            // return the sorted collection
+            return properties;
+        }
+    }
+
+    /**
+     * Helper method.
+     */
+    private static List getAllProperties(final Object object,
+            final MagicProperty parent) {
+        if (object instanceof Map) {
+            return getMappedProperties(object, parent);
+        } else {
+            return getDeclaredProperties(object, parent);
+        }
+    }
+
+    /**
+     * Helper method.
+     * @throws JaxenException XPath error
+     */
+    private static Collection getPropertiesFromXML(final Object object,
+            final MagicProperty parent) throws JaxenException {
+        // convert BeanPath to XPath
+        final String xpath = BeanPathToXPathConverter.convert(
+                parent.getSuperBeanClassName(), parent.getBeanPath()) + "/*";
+        // get the properties
+        final Collection names =
+            new DOMXPath(xpath).selectNodes(MagicConfiguration.getXML_DOC());
+        
+        // Collection to return
+        final Collection properties = new ArrayList(names.size());
+        
+        debug("names: " + names);
+        
+        for (Iterator i = names.iterator(); i.hasNext(); ) {
+            final String name = ((Node) i.next()).getNodeName();
+            if (MagicConfiguration.CONFIGURATION_NODE.equals(name)) {
+                continue; // ignore the configuration node
+            }
+            properties.add(new MagicProperty(parent, object, name));
+        }
+        
+        return properties;
+    }
+
+    /**
+     * Helper method.
+     */
+    private static final List getMappedProperties(final Object object,
+            final MagicProperty parent) {
+        final Map map = (Map) object;
+        
+        // Collection to return
+        final List properties = new ArrayList(map.size());
+        
+        for (Iterator i = map.keySet().iterator(); i.hasNext(); ) {
+            properties.add(new MagicProperty(parent, object, (String) i.next()));
+        }
+        
+        return properties;
+    }
+
+    /**
+     * Helper method.
+     */
+    private static final List getDeclaredProperties(final Object object,
+            final MagicProperty parent) {
+        final PropertyDescriptor [] descriptors =
+                PropertyUtils.getPropertyDescriptors(object);
+        
+        // Collection to return
+        final List properties = new ArrayList(descriptors.length);
+        
+        for (int i = 0; i < descriptors.length; i++) {
+            final String name = descriptors[i].getName();
+            if (PropertyUtils.isReadable(object, name)
+                    && PropertyUtils.isWriteable(object, name)) {
+                properties.add(new MagicProperty(parent, object, name));
+            }
+        }
+        
+        return properties;
+    }
+    
     /**
      * @param object The bean that contains the properties
      * @param parent The parent property
      * @return The class's accessible properties
      */
-    public static final Collection getProperties(final Object object,
+    /*public static final Collection old_getProperties(final Object object,
             final MagicProperty parent) {
         final Method [] methods = object.getClass().getMethods();
         
@@ -173,7 +320,7 @@ public abstract class MagicUtils {
         }
         
         return properties;
-    }
+    }*/
 
     /**
      * @param string The info text

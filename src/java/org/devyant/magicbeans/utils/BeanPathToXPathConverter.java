@@ -20,39 +20,34 @@
  * Rua Simao Bolivar 203 6C, 4470-214 Maia, Portugal.
  *
  */
-package org.devyant.magicbeans;
+package org.devyant.magicbeans.utils;
 
-import org.devyant.magicbeans.beans.SinglePropertyWrapper;
+import org.apache.commons.lang.StringUtils;
 
 /**
- * WrapperTestCase is a <b>cool</b> class.
+ * BeanPathToXPathConverter is a <b>cool</b> class.
  * 
  * @author ftavares
  * @version $Revision$ $Date$ ($Author$)
- * @since Jul 3, 2005 5:33:48 AM
+ * @since Jul 9, 2005 11:19:02 PM
  */
-public abstract class WrapperTestCase extends AbstractTestCase {
+public abstract class BeanPathToXPathConverter {
 
     /**
-     * Creates a new <code>WrapperTestCase</code> instance.
-     * @param testName
+     * The CLASS_ATTR <code>String</code>.
      */
-    public WrapperTestCase(String testName) {
-        super(testName);
-    }
-    
-    /**
-     * @see org.devyant.magicbeans.AbstractTestCase#testComponent(java.lang.Object, java.lang.Class, java.lang.Object)
-     */
-    protected void testComponent(Object bean, Class componentClass, Object expected) throws Exception {
-        super.testComponent(new SinglePropertyWrapper(bean), componentClass, expected);
-    }
+    private static final String CLASS_ATTR = "class";
 
-    /**
-     * @see org.devyant.magicbeans.AbstractTestCase#getValue(java.lang.Object)
-     */
-    protected Object getValue(Object bean) {
-        return ((SinglePropertyWrapper) bean).getProperty();
+    public static final String convert(final String className,
+            final String beanPath) {
+        StringBuffer xpath =
+            new StringBuffer("/*/bean[@" + CLASS_ATTR + "=\"" + className + "\"]");
+        if (!StringUtils.isBlank(beanPath)) {
+            // replace '.' for '/'
+            xpath.append("/");
+            xpath.append(beanPath.replaceAll("\\.", "/"));
+        }
+        
+        return xpath.toString();
     }
-
 }

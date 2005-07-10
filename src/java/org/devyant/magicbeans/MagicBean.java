@@ -30,16 +30,17 @@ import java.awt.event.WindowListener;
 import java.util.Observable;
 import java.util.ResourceBundle;
 
-import javax.swing.JFrame;
-
+import org.devyant.magicbeans.beans.AuxiliarBean;
 import org.devyant.magicbeans.beans.MagicProperty;
 import org.devyant.magicbeans.beans.SinglePropertyWrapper;
+import org.devyant.magicbeans.conf.InvalidConfigurationException;
 import org.devyant.magicbeans.conf.MagicConfiguration;
 import org.devyant.magicbeans.exceptions.MagicException;
 import org.devyant.magicbeans.exceptions.PropertyException;
 import org.devyant.magicbeans.i18n.MagicResources;
 import org.devyant.magicbeans.observer.Observer;
 import org.devyant.magicbeans.observer.Subject;
+import org.devyant.magicbeans.ui.WindowFactory;
 import org.devyant.magicbeans.ui.listeners.UpdateButtonActionListener;
 import org.devyant.magicbeans.ui.listeners.UpdateListenerFactory;
 
@@ -51,7 +52,7 @@ import org.devyant.magicbeans.ui.listeners.UpdateListenerFactory;
  * @version $Revision$ ($Author$)
  * @since 18/Abr/2005 19:44:06
  */
-public class MagicBean extends Observable implements Observer {
+public class MagicBean extends Observable implements Observer, AuxiliarBean {
     /**
      * The object <code>Object</code>.
      */
@@ -114,7 +115,7 @@ public class MagicBean extends Observable implements Observer {
     public Container render() throws MagicException {
         // create the magic property object
         final MagicProperty property = new MagicProperty(this.superBeanClassName,
-                this.beanPath, this, "object", true, false);
+                this.beanPath, this, "object");
         
         // get the base container
         MagicUtils.info("Generating the base container.");
@@ -221,10 +222,13 @@ public class MagicBean extends Observable implements Observer {
      * @param title Title for the window
      * @param listener Listener for the update button
      * @param windowListener Window listener
+     * @throws InvalidConfigurationException {@link WindowFactory#createFrame()}
      */
     private Frame createFrame(final Component parent, final String title,
-            final WindowListener windowListener) {
-        final Frame frame = new JFrame(title);
+            final WindowListener windowListener)
+            throws InvalidConfigurationException {
+        final Frame frame = WindowFactory.createFrame();
+        frame.setTitle(title);
         if (windowListener != null) {
             frame.addWindowListener(windowListener);
         }
@@ -249,27 +253,14 @@ public class MagicBean extends Observable implements Observer {
      * @param title Title for the window
      * @param listener Listener for the update button
      * @param windowListener Window listener
+     * @throws InvalidConfigurationException
+     *  {@link #createFrame(Component, String, WindowListener)}
      */
     private void createAndShowFrame(final Component parent,
             final Container container, final String title,
-            final WindowListener windowListener) {
+            final WindowListener windowListener) throws InvalidConfigurationException {
         final Frame frame = createFrame(parent, title, windowListener);
         showFrame(parent, container, frame);
-    }
-
-    /**
-     * @param resources The resource bundle to use
-     * @todo can include at runtime?
-     */
-    public void includeResources(ResourceBundle resources) {
-        //this.resources = new MagicResources(resources);
-    }
-
-    /**
-     * @param baseName The base name of the resource bundle to use
-     */
-    public void includeResources(String baseName) {
-        //includeResources(ResourceBundle.getBundle(baseName));
     }
 
     /**
@@ -297,7 +288,7 @@ public class MagicBean extends Observable implements Observer {
      */
     public final Object getRealValue() {
         if (object instanceof SinglePropertyWrapper) {
-            return ((SinglePropertyWrapper) object).get();
+            return ((SinglePropertyWrapper) object).getProperty();
         } else {
             return object;
         }

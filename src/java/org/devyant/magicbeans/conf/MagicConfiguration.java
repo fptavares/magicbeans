@@ -33,10 +33,11 @@ import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
-import org.apache.commons.lang.StringUtils;
 import org.devyant.magicbeans.MagicUtils;
+import org.devyant.magicbeans.beans.MagicProperty;
 import org.devyant.magicbeans.exceptions.MagicException;
 import org.devyant.magicbeans.i18n.MagicResources;
+import org.devyant.magicbeans.utils.BeanPathToXPathConverter;
 import org.jaxen.JaxenException;
 import org.jaxen.XPath;
 import org.jaxen.dom.DOMXPath;
@@ -59,19 +60,19 @@ public class MagicConfiguration {
         "A problem occured while trying to instantiate the configured layout.";
     
     /**
-     * The CONFIGURATION_NODE <code>String</code>.
-     */
-    private static final String CONFIGURATION_NODE = "Configuration";
-
-    /**
-     * The CLASS_ATTR <code>String</code>.
-     */
-    private static final String CLASS_ATTR = "class";
-
-    /**
      * The key's prefix.
      */
     protected static final String KEY_PREFIX = "magic.";
+    
+    /**
+     * The CONFIGURATION_NODE <code>String</code>.
+     */
+    public static final String CONFIGURATION_NODE = "Configuration";
+    
+    /**
+     * The configuration cache.
+     */
+    private static final ConfigurationCache cache;
     
     /**
      * A <code>DocumentBuilder</code> instance helper.
@@ -107,6 +108,8 @@ public class MagicConfiguration {
         } catch (IOException e) {
             MagicUtils.debug(e);
         }
+        // initialize cache map
+        cache = new ConfigurationCache();
     }
     
     /**
@@ -117,49 +120,100 @@ public class MagicConfiguration {
     
     /**
      * Creates a new <code>MagicConfiguration</code> instance.
-     * @param className The class's fully qualified name
-     * @param beanPath The path between properties.
-     * <p>Example: <code>property1.property2.property3</code></p>
+     * @param property The property
      */
-    public MagicConfiguration(String className, String beanPath) {
+    public MagicConfiguration(final MagicProperty property) {
+        
+        final String range = getFromDefault(CONFIGURATION_KEY);
         
         /* specific */
-        final XMLConfiguration specificConf = new XMLConfiguration();
-        try {
-            
-            // get the specific configuration's node
-            String xpath = "/*/bean[@" + CLASS_ATTR + "=\"" + className + "\"]";
-            if (!StringUtils.isBlank(beanPath)) {
-                // replace '.' for '/'
-                xpath += "/" + beanPath.replaceAll("\\.", "/");
+        if (NORMAL_CONF_VALUE.equals(range)
+                || COMPLETE_CONF_VALUE.equals(range)) {
+            final Configuration specific = getSpecificConf(
+                    property.getSuperBeanClassName(), property.getBeanPath());
+            // if exists, add to this configuration
+            if (specific != null) {
+                ((CompositeConfiguration) this.conf).addConfiguration(specific);
             }
-            xpath += "/" + CONFIGURATION_NODE;
-            MagicUtils.debug("Bean path: " + beanPath);
-            MagicUtils.debug("XPath:     " + xpath);
-            //final Node node = XPathAPI.selectSingleNode(XML_DOC, xpath);
-            final XPath expression = new DOMXPath(xpath);
-            final Node node = (Node) expression.selectSingleNode(XML_DOC);
-            
-            // if specific exists
-            if (node != null) {
-                final Document document = builder.newDocument();
-                final Node newNode = document.importNode(node, true);
-                
-                // Insert the root element node
-                document.appendChild(newNode);
-                
-                // initialize the XML conf with the specific node
-                specificConf.initProperties(document, true);
-                ((CompositeConfiguration) conf).addConfiguration(specificConf);
+        }
+        
+        /* type configuration */
+        if (COMPLETE_CONF_VALUE.equals(range)) {
+            try {
+                final Configuration type = getSpecificConf(
+                        property.getType().getName(), "");
+                // if exists, add to this configuration
+                if (type != null) {
+                    ((CompositeConfiguration) this.conf).addConfiguration(type);
+                }
+            } catch(MagicException e) {
             }
-            
-        } catch (JaxenException e) {
-            MagicUtils.debug(e);
         }
         
         /* default */
         ((CompositeConfiguration) conf).addConfiguration(DEFAULT_CONF);
+        
     }
+
+
+    /**
+     * @param className
+     * @param beanPath
+     */
+    private Configuration getSpecificConf(
+            final String className, final String beanPath) {
+        // get cached configuration
+        Configuration specific = cache.get(className, beanPath);
+        
+        if (specific == null) { // retrieve configuration from xml file
+            try {
+                
+                // get the specific configuration's node
+                final String xpath =
+                    BeanPathToXPathConverter.convert(className, beanPath)
+                        + "/" + CONFIGURATION_NODE;
+                MagicUtils.debug("Bean path: " + beanPath);
+                MagicUtils.debug("XPath:     " + xpath);
+                //final Node node = XPathAPI.selectSingleNode(XML_DOC, xpath);
+                final XPath expression = new DOMXPath(xpath);
+                final Node node = (Node) expression.selectSingleNode(XML_DOC);
+                
+                // if specific exists
+                if (node != null) {
+                    final Document document = builder.newDocument();
+                    final Node newNode = document.importNode(node, true);
+                    
+                    // Insert the root element node
+                    document.appendChild(newNode);
+                    
+                    // initialize the XML conf with the specific node
+                    specific = new XMLConfiguration();
+                    ((XMLConfiguration) specific).initProperties(document, true);
+                    
+                    // add configuration to cache
+                    cache.put(className, beanPath, specific);
+                }
+                
+            } catch (JaxenException e) {
+                MagicUtils.debug(e);
+            }
+        } else {
+            MagicUtils.debug("Using cached configuration.");
+        }
+        
+        // return the specific configuration
+        return specific;
+    }
+    
+    
+    /**
+     * The getter method for the xML_DOC property.
+     * @return The property's <code>MagicConfiguration</code> value
+     */
+    public static Document getXML_DOC() {
+        return XML_DOC;
+    }
+
 
     /*
      * Get properties from the default configuration only.
@@ -224,7 +278,11 @@ public class MagicConfiguration {
      * DEFAULT PROPERTIES KEYS
      */
 
+    private static final String CONFIGURATION_KEY = "configuration";
+
     public static final String GUI_TYPE_KEY = "gui.type";
+
+    public static final String GUI_ORDER_KEY = "gui.order";
 
     public static final String GUI_COLLECTIONS_STYLE_KEY = "gui.collections.style";
 
@@ -236,6 +294,18 @@ public class MagicConfiguration {
     public static final String RESOURCES_FILE = getFromDefault(RESOURCES_FILE_KEY);
 
     public static final String RESOURCES_PROPERTY_PREFIX_KEY = "resources.property.prefix";
+    
+    /*
+     * DEFAULT PROPERTIES VALUES
+     */
+
+    static public final String AWT_VALUE = "awt";
+    static public final String SWING_VALUE = "swing";
+
+    static private final String COMPLETE_CONF_VALUE = "complete";
+    static private final String NORMAL_CONF_VALUE = "normal";
+    static private final String BASIC_CONF_VALUE = "basic";
+    
     
     /*
      * XML (SPECIAL) PROPERTIES KEYS

@@ -29,7 +29,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 
 import org.devyant.magicbeans.MagicLayout;
-import org.devyant.magicbeans.MagicUtils;
 
 /**
  * GridBagMagicLayout is a <b>cool</b> class.
@@ -39,6 +38,10 @@ import org.devyant.magicbeans.MagicUtils;
  * @since Jun 24, 2005 10:16:51 PM
  */
 public class GridBagMagicLayout extends GridBagLayout implements MagicLayout {
+    /**
+     * The DEFAULT_ANCHOR <code>int</code>.
+     */
+    private static final int DEFAULT_ANCHOR = GridBagConstraints.LINE_END;
     /**
      * The <code>GridBagConstraints</code>.
      */
@@ -107,7 +110,7 @@ public class GridBagMagicLayout extends GridBagLayout implements MagicLayout {
     public void addUnlabeledComponent(Container container, Component component) {
         // add magic component
         addComponent(container, component, 0, line++, STANDARD_WEIGHTX,
-                GridBagConstraints.WEST, GridBagConstraints.BOTH, 2, 1, insets);
+                DEFAULT_ANCHOR, GridBagConstraints.BOTH, 2, 1, insets);
     }
 
     /**
@@ -123,11 +126,11 @@ public class GridBagMagicLayout extends GridBagLayout implements MagicLayout {
         }
         // add main component
         addComponent(container, component, 1, line, STANDARD_WEIGHTX,
-                GridBagConstraints.WEST, fill, 1, controllers.length, insets);
+                DEFAULT_ANCHOR, fill, 1, controllers.length, insets);
         // add controllers
         for (int i = 0; i < controllers.length; i++) {
             addComponent(container, controllers[i], 2, line++, NO_WEIGHTX,
-                    GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,
+                    DEFAULT_ANCHOR, GridBagConstraints.HORIZONTAL,
                     1, 1, insets);
         }
     }

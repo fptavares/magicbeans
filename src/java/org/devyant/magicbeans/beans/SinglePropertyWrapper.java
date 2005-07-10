@@ -29,7 +29,7 @@ package org.devyant.magicbeans.beans;
  * @version $Revision$ $Date$ ($Author$)
  * @since 18/Jun/2005 3:39:51
  */
-public class SinglePropertyWrapper {
+public class SinglePropertyWrapper implements AuxiliarBean {
     /**
      * The property <code>Object</code>.
      */
@@ -48,7 +48,7 @@ public class SinglePropertyWrapper {
      * The getter method for the wrapped property.
      * @return The property
      */
-    public final Object get() {
+    public final Object getProperty() {
         return property;
     }
 
@@ -56,7 +56,7 @@ public class SinglePropertyWrapper {
      * The getter method for the wrapped property.
      * @param property The property
      */
-    public final void set(Object property) {
+    public final void setProperty(Object property) {
         this.property = property;
     }
     

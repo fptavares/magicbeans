@@ -103,6 +103,10 @@ public class MagicResources {
      * @return The property's "display name"
      */
     public final String getNameFor(final MagicProperty property) {
+        if (property.isAuxiliarBean()) {
+            return null;
+        }
+        // return name
         try {
             return bundle.getString(PROPERTY_KEY_PREFIX + property.getBeanPath());
         } catch (MissingResourceException e) {
