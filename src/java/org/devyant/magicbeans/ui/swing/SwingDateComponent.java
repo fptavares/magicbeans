@@ -32,6 +32,7 @@ import org.devyant.magicbeans.MagicComponent;
 import org.devyant.magicbeans.beans.MagicProperty;
 import org.devyant.magicbeans.exceptions.MagicException;
 import org.devyant.magicbeans.generalizers.DateGeneralizer;
+import org.devyant.magicbeans.utils.Previewable;
 
 /**
  * SwingDateComponent is a <b>cool</b> class.
@@ -40,7 +41,8 @@ import org.devyant.magicbeans.generalizers.DateGeneralizer;
  * @version $Revision$ $Date$ ($Author$)
  * @since 11/Jun/2005 5:01:43
  */
-public class SwingDateComponent extends DateField implements MagicComponent {
+public class SwingDateComponent extends DateField
+        implements MagicComponent, Previewable {
     /**
      * The property to bind to.
      */
@@ -65,7 +67,7 @@ public class SwingDateComponent extends DateField implements MagicComponent {
      * @see org.devyant.magicbeans.MagicComponent#update()
      */
     public void update() throws MagicException {
-        this.generalizer.setValue(this.property.get(), (Date) getValue());
+        this.generalizer.setValue(this.property.get(), (Date) preview());
     }
 
     /**
@@ -84,6 +86,13 @@ public class SwingDateComponent extends DateField implements MagicComponent {
      */
     public MagicProperty getProperty() {
         return property;
+    }
+
+    /**
+     * @see org.devyant.magicbeans.utils.Previewable#preview()
+     */
+    public Object preview() {
+        return getValue();
     }
 
 }

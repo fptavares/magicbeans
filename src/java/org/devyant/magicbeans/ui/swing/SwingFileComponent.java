@@ -36,6 +36,7 @@ import org.devyant.magicbeans.MagicLayout;
 import org.devyant.magicbeans.beans.MagicProperty;
 import org.devyant.magicbeans.exceptions.MagicException;
 import org.devyant.magicbeans.layouts.GridBagMagicLayout;
+import org.devyant.magicbeans.utils.Previewable;
 
 /**
  * SwingFileComponent is a <b>cool</b> class.
@@ -45,7 +46,7 @@ import org.devyant.magicbeans.layouts.GridBagMagicLayout;
  * @since Jul 4, 2005 2:31:29 AM
  */
 public class SwingFileComponent extends JPanel
-        implements MagicComponent {
+        implements MagicComponent, Previewable {
     private final JTextField textField = new JTextField();
     private final JButton button = new JButton("...");
     private JFileChooser fileChooser;
@@ -121,7 +122,7 @@ public class SwingFileComponent extends JPanel
      * @see org.devyant.magicbeans.ui.swing.SwingContainer#update()
      */
     public void update() throws MagicException {
-        this.property.set(currentFile);
+        this.property.set(preview());
     }
 
     /**
@@ -129,5 +130,12 @@ public class SwingFileComponent extends JPanel
      */
     public MagicProperty getProperty() {
         return this.property;
+    }
+
+    /**
+     * @see org.devyant.magicbeans.utils.Previewable#preview()
+     */
+    public Object preview() {
+        return currentFile;
     }
 }

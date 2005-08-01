@@ -73,6 +73,11 @@ public class MagicProperty {
     private final MagicConfiguration configuration;
     
     /**
+     * The parent property. <code>null</code> if it is a base property.
+     */
+    private final MagicProperty parent;
+    
+    /**
      * Creates a new <code>MagicProperty</code> instance.
      * @param parent The parent property
      * @param object The object that contains the property
@@ -80,12 +85,14 @@ public class MagicProperty {
      */
     public MagicProperty(final MagicProperty parent, Object object,
             final String property) {
-        this(parent.getSuperBeanClassName(), parent.getBeanPath(),
+        this(parent, parent.getSuperBeanClassName(), parent.getBeanPath(),
                 object, property);
     }
 
     /**
      * Creates a new <code>MagicProperty</code> instance.
+     * <p>This method should be called for a base property,
+     * a property with a <code>null</code> parent.</p>
      * @param className The class name of the original <code>MagicBean</code>
      * @param beanPath The parent's bean path
      * @param object The object that contains the property
@@ -93,6 +100,15 @@ public class MagicProperty {
      */
     public MagicProperty(final String className, final String beanPath,
             Object object, final String property) {
+        this(null, className, beanPath, object, property);
+    }
+    
+    /**
+     * Common constructor.
+     */
+    private MagicProperty(final MagicProperty parent, final String className,
+            final String beanPath, Object object, final String property) {
+        this.parent = parent;
         
         this.object = object;
         this.name = MagicUtils.decapitalize(property);
@@ -112,6 +128,7 @@ public class MagicProperty {
         
         this.configuration = new MagicConfiguration(this);
     }
+    
 
     /**
      * Call getter method for the property.
@@ -206,6 +223,14 @@ public class MagicProperty {
         return configuration;
     }
     
+    /**
+     * The getter method for the parent property.
+     * @return The property's <code>MagicProperty</code> value
+     */
+    public MagicProperty getParent() {
+        return this.parent;
+    }
+
     public boolean isAuxiliarBean() {
         return (object instanceof AuxiliarBean);
     }

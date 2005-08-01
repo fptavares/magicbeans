@@ -23,7 +23,8 @@
 package org.devyant.magicbeans.beans;
 
 /**
- * AuxiliarBean is a <b>cool</b> class.
+ * Because the beans that implement this interface are auxiliar,
+ * they are ignored when building the bean path for the properties.
  * 
  * @author ftavares
  * @version $Revision$ $Date$ ($Author$)

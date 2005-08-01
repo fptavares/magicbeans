@@ -40,6 +40,11 @@ public abstract class MagicFactory {
     /**
      * Returns, according to the configuration, an apropriate
      * <code>MagicContainer</code> instance.
+     * <p>
+     * If the {@link #getComponentInstanceFor(MagicProperty)} returns
+     * an object that is not an instance of <code>MagicContainer</code>,
+     * this method will return <code>null</code>.
+     * </p>
      * @param beanClass The bean's class
      * @return A <code>MagicContainer</code> instance
      * @throws MagicException When the configuration returns an invalid value
@@ -48,6 +53,27 @@ public abstract class MagicFactory {
     protected static final MagicContainer getContainerInstanceFor(
             final MagicProperty property) throws MagicException {
         
+        final MagicComponent component = getComponentInstanceFor(property);
+        
+        if (component instanceof MagicContainer) {
+            // return the component
+            return (MagicContainer) component;
+        } else {
+            // not a container, so return null
+            return null;
+        }
+    }
+
+    /**
+     * Returns, according to the configuration, an apropriate
+     * <code>MagicComponent</code> instance.
+     * @param beanClass The bean's class
+     * @return A <code>MagicComponent</code> instance
+     * @throws MagicException When the configuration returns an invalid value
+     *  or when that layout could not be instantiated
+     */
+    public static final MagicComponent getComponentInstanceFor(
+            final MagicProperty property) throws MagicException {
         final MagicComponent component;
         
         final String type = property.getConfiguration().get(
@@ -67,13 +93,6 @@ public abstract class MagicFactory {
             throw new InvalidConfigurationException(
                     MagicConfiguration.GUI_TYPE_KEY, type);
         }
-        
-        if (component instanceof MagicContainer) {
-            // return the component
-            return (MagicContainer) component;
-        } else {
-            // not a container, so return null
-            return null;
-        }
+        return component;
     }
 }

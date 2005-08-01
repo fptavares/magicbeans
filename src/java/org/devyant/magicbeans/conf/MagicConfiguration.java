@@ -164,6 +164,8 @@ public class MagicConfiguration {
             final String className, final String beanPath) {
         // get cached configuration
         Configuration specific = cache.get(className, beanPath);
+        MagicUtils.debug("Class name: " + className);
+        MagicUtils.debug("Bean path:  " + beanPath);
         
         if (specific == null) { // retrieve configuration from xml file
             try {
@@ -172,8 +174,7 @@ public class MagicConfiguration {
                 final String xpath =
                     BeanPathToXPathConverter.convert(className, beanPath)
                         + "/" + CONFIGURATION_NODE;
-                MagicUtils.debug("Bean path: " + beanPath);
-                MagicUtils.debug("XPath:     " + xpath);
+                MagicUtils.debug("XPath:      " + xpath);
                 //final Node node = XPathAPI.selectSingleNode(XML_DOC, xpath);
                 final XPath expression = new DOMXPath(xpath);
                 final Node node = (Node) expression.selectSingleNode(XML_DOC);
@@ -214,6 +215,9 @@ public class MagicConfiguration {
         return XML_DOC;
     }
 
+    public static final int NORMAL = 1;
+    public static final int DEFAULT = 2;
+    public static final int SPECIAL = 3;
 
     /*
      * Get properties from the default configuration only.
@@ -229,31 +233,68 @@ public class MagicConfiguration {
      * Basic get properties.
      */
     public final String get(final String key) {
-        return conf.getString(KEY_PREFIX + key);
+        return get(key, NORMAL);
     }
     public final int getInt(final String key) {
-        return conf.getInt(KEY_PREFIX + key);
+        return getInt(key, NORMAL);
     }
     public final boolean getBoolean(final String key) {
-        return conf.getBoolean(KEY_PREFIX + key);
+        return getBoolean(key, NORMAL);
     }
-    public Class getClass(final String key) throws InvalidConfigurationException {
-        final String name = get(key);
+    public Class getClass(final String key)
+            throws InvalidConfigurationException {
+        return getClass(key, NORMAL);
+    }
+    public Object getClassInstance(final String key) throws MagicException {
+        return getClassInstance(key, NORMAL);
+    }
+    
+    /*
+     * Get special properties (no prefix added).
+     */
+    public final String getSpecial(final String key) {
+        return get(key, SPECIAL);
+    }
+    public final int getSpecialInt(final String key) {
+        return getInt(key, SPECIAL);
+    }
+    public final boolean getSpecialBoolean(final String key) {
+        return getBoolean(key, SPECIAL);
+    }
+    public final Object getSpecialClassInstance(final String key)
+            throws MagicException {
+        return getClassInstance(key, SPECIAL);
+    }
+    
+    /*
+     * Common method for property retrieval.
+     */
+    public final String get(final String key, final int configuration) {
+        return conf.getString(computeKey(key, configuration));
+    }
+    public final int getInt(final String key, final int configuration) {
+        return conf.getInt(computeKey(key, configuration));
+    }
+    public final boolean getBoolean(final String key, final int configuration) {
+        return conf.getBoolean(computeKey(key, configuration));
+    }
+    public Class getClass(final String key, final int configuration)
+            throws InvalidConfigurationException {
+        final String realKey = computeKey(key, configuration);
+        final String name = conf.getString(realKey);
         if (name == null) {
-            throw new InvalidConfigurationException(key, name);
+            throw new InvalidConfigurationException(realKey, name);
         }
         try {
             return Class.forName(name);
         } catch (ClassNotFoundException e) {
-            throw new InvalidConfigurationException(key, name);
+            throw new InvalidConfigurationException(realKey, name);
         }
     }
-
-    public Object getClassInstance(final String key) throws MagicException {
+    public Object getClassInstance(final String key, final int configuration)
+            throws MagicException {
         try {
-            return getClass(key).newInstance();
-        } catch (InvalidConfigurationException e) {
-            throw new MagicException(INSTANTIATION_EXCEPTION_MESSAGE, e);
+            return getClass(key, configuration).newInstance();
         } catch (InstantiationException e) {
             throw new MagicException(INSTANTIATION_EXCEPTION_MESSAGE, e);
         } catch (IllegalAccessException e) {
@@ -261,17 +302,21 @@ public class MagicConfiguration {
         }
     }
     
-    /*
-     * Get special properties (no prefix added).
+    /**
+     * Helper method. 
      */
-    public final String getSpecial(final String key) {
-        return conf.getString(key);
-    }
-    public final int getSpecialInt(final String key) {
-        return conf.getInt(key);
-    }
-    public final boolean getSpecialBoolean(final String key) {
-        return conf.getBoolean(key);
+    private static final String computeKey(
+            final String key, final int configuration) {
+        
+        switch (configuration) {
+            case NORMAL:
+            case DEFAULT:
+                return KEY_PREFIX + key;
+            case SPECIAL:
+                return key;
+            default:
+                return key;
+        }
     }
     
     /*
@@ -314,6 +359,8 @@ public class MagicConfiguration {
     public static final String XML_VISIBLE = "visible";
 
     public static final String XML_NESTED = "nested";
+
+    public static final String XML_COLLECTION_CLASS = "collection.class";
     
     /*
      * i18n

@@ -23,7 +23,6 @@
 package org.devyant.magicbeans.ui.swing;
 
 import java.awt.Component;
-import java.awt.Container;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -224,9 +223,9 @@ public class SwingContainer extends JPanel implements MagicContainer {
     }
     
     /**
-     * @see org.devyant.magicbeans.MagicContainer#render()
+     * @see org.devyant.magicbeans.MagicContainer#renderStandalone()
      */
-    public final Container render() {
+    public final void renderStandalone() {
         status = new JLabel(" ");
         okButton = new JButton();
         okButton.setText(MagicConfiguration.resources.get(MagicResources.STRING_OKBUTTON));
@@ -246,8 +245,6 @@ public class SwingContainer extends JPanel implements MagicContainer {
         // add final components
         addOKButton();
         addStatusBar();
-        
-        return this;
     }
 
     /**

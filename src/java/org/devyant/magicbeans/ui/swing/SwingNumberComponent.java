@@ -27,6 +27,7 @@ import javax.swing.JFormattedTextField;
 import org.devyant.magicbeans.MagicComponent;
 import org.devyant.magicbeans.beans.MagicProperty;
 import org.devyant.magicbeans.exceptions.MagicException;
+import org.devyant.magicbeans.utils.Previewable;
 
 /**
  * SwingNumberComponent is a <b>cool</b> class.
@@ -36,7 +37,7 @@ import org.devyant.magicbeans.exceptions.MagicException;
  * @since Jul 5, 2005 12:52:15 AM
  */
 public class SwingNumberComponent extends JFormattedTextField implements
-        MagicComponent {
+        MagicComponent, Previewable {
     /**
      * The property to bind to.
      */
@@ -47,7 +48,7 @@ public class SwingNumberComponent extends JFormattedTextField implements
      * @todo commit?
      */
     public void update() throws MagicException {
-        this.property.set(this.getValue());
+        this.property.set(preview());
     }
 
     /**
@@ -67,5 +68,12 @@ public class SwingNumberComponent extends JFormattedTextField implements
      */
     public MagicProperty getProperty() {
         return property;
+    }
+
+    /**
+     * @see org.devyant.magicbeans.utils.Previewable#preview()
+     */
+    public Object preview() {
+        return this.getValue();
     }
 }

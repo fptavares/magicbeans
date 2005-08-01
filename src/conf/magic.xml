@@ -40,6 +40,7 @@
         <description>
             <Configuration>
                 <nested>false</nested>
+                <values>dummy.collection</values>
             </Configuration>
         </description>
         
@@ -70,6 +71,9 @@
                 <Configuration>
                     <nested>false</nested>
                     <validate>true</validate>
+                    <collection>
+                        <class>java.lang.Integer</class>
+                    </collection>
                     <!-- property overrides -->
                     <magic>
                         <gui><collections><style>combo</style></collections></gui>
@@ -84,7 +88,7 @@
     
     <bean class="java.lang.String">
         <Configuration>
-        	<visible>false</visible>
+        	<visible>true</visible>
         </Configuration>
     </bean>
     

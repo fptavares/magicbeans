@@ -24,15 +24,14 @@ package org.devyant.magicbeans.ui.swing;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.Vector;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
 
-import org.devyant.magicbeans.MagicBean;
 import org.devyant.magicbeans.MagicUtils;
 import org.devyant.magicbeans.beans.MagicProperty;
 import org.devyant.magicbeans.conf.MagicConfiguration;
@@ -40,6 +39,7 @@ import org.devyant.magicbeans.exceptions.MagicException;
 import org.devyant.magicbeans.i18n.MagicResources;
 import org.devyant.magicbeans.ui.listeners.UpdateButtonActionListener;
 import org.devyant.magicbeans.ui.swing.generalizers.ListGeneralizer;
+import org.devyant.magicbeans.utils.InternalMagicBean;
 
 /**
  * SwingCollectionComponent is a <b>cool</b> class.
@@ -106,7 +106,14 @@ public class SwingCollectionComponent extends SwingUnlabeledContainer {
      * @todo how? there may be more than one type...
      */
     public void addButtonActionPerformed(ActionEvent evt) {
-        model.addElement("Yoooooo!!");
+        try {
+            this.property.getConfiguration().getSpecialClassInstance(
+                    MagicConfiguration.XML_COLLECTION_CLASS);
+            model.addElement("Yoooooo!!");
+        } catch (MagicException e) {
+            // @todo Auto-generated catch block
+            MagicUtils.error(e);
+        }
     }
     /**
      * The editButton action.
@@ -114,14 +121,14 @@ public class SwingCollectionComponent extends SwingUnlabeledContainer {
      */
     public void editButtonActionPerformed(ActionEvent evt) {
         try {
-            final MagicBean bean = (MagicBean) component.getSelectedValue();
+            final InternalMagicBean bean = (InternalMagicBean) component.getSelectedValue();
             if (bean == null) {
                 return; // no item has been selected
             }
             // create the dialog
             bean.showInternalFrame(this, this.title,
-                    new UpdateButtonActionListener() {
-                        public void updateButtonActionPerformed() {
+                    new java.awt.event.WindowAdapter() {
+                        public void windowClosing(java.awt.event.WindowEvent evt) {
                             ((Component) component).repaint();
                         }
                     });
@@ -159,7 +166,7 @@ public class SwingCollectionComponent extends SwingUnlabeledContainer {
         
         // add elements to the list
         for (Iterator i = collection.iterator(); i.hasNext(); ) {
-            model.addElement(new MagicBean(i.next()));
+            model.addElement(new InternalMagicBean(i.next()));
         }
     }
     
@@ -170,13 +177,17 @@ public class SwingCollectionComponent extends SwingUnlabeledContainer {
         // get the collection instance
         Collection collection = (Collection) this.property.get();
         if (collection == null) {
-            collection = new Vector(this.model.getSize());
+            collection = new ArrayList(this.model.getSize());
         } else {
             collection.clear();
         }
         // add the objects
         for (int i = 0; i < this.model.getSize(); i++) {
-            final MagicBean bean = (MagicBean) this.model.getElementAt(i);
+            final InternalMagicBean bean =
+                (InternalMagicBean) this.model.getElementAt(i);
+            // call container's update() method 
+            bean.update();
+            // add bean to the collection
             collection.add(bean.getRealValue());
         }
         // set the collection back to it's bean

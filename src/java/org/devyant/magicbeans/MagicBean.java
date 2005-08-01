@@ -25,23 +25,16 @@ package org.devyant.magicbeans;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Frame;
-import java.awt.event.WindowAdapter;
 import java.awt.event.WindowListener;
-import java.util.Observable;
 
-import org.devyant.magicbeans.beans.AuxiliarBean;
 import org.devyant.magicbeans.beans.MagicProperty;
 import org.devyant.magicbeans.beans.SinglePropertyWrapper;
 import org.devyant.magicbeans.conf.InvalidConfigurationException;
 import org.devyant.magicbeans.conf.MagicConfiguration;
 import org.devyant.magicbeans.exceptions.MagicException;
-import org.devyant.magicbeans.exceptions.PropertyException;
 import org.devyant.magicbeans.i18n.MagicResources;
-import org.devyant.magicbeans.observer.Observer;
-import org.devyant.magicbeans.observer.Subject;
-import org.devyant.magicbeans.ui.WindowFactory;
 import org.devyant.magicbeans.ui.listeners.UpdateButtonActionListener;
-import org.devyant.magicbeans.ui.listeners.UpdateListenerFactory;
+import org.devyant.magicbeans.utils.AbstractMagicBean;
 
 
 /**
@@ -51,37 +44,13 @@ import org.devyant.magicbeans.ui.listeners.UpdateListenerFactory;
  * @version $Revision$ ($Author$)
  * @since 18/Abr/2005 19:44:06
  */
-public class MagicBean extends Observable implements Observer, AuxiliarBean {
-    /**
-     * The object <code>Object</code>.
-     */
-    private Object object;
-    
-    /**
-     * The beanPath <code>String</code>.
-     */
-    private final String beanPath;
-    /**
-     * The superBeanClassName <code>String</code>.
-     */
-    private String superBeanClassName;
-    
+public class MagicBean extends AbstractMagicBean {
     /**
      * Creates a new <code>MagicBean</code> instance.
      * @param object The object to map
      */
     public MagicBean(Object object) {
-        this(object, object.getClass().getName(), null);
-    }
-    
-    /**
-     * Creates a new <code>MagicBean</code> instance.
-     * @param property The property who's object we want to map
-     * @throws PropertyException {@link MagicProperty#get()}
-     */
-    public MagicBean(final MagicProperty property) throws PropertyException {
-        this(property.get(),
-                property.getSuperBeanClassName(), property.getBeanPath());
+        super(object, object.getClass().getName(), null);
     }
     
     /**
@@ -90,38 +59,23 @@ public class MagicBean extends Observable implements Observer, AuxiliarBean {
      * @param beanPath The bean path to use
      */
     public MagicBean(Object object, String beanPath) {
-        this(object, object.getClass().getName(), beanPath);
+        super(object, object.getClass().getName(), beanPath);
     }
-    
+
     /**
-     * Creates a new <code>MagicBean</code> instance.
-     * @param object The object to map
-     * @param beanPath The bean path to use
-     * @param superBeanClassName The base bean's class name
+     * @return
+     * @throws MagicException
      */
-    public MagicBean(Object object,
-            String superBeanClassName, String beanPath) {
-        super();
-        this.object = object;
-        this.beanPath = beanPath;
-        this.superBeanClassName = superBeanClassName;
-    }
-    
-    /**
-     * @throws MagicException Thrown if something goes wrong
-     *  during the GUI generation process.
-     */
-    public Container render() throws MagicException {
+    protected MagicComponent createMagicComponent() throws MagicException {
         // create the magic property object
-        final MagicProperty property = new MagicProperty(this.superBeanClassName,
-                this.beanPath, this, "object");
+        final MagicProperty property = createMagicProperty();
         
         // get the base container
         MagicUtils.info("Generating the base container.");
-        MagicContainer container =
+        MagicContainer mContainer =
             MagicFactory.getContainerInstanceFor(property);
         
-        if (MagicUtils.cannotStandalone(container)) {
+        if (MagicUtils.cannotStandalone(mContainer)) {
             MagicUtils.info("The object cannot be mapped to a standalone container."
                     + " Using a wrapper...");
             // no container could be found for this bean
@@ -130,16 +84,27 @@ public class MagicBean extends Observable implements Observer, AuxiliarBean {
             this.object = new SinglePropertyWrapper(this.object);
             
             // now we should be able to retrive the correct container
-            container = MagicFactory.getContainerInstanceFor(property);
+            mContainer = MagicFactory.getContainerInstanceFor(property);
         }
         
         // bind container to this MagicBean's bean
         MagicUtils.info("Binding the base container to a new MagicProperty"
                 + " containing the bean.");
-        container.bindTo(property);
-
+        mContainer.bindTo(property);
+   
         MagicUtils.info("Rendering the base container.");
-        return container.render();
+        mContainer.renderStandalone();
+        return mContainer;
+    }
+    
+    /**
+     * Useful for Swing and AWT configurations.
+     * @return A java.awt.Container
+     * @throws MagicException Thrown if something goes wrong
+     *  during the GUI generation process.
+     */
+    public final Container renderContainer() throws MagicException {
+        return (Container) this.render();
     }
     
     /**
@@ -163,10 +128,10 @@ public class MagicBean extends Observable implements Observer, AuxiliarBean {
      * @see #showFrame(Component, String, UpdateButtonActionListener, WindowListener)
      */
     public final void showFrame(final Component parent,
-            final WindowAdapter adapter) throws MagicException {
+            final WindowListener listener) throws MagicException {
         showFrame(parent,
                 MagicConfiguration.resources.get(MagicResources.STRING_TITLE),
-                null, adapter);
+                null, listener);
     }
     
     /**
@@ -183,67 +148,12 @@ public class MagicBean extends Observable implements Observer, AuxiliarBean {
             final WindowListener windowListener)
             throws MagicException {
         // render the container
-        final Container container = this.render();
+        final Container container = this.renderContainer();
         if (listener != null) {
             ((MagicContainer) container).addUpdateButtonActionListener(listener);
         }
         // create and show frame
         createAndShowFrame(parent, container, title, windowListener);
-    }
-    
-    /**
-     * Show a frame containing the resulting interface.
-     * @param parent Parent component
-     * @param title Title for the window
-     * @param listener Listener for the update button
-     * @throws MagicException {@link #render()}
-     */
-    public final void showInternalFrame(final Component parent,
-            final String title, UpdateButtonActionListener listener)
-            throws MagicException {
-        // create frame
-        final Frame frame = createFrame(parent, title, null);
-        // render the container
-        final Container container = this.render();
-        // add user's listener
-        if (listener != null) {
-            ((MagicContainer) container).addUpdateButtonActionListener(listener);
-        }
-        // add update listener
-        ((MagicContainer) container).addUpdateButtonActionListener(
-                UpdateListenerFactory.createListenerInstance(frame));
-        // show frame
-        showFrame(parent, container, frame);
-    }
-
-    /**
-     * @param parent Parent component
-     * @param title Title for the window
-     * @param listener Listener for the update button
-     * @param windowListener Window listener
-     * @throws InvalidConfigurationException {@link WindowFactory#createFrame()}
-     */
-    private Frame createFrame(final Component parent, final String title,
-            final WindowListener windowListener)
-            throws InvalidConfigurationException {
-        final Frame frame = WindowFactory.createFrame();
-        frame.setTitle(title);
-        if (windowListener != null) {
-            frame.addWindowListener(windowListener);
-        }
-        return frame;
-    }
-
-    /**
-     * @param parent Parent component
-     * @param container The frame's content
-     * @param frame The frame instance
-     */
-    private void showFrame(final Component parent, final Container container, final Frame frame) {
-        frame.add(container);
-        frame.pack();
-        frame.setLocationRelativeTo(parent);
-        frame.setVisible(true);
     }
     
     /**
@@ -260,50 +170,5 @@ public class MagicBean extends Observable implements Observer, AuxiliarBean {
             final WindowListener windowListener) throws InvalidConfigurationException {
         final Frame frame = createFrame(parent, title, windowListener);
         showFrame(parent, container, frame);
-    }
-
-    /**
-     * The getter method for the object property.
-     * @return The property's <code>MagicBean</code> value
-     */
-    public Object getObject() {
-        return object;
-    }
-
-    /**
-     * The setter method for the object property.
-     * @param object The <code>Object</code> to set
-     */
-    public void setObject(Object object) {
-        this.object = object;
-    }
-
-    /**
-     * Returns the real value of this wrapped by this class. An object might
-     * have been wrapped by a <code>SinglePropertyWrapper</code>
-     * if it wasn't a bean.
-     * @return An object.
-     * @see org.devyant.magicbeans.beans.SinglePropertyWrapper
-     */
-    public final Object getRealValue() {
-        if (object instanceof SinglePropertyWrapper) {
-            return ((SinglePropertyWrapper) object).getProperty();
-        } else {
-            return object;
-        }
-    }
-    
-    /**
-     * @see java.lang.Object#toString()
-     */
-    public final String toString() {
-        return String.valueOf(object);
-    }
-
-    /**
-     * @see org.devyant.magicbeans.observer.Observer#update(org.devyant.magicbeans.observer.Subject)
-     */
-    public void update(Subject o) {
-        this.notifyObservers();
     }
 }

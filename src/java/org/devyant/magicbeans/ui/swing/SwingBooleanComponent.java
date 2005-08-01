@@ -27,6 +27,7 @@ import javax.swing.JCheckBox;
 import org.devyant.magicbeans.MagicComponent;
 import org.devyant.magicbeans.beans.MagicProperty;
 import org.devyant.magicbeans.exceptions.MagicException;
+import org.devyant.magicbeans.utils.Previewable;
 
 /**
  * SwingBooleanComponent is a <b>cool</b> class.
@@ -35,7 +36,8 @@ import org.devyant.magicbeans.exceptions.MagicException;
  * @version $Revision$ $Date$ ($Author$)
  * @since Jul 10, 2005 4:05:20 AM
  */
-public class SwingBooleanComponent extends JCheckBox implements MagicComponent {
+public class SwingBooleanComponent extends JCheckBox
+        implements MagicComponent, Previewable {
     /**
      * The property to bind to.
      */
@@ -45,7 +47,7 @@ public class SwingBooleanComponent extends JCheckBox implements MagicComponent {
      * @see org.devyant.magicbeans.MagicComponent#update()
      */
     public void update() throws MagicException {
-        this.property.set(new Boolean(this.isSelected()));
+        this.property.set(preview());
     }
 
     /**
@@ -67,6 +69,13 @@ public class SwingBooleanComponent extends JCheckBox implements MagicComponent {
      */
     public final MagicProperty getProperty() {
         return property;
+    }
+
+    /**
+     * @see org.devyant.magicbeans.utils.Previewable#preview()
+     */
+    public Object preview() {
+        return new Boolean(this.isSelected());
     }
 
 }

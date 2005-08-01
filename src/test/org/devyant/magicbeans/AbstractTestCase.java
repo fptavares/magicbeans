@@ -49,7 +49,7 @@ public abstract class AbstractTestCase
     protected void testComponent(Object bean,
             final Class componentClass, Object expected) throws Exception {
         
-        final Container container = new MagicBean(bean).render();
+        final Container container = new MagicBean(bean).renderContainer();
         showFrame(container);
         
         final Component component =

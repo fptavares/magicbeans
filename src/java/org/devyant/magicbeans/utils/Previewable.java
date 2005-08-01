@@ -20,27 +20,22 @@
  * Rua Simao Bolivar 203 6C, 4470-214 Maia, Portugal.
  *
  */
-package org.devyant.magicbeans;
-
-import org.devyant.magicbeans.ui.listeners.UpdateButtonActionHandler;
+package org.devyant.magicbeans.utils;
 
 /**
- * MagicContainer is a <b>cool</b> class.
+ * A component which implements this class is considered to be "preview-able".
+ * This means that it's value may be previewed before the property is actually
+ * updated.
  * 
- * @author Filipe Tavares
+ * @author ftavares
  * @version $Revision$ $Date$ ($Author$)
- * @since 17/Jun/2005 3:35:04
+ * @since Aug 1, 2005 4:21:48 AM
  */
-public interface MagicContainer extends MagicComponent,
-        UpdateButtonActionHandler {
+public interface Previewable {
     /**
-     * Performs last minute UI settings. The MagicContainer will be able
-     * to stand alone (i.e. containing the apropriate "controllers").
+     * This method returns the current value that this component has
+     * for it's encapsulated property.
+     * @return The current value for the property
      */
-    public void renderStandalone();
-    /**
-     * Tells the container which layout manager to use.
-     * @param layout The <code>MagicLayout</code> instance
-     */
-    public void setMagicLayout(final MagicLayout layout);
+    public Object preview();
 }

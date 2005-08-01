@@ -27,6 +27,7 @@ import javax.swing.JTextField;
 import org.devyant.magicbeans.MagicComponent;
 import org.devyant.magicbeans.beans.MagicProperty;
 import org.devyant.magicbeans.exceptions.MagicException;
+import org.devyant.magicbeans.utils.Previewable;
 
 /**
  * SwingStringComponent is a <b>cool</b> class.
@@ -35,7 +36,8 @@ import org.devyant.magicbeans.exceptions.MagicException;
  * @version $Revision$ ($Author$)
  * @since 18/Abr/2005 19:36:41
  */
-public class SwingStringComponent extends JTextField implements MagicComponent {
+public class SwingStringComponent extends JTextField
+        implements MagicComponent, Previewable {
     /**
      * The property to bind to.
      */
@@ -45,7 +47,7 @@ public class SwingStringComponent extends JTextField implements MagicComponent {
      * @see org.devyant.magicbeans.MagicComponent#update()
      */
     public void update() throws MagicException {
-        this.property.set(getText());
+        this.property.set(preview());
     }
     /**
      * @see org.devyant.magicbeans.MagicComponent#bindTo(org.devyant.magicbeans.beans.MagicProperty)
@@ -63,5 +65,11 @@ public class SwingStringComponent extends JTextField implements MagicComponent {
      */
     public final MagicProperty getProperty() {
         return property;
+    }
+    /**
+     * @see org.devyant.magicbeans.utils.Previewable#preview()
+     */
+    public Object preview() {
+        return this.getText();
     }
 }

@@ -95,22 +95,22 @@ public abstract class SwingComponentFactory {
      *  {@link #getBaseComponentInstanceFor(MagicProperty)}
      *  {@link LayoutFactory#createLayout(MagicConfiguration)}
      */
-    protected static final MagicComponent getComponentInstanceFor(
+    private static final MagicComponent getComponentInstanceFor(
             final MagicProperty property, final boolean nested)
             throws MagicException {
         
-        final MagicComponent c = getBinderInstanceFor(property.getType(),
+        final MagicComponent component = getBinderInstanceFor(property.getType(),
                 property.getConfiguration(), nested);
-        MagicUtils.debug("Generated a new SwingComponent: " + c);
+        MagicUtils.debug("Generated a new SwingComponent: " + component);
         
-        if (c instanceof MagicContainer) {
+        if (component instanceof MagicContainer) {
             // instantiate the layout manager
-            ((MagicContainer) c).setMagicLayout(
+            ((MagicContainer) component).setMagicLayout(
                     LayoutFactory.createLayout(property.getConfiguration()));
         }
         
         // return the component
-        return c;
+        return component;
         
     }
 

@@ -24,18 +24,16 @@ package org.devyant.magicbeans.ui.swing;
 
 import javax.swing.JButton;
 
-import org.devyant.magicbeans.MagicBean;
 import org.devyant.magicbeans.MagicComponent;
 import org.devyant.magicbeans.MagicUtils;
 import org.devyant.magicbeans.beans.MagicProperty;
 import org.devyant.magicbeans.conf.MagicConfiguration;
 import org.devyant.magicbeans.exceptions.MagicException;
 import org.devyant.magicbeans.i18n.MagicResources;
+import org.devyant.magicbeans.utils.InternalMagicBean;
 
 /**
  * A link to an isolated property (not nested).
- * <p>A JPanel had to be used because we don't want the button to occupy
- * the whole width of the</p>
  * 
  * @author ftavares
  * @version $Revision$ $Date$ ($Author$)
@@ -48,15 +46,18 @@ public class SwingIsolatedComponent extends JButton implements MagicComponent {
     private MagicProperty property;
     
     /**
-     * The <code>MagicBean</code> that will be used to generate the container.
+     * The <code>InternalMagicBean</code> that will be used to generate the container.
      */
-    private MagicBean magicBean;
+    private InternalMagicBean internalBean;
     
     /**
      * @see org.devyant.magicbeans.MagicComponent#update()
      */
     public void update() throws MagicException {
-        this.property.set(magicBean.getRealValue());
+        // call container's update() method 
+        internalBean.update();
+        // update property's value
+        this.property.set(internalBean.getRealValue());
     }
 
     /**
@@ -65,7 +66,7 @@ public class SwingIsolatedComponent extends JButton implements MagicComponent {
     public void bindTo(MagicProperty property) throws MagicException {
         this.property = property;
         // create the magic bean
-        magicBean = new MagicBean(property);
+        internalBean = new InternalMagicBean(property);
         
         init(); // init gui stuff
     }
@@ -79,7 +80,7 @@ public class SwingIsolatedComponent extends JButton implements MagicComponent {
         this.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 try {
-                    magicBean.showInternalFrame(
+                    internalBean.showInternalFrame(
                             SwingIsolatedComponent.this,
                             MagicConfiguration.resources.getNameFor(property),
                             null);

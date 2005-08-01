@@ -51,7 +51,8 @@ public abstract class DefaultContainerBehaviour {
      * @throws MagicException An error occured during the update sequence
      * @see org.devyant.magicbeans.MagicComponent
      */
-    public static final void doUpdateForContainer(Container container) throws MagicException {
+    public static final void doUpdateForContainer(final Container container)
+            throws MagicException {
         final Component [] components = container.getComponents();
         for (int i = 0; i < components.length; i++) {
             if (components[i] instanceof MagicComponent) {
