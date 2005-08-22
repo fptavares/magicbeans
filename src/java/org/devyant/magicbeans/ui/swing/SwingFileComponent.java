@@ -23,6 +23,7 @@
 package org.devyant.magicbeans.ui.swing;
 
 import java.awt.Component;
+import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.io.File;
 
@@ -68,7 +69,7 @@ public class SwingFileComponent extends JPanel
     
     protected final void init() {
         // gui initialization
-        setLayout(layout);
+        setLayout((LayoutManager) layout);
         
         textField.setEditable(false);
         

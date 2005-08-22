@@ -33,7 +33,7 @@ import org.devyant.magicbeans.i18n.MagicResources;
 import org.devyant.magicbeans.utils.InternalMagicBean;
 
 /**
- * A link to an isolated property (not nested).
+ * A link to an isolated (not nested) property.
  * 
  * @author ftavares
  * @version $Revision$ $Date$ ($Author$)
@@ -55,7 +55,7 @@ public class SwingIsolatedComponent extends JButton implements MagicComponent {
      */
     public void update() throws MagicException {
         // call container's update() method 
-        internalBean.update();
+        this.internalBean.update();
         // update property's value
         this.property.set(internalBean.getRealValue());
     }
@@ -66,7 +66,7 @@ public class SwingIsolatedComponent extends JButton implements MagicComponent {
     public void bindTo(MagicProperty property) throws MagicException {
         this.property = property;
         // create the magic bean
-        internalBean = new InternalMagicBean(property);
+        this.internalBean = new InternalMagicBean(property);
         
         init(); // init gui stuff
     }

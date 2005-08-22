@@ -33,7 +33,7 @@ import java.awt.LayoutManager;
  * @version $Revision$ $Date$ ($Author$)
  * @since Jun 24, 2005 9:52:07 PM
  */
-public interface MagicLayout extends LayoutManager {
+public interface MagicLayout {
     /**
      * Add a pair of components (label + MagicComponent)
      * that represent a property.

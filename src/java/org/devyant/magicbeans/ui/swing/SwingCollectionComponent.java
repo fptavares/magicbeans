@@ -37,7 +37,6 @@ import org.devyant.magicbeans.beans.MagicProperty;
 import org.devyant.magicbeans.conf.MagicConfiguration;
 import org.devyant.magicbeans.exceptions.MagicException;
 import org.devyant.magicbeans.i18n.MagicResources;
-import org.devyant.magicbeans.ui.listeners.UpdateButtonActionListener;
 import org.devyant.magicbeans.ui.swing.generalizers.ListGeneralizer;
 import org.devyant.magicbeans.utils.InternalMagicBean;
 

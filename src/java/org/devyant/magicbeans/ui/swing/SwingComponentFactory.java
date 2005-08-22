@@ -195,7 +195,7 @@ public abstract class SwingComponentFactory {
      * @throws MagicException
      *  {@link #getNestedComponentInstanceFor(MagicProperty)}
      */
-    public static final MagicComponent getIsolatedComponent(
+    public static final MagicComponent getIsolatedComponentFor(
             final MagicProperty property) throws MagicException {
         final MagicComponent component = getNestedComponentInstanceFor(property);
         if (MagicUtils.cannotStandalone(component)) {

@@ -32,6 +32,7 @@ import org.devyant.magicbeans.MagicUtils;
 import org.devyant.magicbeans.beans.MagicProperty;
 import org.devyant.magicbeans.exceptions.MagicException;
 import org.devyant.magicbeans.exceptions.PropertyException;
+import org.devyant.magicbeans.layouts.GridBagMagicLayout;
 
 /**
  * InternalMagicBean is a <b>cool</b> class.

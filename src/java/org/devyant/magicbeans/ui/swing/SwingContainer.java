@@ -23,6 +23,7 @@
 package org.devyant.magicbeans.ui.swing;
 
 import java.awt.Component;
+import java.awt.LayoutManager;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -85,7 +86,7 @@ public class SwingContainer extends JPanel implements MagicContainer {
      */
     protected void init() {
         // gui initialization
-        setLayout(layout);
+        setLayout((LayoutManager) layout);
     }
 
     /**
@@ -131,7 +132,7 @@ public class SwingContainer extends JPanel implements MagicContainer {
                     SwingComponentFactory.getNestedComponentInstanceFor(prop);
             } else {
                 // isolated component
-                component = SwingComponentFactory.getIsolatedComponent(prop);
+                component = SwingComponentFactory.getIsolatedComponentFor(prop);
             }
             
             MagicUtils.info("Binding the generated component to the property.");
