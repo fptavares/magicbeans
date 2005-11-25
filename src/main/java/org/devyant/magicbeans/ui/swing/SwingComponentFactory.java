@@ -112,16 +112,22 @@ public class SwingComponentFactory extends AbstractUIFactory {
     }
 
     /**
-     * @see org.devyant.magicbeans.ui.UIFactory#getButtonComponent(java.lang.String)
+     * @see org.devyant.magicbeans.ui.UIFactory#createButton(java.lang.String)
      */
-    public Object getButtonComponent(final String text) {
+    public Object createButton(final String text) {
         return new JButton(text);
     }
     /**
-     * @see org.devyant.magicbeans.ui.UIFactory#getStatusComponent()
+     * @see org.devyant.magicbeans.ui.UIFactory#createStatus()
      */
-    public Object getStatusComponent() {
-        return new JLabel(" ");
+    public Object createStatus() {
+        return createLabel(" ");
+    }
+    /**
+     * @see org.devyant.magicbeans.ui.UIFactory#createLabel(java.lang.String)
+     */
+    public Object createLabel(String string) {
+        return new JLabel(string);
     }
     
 }

@@ -22,21 +22,11 @@
  */
 package org.devyant.magicbeans.ui;
 
-import java.awt.Component;
-import java.util.Collection;
-import java.util.Iterator;
-
-import org.apache.commons.lang.StringUtils;
-import org.devyant.magicbeans.MagicComponent;
 import org.devyant.magicbeans.MagicContainer;
 import org.devyant.magicbeans.MagicLayout;
-import org.devyant.magicbeans.MagicUtils;
-import org.devyant.magicbeans.beans.MagicProperty;
 import org.devyant.magicbeans.conf.MagicConfiguration;
-import org.devyant.magicbeans.exceptions.MagicException;
 import org.devyant.magicbeans.i18n.MagicResources;
 import org.devyant.magicbeans.ui.listeners.UpdateButtonActionListener;
-import org.devyant.magicbeans.utils.components.UnlabeledComponent;
 
 /**
  * AbstractMagicContainer is a <b>cool</b> class.
@@ -49,9 +39,19 @@ public abstract class AbstractMagicContainer extends AbstractMagicComponent
         implements MagicContainer {
     
     /**
+     * The nested <code>boolean</code>.
+     */
+    private final boolean nested;
+    
+    /**
      * The standalone <code>boolean</code>.
      */
     private boolean standalone = false;
+    
+    /**
+     * The toolkit specific component factory.
+     */
+    private final UIFactory factory;
     
     /**
      * The <code>MagicLayout</code>.
@@ -65,33 +65,31 @@ public abstract class AbstractMagicContainer extends AbstractMagicComponent
     
     /**
      * Creates a new <b>labeled</b> <code>AbstractMagicContainer</code> instance.
+     * @see #AbstractMagicContainer(UIFactory, boolean, boolean)
      */
-    public AbstractMagicContainer() {
-        super(true);
+    public AbstractMagicContainer(final UIFactory factory,
+            final boolean nested) {
+        this(factory, nested, true);
     }
 
     /**
      * Creates a new <code>AbstractMagicContainer</code> instance.
+     * @param factory The apropriate factory, considering which
+     * toolkit you're using.
+     * <p>This factory may easilly be fetched using, for example,
+     * <code>MagicFactory.swing()</code> (for the Swing toolkit).</p>
+     * @param nested Is it a nested or isolated container?
      * @param labeled Whether this is a labeled container
      */
-    public AbstractMagicContainer(final boolean labeled) {
+    public AbstractMagicContainer(final UIFactory factory,
+            final boolean nested, final boolean labeled) {
         super(labeled);
+        this.nested = nested;
+        this.factory = factory;
+        // TODO: wtf?
+        // nested -> !standalone
+        //this.setStandalone(!this.nested);
     }
-    
-    /*
-     * The method override checks wether this object is a bean container
-     * or simply a component acting as a container.
-     * If it is in fact a container for a bean, then the {@link #massUpdate()}
-     * method is called.
-     * @see org.devyant.magicbeans.ui.AbstractMagicComponent#update()
-     */
-    /*public void update() throws MagicException {
-        if (this.beanContainer) {
-            massUpdate();
-        } else {
-            super.update();
-        }
-    }*/
     
     /**
      * @see org.devyant.magicbeans.ui.AbstractMagicComponent#finalize()
@@ -102,15 +100,24 @@ public abstract class AbstractMagicContainer extends AbstractMagicComponent
         }
 
         // initialize status
-        this.status = getFactory().getStatusComponent();
+        this.status = getFactory().createStatus();
         // initialize button
-        final Object button = getFactory().getButtonComponent(MagicConfiguration
+        final Object button = getFactory().createButton(MagicConfiguration
                 .resources.get(MagicResources.STRING_OKBUTTON));
         initMagicContainerAction(button);
         // add components
         layout.addButton(this.component, button);
         layout.addStatus(this.component, this.status);
+        
+        if (this.nested) {
+            finalizeNestedComponent();
+        }
     }
+
+    /**
+     * 
+     */
+    protected abstract void finalizeNestedComponent();
 
     /**
      * Initializes the handler for the MagicContainerAction.
@@ -134,22 +141,10 @@ public abstract class AbstractMagicContainer extends AbstractMagicComponent
     }
 
     /**
-     * @see org.devyant.magicbeans.MagicContainer#addMagicComponent(org.devyant.magicbeans.MagicComponent)
-     */
-    public void addMagicComponent(MagicComponent component) {
-        if (component.isLabeled()) {
-            addUnlabeledComponent(component);
-        } else {
-            addLabeledComponent(component, component.getName());
-        }
-    }
-
-    /**
      * @see org.devyant.magicbeans.ui.listeners.UpdateButtonActionHandler#addUpdateButtonActionListener(org.devyant.magicbeans.ui.listeners.UpdateButtonActionListener)
      */
     public void addUpdateButtonActionListener(final UpdateButtonActionListener l) {
-        // @todo Auto-generated method stub
-
+        //listenerList.add(UpdateButtonActionListener.class, l);
     }
 
     /**
@@ -159,63 +154,6 @@ public abstract class AbstractMagicContainer extends AbstractMagicComponent
         // @todo Auto-generated method stub
 
     }
-    
-    /**
-     * @see org.devyant.magicbeans.ui.AbstractMagicComponent#setValue(java.lang.Object)
-     */
-    protected void setValue(Object value) throws MagicException {
-        // fill with property's value
-        final Object object = getProperty().get();
-        if (object == null) {
-            return;
-        }
-        
-        final Collection properties =
-            MagicUtils.getProperties(object, getProperty());
-        
-        for (Iterator i = properties.iterator(); i.hasNext(); ) {
-            final MagicProperty prop = (MagicProperty) i.next();
-            final MagicComponent component;
-            
-            // verify if is visible
-            if (!prop.getConfiguration()
-                    .getSpecialBoolean(MagicConfiguration.XML_VISIBLE)) {
-                continue; // not visible, so continue to the next property
-            }
-            
-            // verify if is nested
-            if (prop.getConfiguration()
-                    .getSpecialBoolean(MagicConfiguration.XML_NESTED)) {
-                // basic nested component
-                component = getFactory().getNestedComponentInstanceFor(prop);
-            } else {
-                // isolated component
-                component = getFactory().getIsolatedComponentFor(prop);
-            }
-            
-            MagicUtils.info("Binding the generated component to the property.");
-            component.bindTo(prop);
-            
-            addMagicComponent(component);
-        }
-    }
-
-    /**
-     * @see org.devyant.magicbeans.ui.AbstractMagicComponent#getValue()
-     * @return <code>null</code>
-     */
-    protected Object getValue() throws MagicException {
-        return null;
-    }
-
-    /**
-     * This method should return the apropriate factory, considering which
-     * toolkit we're using.
-     * <p>This factory may easilly be fetched using, for example,
-     * <code>MagicFactory.swing()</code> (for the Swing toolkit).</p>
-     * @return An <code>UIFactory</code> instance
-     */
-    protected abstract UIFactory getFactory();
 
     /**
      * The getter method for the standalone property.
@@ -223,6 +161,14 @@ public abstract class AbstractMagicContainer extends AbstractMagicComponent
      */
     protected boolean isStandalone() {
         return this.standalone;
+    }
+
+    /**
+     * The getter method for the factory property.
+     * @return The property's <code>AbstractBaseContainer</code> value
+     */
+    public final UIFactory getFactory() {
+        return this.factory;
     }
 
 }

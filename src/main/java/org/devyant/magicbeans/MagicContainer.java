@@ -43,9 +43,9 @@ public interface MagicContainer extends MagicComponent,
      * @param layout The <code>MagicLayout</code> instance
      */
     public void setMagicLayout(final MagicLayout layout);
-    /**
+    /* TODO: delete?
      * Adds a component to this container.
      * @param component The <code>MagicComponent</code> to add
      */
-    public void addMagicComponent(final MagicComponent component);
+    //public void addMagicComponent(final MagicComponent component);
 }

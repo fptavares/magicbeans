@@ -22,32 +22,21 @@
  */
 package org.devyant.magicbeans.ui.swing;
 
-import java.awt.Component;
+import java.awt.Container;
 import java.awt.LayoutManager;
-import java.util.Collection;
-import java.util.Iterator;
 
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.TitledBorder;
 
-import org.apache.commons.lang.StringUtils;
-import org.devyant.magicbeans.MagicComponent;
-import org.devyant.magicbeans.MagicContainer;
 import org.devyant.magicbeans.MagicFactory;
-import org.devyant.magicbeans.MagicLayout;
 import org.devyant.magicbeans.MagicUtils;
-import org.devyant.magicbeans.beans.MagicProperty;
 import org.devyant.magicbeans.conf.MagicConfiguration;
 import org.devyant.magicbeans.exceptions.MagicException;
-import org.devyant.magicbeans.exceptions.PropertyException;
 import org.devyant.magicbeans.i18n.MagicResources;
 import org.devyant.magicbeans.ui.AbstractBaseContainer;
-import org.devyant.magicbeans.ui.UIFactory;
-import org.devyant.magicbeans.ui.listeners.UpdateButtonActionListener;
-import org.devyant.magicbeans.ui.swing.isolated.SwingChildComponent;
-import org.devyant.magicbeans.utils.components.UnlabeledComponent;
-import org.devyant.magicbeans.utils.containers.DefaultContainerBehaviour;
 
 /**
  * SwingContainer is a <b>cool</b> class.
@@ -59,106 +48,34 @@ import org.devyant.magicbeans.utils.containers.DefaultContainerBehaviour;
  * replace by a simple -> title + "*" -> only at nested containers...:(
  */
 public class SwingContainer extends AbstractBaseContainer {
+
     /**
-     * The status <code>JLabel</code>.
+     * @see AbstractBaseContainer#AbstractBaseContainer(boolean)
      */
-    private JLabel status;
-    /**
-     * The okButton <code>JButton</code>.
-     */
-    private JButton okButton;
-    
-    
-    /**
-     * Creates a new <code>SwingContainer</code> instance.
-     */
-    public SwingContainer() {
-        super(new JPanel());
+    public SwingContainer(final boolean nested) {
+        super(MagicFactory.swing(), nested);
     }
 
     /**
-     * Show a message in the status bar.
-     * @param name The message's name
+     * @see org.devyant.magicbeans.ui.AbstractMagicComponent#createComponent()
      */
-    protected void showMessage(String name) {
-        status.setText(MagicConfiguration.resources.getMessage(name));
+    protected Object createComponent() {
+        return new JPanel();
+    }
+
+    /**
+     * @see org.devyant.magicbeans.ui.AbstractMagicComponent#initialize()
+     */
+    public void initialize() {
+        super.initialize();
+        ((Container) this.component).setLayout((LayoutManager) this.layout);
     }
     
     /**
-     * Show an error message in the status bar.
-     * @param string The message
-     * @todo use icon for error
+     * @see org.devyant.magicbeans.ui.AbstractMagicContainer#initMagicContainerAction(java.lang.Object)
      */
-    protected void showErrorMessage(String string) {
-        status.setText("[ERROR] " + string);
-    }
-
-    /**
-     * Add a magic component to the panel.
-     * @param component The component to add
-     */
-    public final void addMagicComponent(final MagicComponent component) {
-        
-    }
-    /**
-     * @param component The component to add
-     * @param string The property's name
-     */
-    private void addUnlabeledComponent(final MagicComponent component) {
-        // add magic component
-        layout.addUnlabeledComponent(this, component);
-    }
-    /**
-     * @param component The component to add
-     * @param string The property's name
-     */
-    private void addLabeledComponent(final MagicComponent component,
-            final String string) {
-        // add label + magic component
-        if (component instanceof SwingChildComponent) {
-            layout.addLabeledIsolatedComponent(this, createLabel(string),
-                    component);
-        } else {
-            layout.addLabeledComponent(this, createLabel(string), component);
-        }
-    }
-
-    /**
-     * @param string
-     * @return
-     */
-    private JLabel createLabel(final String string) {
-        return new JLabel(string);
-    }
-
-    /**
-     * Add the OK button.
-     */
-    private final void addOKButton() {
-        layout.addButton(this, okButton);
-    }
-    /**
-     * Add the status bar.
-     */
-    private final void addStatusBar() {
-        layout.addStatus(this, status);
-    }
-
-    /**
-     * @see org.devyant.magicbeans.MagicComponent#getProperty()
-     */
-    public final MagicProperty getProperty() {
-        return property;
-    }
-    
-    /**
-     * @see org.devyant.magicbeans.MagicContainer#renderStandalone()
-     */
-    public final MagicComponent renderStandalone() {
-        status = new JLabel(" ");
-        okButton = new JButton();
-        okButton.setText(MagicConfiguration.resources.get(MagicResources.STRING_OKBUTTON));
-        okButton.addActionListener(new java.awt.event.ActionListener() {
+    protected final void initMagicContainerAction(Object button) {
+        ((JButton) button).addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 try {
                     update();
@@ -170,53 +87,33 @@ public class SwingContainer extends AbstractBaseContainer {
                 }
             }
         });
-        
-        // add final components
-        addOKButton();
-        addStatusBar();
-        
-        return this;
     }
 
     /**
-     * @see org.devyant.magicbeans.MagicContainer#setMagicLayout(org.devyant.magicbeans.MagicLayout)
+     * @see org.devyant.magicbeans.ui.AbstractMagicContainer#finalizeNestedComponent()
      */
-    public void setMagicLayout(final MagicLayout layout) {
-        this.layout = layout;
-        // gui initialization
-        setLayout((LayoutManager) layout);
+    protected void finalizeNestedComponent() {
+        ((JComponent) this.component).setBorder(
+                new TitledBorder(null,  " " + this.getName() + " ",
+                        TitledBorder.LEFT, TitledBorder.TOP));
+    }
+
+    /**
+     * Show a message in the status bar.
+     * @param name The message's name
+     */
+    protected void showMessage(final String name) {
+        ((JLabel) this.status).setText(
+                MagicConfiguration.resources.getMessage(name));
     }
     
     /**
-     * @see org.devyant.magicbeans.ui.listeners.UpdateButtonActionHandler#addUpdateButtonActionListener(org.devyant.magicbeans.ui.listeners.UpdateButtonActionListener)
+     * Show an error message in the status bar.
+     * @param string The message
+     * @todo use icon for error
      */
-    public void addUpdateButtonActionListener(final UpdateButtonActionListener l) {
-        listenerList.add(UpdateButtonActionListener.class, l);
+    protected void showErrorMessage(final String string) {
+        showMessage("[ERROR] " + string);
     }
-    /**
-     * @see org.devyant.magicbeans.ui.listeners.UpdateButtonActionHandler#fireUpdateButtonAction()
-     */
-    public void fireUpdateButtonAction() {
-        final UpdateButtonActionListener [] listeners =
-            (UpdateButtonActionListener[])
-            this.listenerList.getListeners(UpdateButtonActionListener.class);
-        for (int i = 0; i < listeners.length; i++) {
-            listeners[i].updateButtonActionPerformed();
-        }
-    }
-
-    /**
-     * @see org.devyant.magicbeans.ui.AbstractBaseContainer#massUpdate()
-     */
-    protected void massUpdate() {
-        // @todo Auto-generated method stub
-        
-    }
-
-    /**
-     * @see org.devyant.magicbeans.ui.AbstractMagicContainer#getFactory()
-     */
-    protected UIFactory getFactory() {
-        return MagicFactory.swing();
-    }
+    
 }

@@ -65,7 +65,7 @@ public interface MagicComponent {
      * @return A <code>String</code> that contains the name to be displayed
      */
     public String getName();
-    /**
+    /* TODO: delete?
      * The setter method for the name property's name.
      * <p>This <code>String</code> will
      * be used for the component's label/title.</p>

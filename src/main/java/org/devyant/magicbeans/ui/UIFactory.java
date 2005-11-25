@@ -60,11 +60,17 @@ public interface UIFactory {
      * @param text The button's label
      * @return A button component instance
      */
-    public Object getButtonComponent(final String text);
+    public Object createButton(final String text);
+    /**
+     * Create a label component showing the specified <code>String</code>.
+     * @param string The label's <code>String</code>
+     * @return The toolkit specific component
+     */
+    public Object createLabel(final String string);
     /**
      * Create and return an apropriate UI component for the status label.
      * @return A status label instance
      */
-    public Object getStatusComponent();
+    public Object createStatus();
 
 }

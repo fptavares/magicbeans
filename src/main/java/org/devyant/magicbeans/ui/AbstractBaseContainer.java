@@ -22,6 +22,14 @@
  */
 package org.devyant.magicbeans.ui;
 
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedList;
+
+import org.devyant.magicbeans.MagicComponent;
+import org.devyant.magicbeans.MagicUtils;
+import org.devyant.magicbeans.beans.MagicProperty;
+import org.devyant.magicbeans.conf.MagicConfiguration;
 import org.devyant.magicbeans.exceptions.MagicException;
 
 /**
@@ -32,34 +40,105 @@ import org.devyant.magicbeans.exceptions.MagicException;
  * @since Oct 28, 2005 7:13:05 PM
  */
 public abstract class AbstractBaseContainer extends AbstractMagicContainer {
-
+    
     /**
-     * The nested <code>boolean</code>.
+     * A <code>Collection</code> of this container's child components.
      */
-    private final boolean nested;
+    private final Collection components = new LinkedList();
     
     /**
      * Creates a new <code>AbstractBaseContainer</code> instance.
-     * @param component The component to bind the property to
      */
-    public AbstractBaseContainer(final Object container, final boolean nested) {
-        super(container);
-        this.nested = nested;
-        // nested -> !standalone
-        this.setStandalone(!this.nested);
+    public AbstractBaseContainer(final UIFactory factory, final boolean nested) {
+        super(factory, nested);
     }
-
+    
     /**
-     * Calls {@link #massUpdate()}
+     * Mass layer update.
      * @see org.devyant.magicbeans.ui.AbstractMagicComponent#update()
      */
     public final void update() throws MagicException {
-        massUpdate();
+        for (Iterator i = components.iterator(); i.hasNext(); ) {
+            final MagicComponent child = (MagicComponent) i.next();
+            // do layer-by-layer update
+            child.update();
+            
+            // debug
+            MagicUtils.debug(child.getProperty().getName()
+                    + " : " + child.getProperty().get());
+        }
     }
-
+    
     /**
-     * The update routine for updating all child components.
+     * @see org.devyant.magicbeans.ui.AbstractMagicComponent#setValue(java.lang.Object)
      */
-    protected abstract void massUpdate();
-
+    protected final void setValue(Object value) throws MagicException {
+        // fill with property's value
+        final Object object = getProperty().get();
+        if (object == null) {
+            return;
+        }
+        
+        final Collection properties =
+            MagicUtils.getProperties(object, getProperty());
+        
+        for (Iterator i = properties.iterator(); i.hasNext(); ) {
+            final MagicProperty prop = (MagicProperty) i.next();
+            final MagicComponent component;
+            
+            // verify if is visible
+            if (!prop.getConfiguration()
+                    .getSpecialBoolean(MagicConfiguration.XML_VISIBLE)) {
+                continue; // not visible, so continue to the next property
+            }
+            
+            // verify if is nested
+            final boolean nested = prop.getConfiguration()
+            .getSpecialBoolean(MagicConfiguration.XML_NESTED);
+            if (nested) {
+                // basic nested component
+                component = getFactory().getNestedComponentInstanceFor(prop);
+            } else {
+                // isolated component
+                component = getFactory().getIsolatedComponentFor(prop);
+            }
+            
+            MagicUtils.info("Binding the generated component to the property.");
+            component.bindTo(prop);
+            
+            addMagicComponent(component, nested);
+        }
+    }
+    
+    /**
+     * @param mComponent
+     * @param nested
+     * @throws MagicException
+     */
+    private final void addMagicComponent(MagicComponent mComponent,
+            final boolean nested) throws MagicException {
+        if (mComponent.isLabeled()) {
+            Object label = getFactory().createLabel(mComponent.getName());
+            // add label + magic component
+            if (nested) {
+                this.layout.addLabeledComponent(
+                        this.component, label, mComponent);
+            } else {
+                this.layout.addLabeledIsolatedComponent(
+                        this.component, label, mComponent);
+            }
+        } else {
+            // add magic component
+            this.layout.addUnlabeledComponent(this.component, mComponent);
+        }
+    }
+    
+    /**
+     * @see org.devyant.magicbeans.ui.AbstractMagicComponent#getValue()
+     * @return <code>null</code>
+     */
+    protected final Object getValue() throws MagicException {
+        return null;
+    }
+    
 }
