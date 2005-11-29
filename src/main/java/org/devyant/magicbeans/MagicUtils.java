@@ -60,6 +60,10 @@ public abstract class MagicUtils {
         return (component == null
                 || (!(component instanceof MagicContainer)));
     }
+
+    public static final boolean mayBeIsolated(MagicComponent component) {
+        return !cannotStandalone(component);
+    }
     
     /**
      * Capitalize first word of String.
@@ -108,7 +112,7 @@ public abstract class MagicUtils {
      * @return A collection of <code>MagicProperty</code>'s
      * @throws MagicException XPath error
      */
-    public static final Collection getProperties(
+    public static final Collection<MagicProperty> getProperties(
             final Object object, final MagicProperty parent)
             throws MagicException {
         final String order =
@@ -118,22 +122,21 @@ public abstract class MagicUtils {
             try {
                 return getPropertiesFromXML(object, parent);
             } catch (JaxenException e) {
-                throw new MagicException("XPath error.", e);
+                throw new MagicException("XPath error.", e); //$NON-NLS-1$
             }
         } else if (TYPE_VALUE.equals(order)) {
-            final List properties = getAllProperties(object, parent);
+            final List<MagicProperty> properties = getAllProperties(object, parent);
             // sort the properties by their type
-            Collections.sort(properties, new Comparator() {
-                public int compare(final Object o1, final Object o2) {
-                    final Class class1;
-                    final Class class2;
+            Collections.sort(properties, new Comparator<MagicProperty>() {
+                public int compare(final MagicProperty o1,
+                        final MagicProperty o2) {
                     try {
-                        class1 = ((MagicProperty) o1).getType();
-                        class2 = ((MagicProperty) o2).getType();
+                        return o1.getType().getName().compareTo(
+                                o2.getType().getName());
                     } catch (MagicException e) {
                         return 0;
                     }
-                    return class1.getName().compareTo(class2.getName());
+                    
                 }
             });
             // return the sorted collection
@@ -146,7 +149,7 @@ public abstract class MagicUtils {
             final Comparator comparator = (Comparator) parent.getConfiguration()
                     .getClassInstance(MagicConfiguration.GUI_ORDER_KEY);
             // get all the declared properties
-            final List properties = getAllProperties(object, parent);
+            final List<MagicProperty> properties = getAllProperties(object, parent);
             // sort the properties by their type
             Collections.sort(properties, comparator);
             // return the sorted collection
@@ -157,7 +160,7 @@ public abstract class MagicUtils {
     /**
      * Helper method.
      */
-    private static List getAllProperties(final Object object,
+    private static List<MagicProperty> getAllProperties(final Object object,
             final MagicProperty parent) {
         if (object instanceof Map) {
             return getMappedProperties(object, parent);
@@ -170,7 +173,7 @@ public abstract class MagicUtils {
      * Helper method.
      * @throws JaxenException XPath error
      */
-    private static Collection getPropertiesFromXML(final Object object,
+    private static Collection<MagicProperty> getPropertiesFromXML(final Object object,
             final MagicProperty parent) throws JaxenException {
         // convert BeanPath to XPath
         final String xpath = BeanPathToXPathConverter.convert(
@@ -198,7 +201,7 @@ public abstract class MagicUtils {
     /**
      * Helper method.
      */
-    private static final List getMappedProperties(final Object object,
+    private static final List<MagicProperty> getMappedProperties(final Object object,
             final MagicProperty parent) {
         final Map map = (Map) object;
         
@@ -215,7 +218,7 @@ public abstract class MagicUtils {
     /**
      * Helper method.
      */
-    private static final List getDeclaredProperties(final Object object,
+    private static final List<MagicProperty> getDeclaredProperties(final Object object,
             final MagicProperty parent) {
         final PropertyDescriptor [] descriptors =
                 PropertyUtils.getPropertyDescriptors(object);

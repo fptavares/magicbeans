@@ -175,7 +175,7 @@ public class MagicProperty {
      * @throws MagicException
      *  When some problem occures while checking for the type
      */
-    public final Class getType() throws MagicException {
+    public final Class<?> getType() throws MagicException {
         try {
             final Object o;
             o = this.get();

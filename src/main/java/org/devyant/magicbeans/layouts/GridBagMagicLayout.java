@@ -29,6 +29,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 
 import org.devyant.magicbeans.MagicComponent;
+import org.devyant.magicbeans.MagicContainer;
 import org.devyant.magicbeans.MagicLayout;
 import org.devyant.magicbeans.exceptions.MagicException;
 
@@ -39,7 +40,7 @@ import org.devyant.magicbeans.exceptions.MagicException;
  * @version $Revision$ $Date$ ($Author$)
  * @since Jun 24, 2005 10:16:51 PM
  */
-public class GridBagMagicLayout extends GridBagLayout implements MagicLayout {
+public class GridBagMagicLayout extends GridBagLayout implements MagicLayout<Container> {
     /**
      * The DEFAULT_ANCHOR <code>int</code>.
      */
@@ -86,7 +87,7 @@ public class GridBagMagicLayout extends GridBagLayout implements MagicLayout {
     /**
      * @see org.devyant.magicbeans.MagicLayout#addLabeledComponent(Object, Object, MagicComponent)
      */
-    public void addLabeledComponent(final Object container, final Object label,
+    public void addLabeledComponent(final Container container, final Object label,
             final MagicComponent component) throws MagicException {
         // add label
         addComponent(container, label, 0, line, NO_WEIGHTX);
@@ -95,9 +96,9 @@ public class GridBagMagicLayout extends GridBagLayout implements MagicLayout {
     }
 
     /**
-     * @see org.devyant.magicbeans.MagicLayout#addLabeledIsolatedComponent(Object, Object, MagicComponent)
+     * @see org.devyant.magicbeans.MagicLayout#addLabeledIsolatedComponent(MagicContainer, Object, MagicComponent)
      */
-    public void addLabeledIsolatedComponent(final Object container,
+    public void addLabeledIsolatedComponent(final MagicContainer container,
             final Object label, final MagicComponent component)
             throws MagicException {
         // add label
@@ -120,7 +121,7 @@ public class GridBagMagicLayout extends GridBagLayout implements MagicLayout {
     /**
      * @see org.devyant.magicbeans.MagicLayout#addControledNotExpandedComponent(java.awt.Container, java.awt.Component, java.awt.Component[])
      */
-    public void addControledComponent(Object container, MagicComponent component,
+    public void addControledComponent(Object container, Object component,
             Object[] controllers, boolean expand) throws MagicException {
         final int fill;
         if (expand) {
@@ -129,7 +130,7 @@ public class GridBagMagicLayout extends GridBagLayout implements MagicLayout {
             fill = GridBagConstraints.HORIZONTAL;
         }
         // add main component
-        addComponent(container, component.render(), 1, line, STANDARD_WEIGHTX,
+        addComponent(container, component, 1, line, STANDARD_WEIGHTX,
                 DEFAULT_ANCHOR, fill, 1, controllers.length, insets);
         // add controllers
         for (int i = 0; i < controllers.length; i++) {

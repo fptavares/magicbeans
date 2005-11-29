@@ -34,28 +34,31 @@ import org.devyant.magicbeans.utils.Previewable;
  * @version $Revision$ ($Author$)
  * @since 18/Abr/2005 19:36:41
  */
-public class SwingStringComponent extends AbstractMagicComponent
+public class SwingStringComponent extends AbstractMagicComponent<JTextField>
         implements Previewable {
 
     /**
      * @see org.devyant.magicbeans.ui.AbstractMagicComponent#createComponent()
      */
-    protected Object createComponent() {
+    @Override
+    protected JTextField createComponent() {
         return new JTextField();
     }
 
     /**
      * @see org.devyant.magicbeans.ui.AbstractMagicComponent#getValue()
      */
+    @Override
     protected Object getValue() {
-        return ((JTextField) this.component).getText();
+        return this.component.getText();
     }
 
     /**
      * @see org.devyant.magicbeans.ui.AbstractMagicComponent#setValue(java.lang.Object)
      */
+    @Override
     protected void setValue(final Object value) {
-        ((JTextField) this.component).setText(value.toString());
+        this.component.setText(value.toString());
     }
     
 }

@@ -33,15 +33,11 @@ import org.devyant.magicbeans.ui.listeners.UpdateButtonActionListener;
  * 
  * @author ftavares
  * @version $Revision$ $Date$ ($Author$)
+ * @param <C> The container to use for the binding
  * @since Oct 6, 2005 12:29:43 PM
  */
-public abstract class AbstractMagicContainer extends AbstractMagicComponent
-        implements MagicContainer {
-    
-    /**
-     * The nested <code>boolean</code>.
-     */
-    private final boolean nested;
+public abstract class AbstractMagicContainer<C>
+        extends AbstractMagicComponent<C> implements MagicContainer<C> {
     
     /**
      * The standalone <code>boolean</code>.
@@ -56,7 +52,7 @@ public abstract class AbstractMagicContainer extends AbstractMagicComponent
     /**
      * The <code>MagicLayout</code>.
      */
-    protected MagicLayout layout;
+    protected MagicLayout<C> layout;
     
     /**
      * The status label component.
@@ -65,11 +61,10 @@ public abstract class AbstractMagicContainer extends AbstractMagicComponent
     
     /**
      * Creates a new <b>labeled</b> <code>AbstractMagicContainer</code> instance.
-     * @see #AbstractMagicContainer(UIFactory, boolean, boolean)
+     * @see #AbstractMagicContainer(UIFactory, boolean)
      */
-    public AbstractMagicContainer(final UIFactory factory,
-            final boolean nested) {
-        this(factory, nested, true);
+    public AbstractMagicContainer(final UIFactory factory) {
+        this(factory, true);
     }
 
     /**
@@ -78,13 +73,11 @@ public abstract class AbstractMagicContainer extends AbstractMagicComponent
      * toolkit you're using.
      * <p>This factory may easilly be fetched using, for example,
      * <code>MagicFactory.swing()</code> (for the Swing toolkit).</p>
-     * @param nested Is it a nested or isolated container?
      * @param labeled Whether this is a labeled container
      */
     public AbstractMagicContainer(final UIFactory factory,
-            final boolean nested, final boolean labeled) {
+            final boolean labeled) {
         super(labeled);
-        this.nested = nested;
         this.factory = factory;
         // TODO: wtf?
         // nested -> !standalone
@@ -94,7 +87,8 @@ public abstract class AbstractMagicContainer extends AbstractMagicComponent
     /**
      * @see org.devyant.magicbeans.ui.AbstractMagicComponent#finalize()
      */
-    protected void finalize() {
+    @Override
+    protected void finalizeComponent() {
         if (!isStandalone()) {
             return;
         }
@@ -109,15 +103,17 @@ public abstract class AbstractMagicContainer extends AbstractMagicComponent
         layout.addButton(this.component, button);
         layout.addStatus(this.component, this.status);
         
-        if (this.nested) {
+        if (this.isNested()) {
             finalizeNestedComponent();
         }
     }
 
     /**
-     * 
+     * To be optionally overriden.
      */
-    protected abstract void finalizeNestedComponent();
+    protected void finalizeNestedComponent() {
+        // to be optionally overriden
+    }
 
     /**
      * Initializes the handler for the MagicContainerAction.
@@ -136,7 +132,7 @@ public abstract class AbstractMagicContainer extends AbstractMagicComponent
     /**
      * @see org.devyant.magicbeans.MagicContainer#setMagicLayout(org.devyant.magicbeans.MagicLayout)
      */
-    public void setMagicLayout(final MagicLayout layout) {
+    public void setMagicLayout(final MagicLayout<C> layout) {
         this.layout = layout;
     }
 

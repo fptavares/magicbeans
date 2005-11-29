@@ -170,22 +170,23 @@ public abstract class AbstractUIFactory implements UIFactory {
             // -> magic panel
             // -> auto-magic-bean -> nested magic panel
         } else {
-            if (nested) {
+            /*if (nested) { TODO: delete?
                 return new SwingNestedContainer();
-            } else {
+            } else {*/
                 return new SwingContainer();
-            }
+            /*}*/
         }
     }
 
     /**
-     * @see org.devyant.magicbeans.ui.UIFactory#getIsolatedComponentFor(org.devyant.magicbeans.beans.MagicProperty)
+     * @todo all wrong
+     * @see org.devyant.magicbeans.ui.UIFactory#getComponentForIsolated(org.devyant.magicbeans.beans.MagicProperty)
      */
-    public final MagicComponent getIsolatedComponentFor(
+    public final MagicComponent getComponentForIsolated(
             final MagicProperty property) throws MagicException {
         final MagicComponent component = getNestedComponentInstanceFor(property);
         
-        if (MagicUtils.cannotStandalone(component)) {
+        if (!MagicUtils.mayBeIsolated(component)) {
             return component;
         }
         

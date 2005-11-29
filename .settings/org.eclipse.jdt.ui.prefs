@@ -1,6 +1,7 @@
-#Mon Jul 04 23:00:52 WEST 2005
+#Sun Nov 27 18:38:47 WET 2005
 eclipse.preferences.version=1
-formatter_settings_version=8
+formatter_profile=_project
+formatter_settings_version=9
 org.eclipse.jdt.ui.exception.name=e
 org.eclipse.jdt.ui.gettersetter.use.is=true
 org.eclipse.jdt.ui.javadoc=true

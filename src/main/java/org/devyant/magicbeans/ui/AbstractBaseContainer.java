@@ -23,7 +23,6 @@
 package org.devyant.magicbeans.ui;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.LinkedList;
 
 import org.devyant.magicbeans.MagicComponent;
@@ -37,54 +36,60 @@ import org.devyant.magicbeans.exceptions.MagicException;
  * 
  * @author ftavares
  * @version $Revision$ $Date$ ($Author$)
+ * @see AbstractMagicContainer
  * @since Oct 28, 2005 7:13:05 PM
  */
-public abstract class AbstractBaseContainer extends AbstractMagicContainer {
+public abstract class AbstractBaseContainer<C>
+        extends AbstractMagicContainer<C> {
     
     /**
      * A <code>Collection</code> of this container's child components.
      */
-    private final Collection components = new LinkedList();
+    private final Collection<MagicComponent<?>> components =
+        new LinkedList<MagicComponent<?>>();
     
     /**
      * Creates a new <code>AbstractBaseContainer</code> instance.
+     * @see AbstractMagicContainer#AbstractMagicContainer(UIFactory)
      */
-    public AbstractBaseContainer(final UIFactory factory, final boolean nested) {
-        super(factory, nested);
+    public AbstractBaseContainer(final UIFactory factory) {
+        super(factory);
     }
     
     /**
      * Mass layer update.
      * @see org.devyant.magicbeans.ui.AbstractMagicComponent#update()
      */
+    @Override
     public final void update() throws MagicException {
-        for (Iterator i = components.iterator(); i.hasNext(); ) {
-            final MagicComponent child = (MagicComponent) i.next();
+        for (MagicComponent<?> child : this.components) {
             // do layer-by-layer update
             child.update();
             
             // debug
             MagicUtils.debug(child.getProperty().getName()
-                    + " : " + child.getProperty().get());
+                    + " : " + child.getProperty().get()); //$NON-NLS-1$
         }
     }
     
     /**
-     * @see org.devyant.magicbeans.ui.AbstractMagicComponent#setValue(java.lang.Object)
+     * @see org.devyant.magicbeans.ui.AbstractMagicComponent#bindTo(org.devyant.magicbeans.beans.MagicProperty)
      */
-    protected final void setValue(Object value) throws MagicException {
+    @Override
+    public final void bindTo(final MagicProperty property) throws MagicException {
+        super.bindTo(property);
+        
         // fill with property's value
-        final Object object = getProperty().get();
-        if (object == null) {
+        final Object value = getProperty().get();
+        if (value == null) {
             return;
         }
         
-        final Collection properties =
-            MagicUtils.getProperties(object, getProperty());
+        final Collection<MagicProperty> properties =
+            MagicUtils.getProperties(value, getProperty());
         
-        for (Iterator i = properties.iterator(); i.hasNext(); ) {
-            final MagicProperty prop = (MagicProperty) i.next();
-            final MagicComponent component;
+        for (MagicProperty prop : properties) {
+            final MagicComponent<?> component;
             
             // verify if is visible
             if (!prop.getConfiguration()
@@ -94,38 +99,50 @@ public abstract class AbstractBaseContainer extends AbstractMagicContainer {
             
             // verify if is nested
             final boolean nested = prop.getConfiguration()
-            .getSpecialBoolean(MagicConfiguration.XML_NESTED);
+                .getSpecialBoolean(MagicConfiguration.XML_NESTED);
             if (nested) {
                 // basic nested component
                 component = getFactory().getNestedComponentInstanceFor(prop);
             } else {
                 // isolated component
-                component = getFactory().getIsolatedComponentFor(prop);
+                component = getFactory().getComponentForIsolated(prop);
             }
             
-            MagicUtils.info("Binding the generated component to the property.");
+            MagicUtils.debug("Binding the generated component to the property."); //$NON-NLS-1$
             component.bindTo(prop);
             
-            addMagicComponent(component, nested);
+            this.components.add(component);
+        }
+    }
+    
+    /**
+     * Add the actual components to the actual container 
+     * @see org.devyant.magicbeans.ui.AbstractMagicComponent#initializeComponent()
+     */
+    @Override
+    protected void initializeComponent() throws MagicException {
+        super.initializeComponent();
+        
+        for (MagicComponent<?> mComponent : this.components) {
+            addMagicComponent(mComponent);
         }
     }
     
     /**
      * @param mComponent
-     * @param nested
      * @throws MagicException
      */
-    private final void addMagicComponent(MagicComponent mComponent,
-            final boolean nested) throws MagicException {
+    private final void addMagicComponent(MagicComponent<?> mComponent)
+            throws MagicException {
         if (mComponent.isLabeled()) {
-            Object label = getFactory().createLabel(mComponent.getName());
+            final Object label = getFactory().createLabel(mComponent.getName());
             // add label + magic component
-            if (nested) {
+            if (isNested()) {
                 this.layout.addLabeledComponent(
                         this.component, label, mComponent);
             } else {
                 this.layout.addLabeledIsolatedComponent(
-                        this.component, label, mComponent);
+                        this, label, mComponent);
             }
         } else {
             // add magic component
@@ -134,10 +151,21 @@ public abstract class AbstractBaseContainer extends AbstractMagicContainer {
     }
     
     /**
+     * @todo this doesn't seem very correct...
+     * @see org.devyant.magicbeans.ui.AbstractMagicComponent#setValue(java.lang.Object)
+     */
+    @Override
+    protected final void setValue(Object value) {
+        // do nothing
+    }
+    
+    /**
+     * @todo this doesn't seem very correct...
      * @see org.devyant.magicbeans.ui.AbstractMagicComponent#getValue()
      * @return <code>null</code>
      */
-    protected final Object getValue() throws MagicException {
+    @Override
+    protected final Object getValue() {
         return null;
     }
     

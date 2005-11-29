@@ -30,9 +30,10 @@ import org.devyant.magicbeans.exceptions.MagicException;
  * 
  * @author Filipe Tavares
  * @version $Revision$ ($Author$)
+ * @param <C> The component to use for the binding
  * @since 18/Abr/2005 20:56:13
  */
-public interface MagicComponent {
+public interface MagicComponent<C> {
     /**
      * Updates the original data container.
      * @throws MagicException Something went wrong
@@ -43,7 +44,7 @@ public interface MagicComponent {
      * @param property The property
      * @throws MagicException Something went wrong
      */
-    public void bindTo(final MagicProperty property);
+    public void bindTo(final MagicProperty property) throws MagicException;
     /**
      * Getter method for the property.
      * @return The <code>MagicProperty</code> instance binded to this component
@@ -52,12 +53,19 @@ public interface MagicComponent {
     /**
      * Render the actual graphical component for the corresponding toolkit.
      * @return A GUI component
+     * @throws MagicException Something went wrong
      */
-    public Object render() throws MagicException;
+    public C render() throws MagicException;
     /**
      * Whether this is a labeled component or not.
+     * @return A boolean
      */
     public boolean isLabeled();
+    /**
+     * Is it a nested or isolated container?.
+     * @return The answer
+     */
+    public boolean isNested();
     /**
      * The getter method for the property's name.
      * <p>This <code>String</code> will

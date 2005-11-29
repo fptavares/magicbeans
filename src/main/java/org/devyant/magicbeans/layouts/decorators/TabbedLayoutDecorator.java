@@ -24,8 +24,11 @@ package org.devyant.magicbeans.layouts.decorators;
 
 
 import org.devyant.magicbeans.MagicComponent;
+import org.devyant.magicbeans.MagicContainer;
 import org.devyant.magicbeans.MagicLayout;
+import org.devyant.magicbeans.MagicUtils;
 import org.devyant.magicbeans.exceptions.MagicException;
+import org.devyant.magicbeans.ui.isolated.TabbedContainer;
 
 /**
  * TabbedLayoutDecorator is a <b>cool</b> class.
@@ -35,7 +38,7 @@ import org.devyant.magicbeans.exceptions.MagicException;
  * @since Aug 23, 2005 12:07:24 AM
  */
 public class TabbedLayoutDecorator implements MagicLayout {
-     /**
+    /**
      * The layout <code>MagicLayout</code>.
      */
     private final MagicLayout layout;
@@ -58,12 +61,35 @@ public class TabbedLayoutDecorator implements MagicLayout {
 
     /**
      * The method who's behaviour is altered.
-     * @see org.devyant.magicbeans.MagicLayout#addLabeledIsolatedComponent(Object, Object, MagicComponent)
+     * @see org.devyant.magicbeans.MagicLayout#addLabeledIsolatedComponent(MagicContainer, Object, MagicComponent)
      * @todo damn... this is just for buttons...... grrrrr :(
      */
-    public void addLabeledIsolatedComponent(final Object container,
+    public void addLabeledIsolatedComponent(final MagicContainer container,
             final Object label, final MagicComponent component)
             throws MagicException {
+        /*
+         * TODO: either add TabbedInterface and call getMainPanel()
+         * or override addComponent on TabbedContainerImpl to
+         * check the type of component and add it to the right place
+         */
+        if (MagicUtils.mayBeIsolated(component)) {
+            this.layout.addLabeledComponent(
+                    ((TabbedContainer) container).getMainPanel(),
+                    label, component);
+        } else {
+            ((TabbedContainer) container).addSecondaryPanel(component);
+        }
+        /*
+         * TODO: nested/isolated problem. apply on component or container?
+         * child  -> component
+         * tabbed -> container
+         * tree   -> ?
+         * it must be the same for all
+         * container works for all, but component is the right option
+         * 
+         * -----> actually, it's applied to a component which, in fact,
+         *       is a container. this is the same as with the child behaviour :)
+         */
     }
 
     /**
@@ -78,7 +104,7 @@ public class TabbedLayoutDecorator implements MagicLayout {
      * @see org.devyant.magicbeans.MagicLayout#addControledComponent(Object, MagicComponent, Object[], boolean)
      */
     public void addControledComponent(final Object container,
-            final MagicComponent component, final Object[] controllers,
+            final Object component, final Object[] controllers,
             final boolean expand) throws MagicException {
         this.layout.addControledComponent(
                 container, component, controllers, expand);

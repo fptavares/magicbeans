@@ -24,6 +24,7 @@ package org.devyant.magicbeans.ui;
 
 import org.apache.commons.lang.StringUtils;
 import org.devyant.magicbeans.MagicComponent;
+import org.devyant.magicbeans.MagicUtils;
 import org.devyant.magicbeans.beans.MagicProperty;
 import org.devyant.magicbeans.conf.MagicConfiguration;
 import org.devyant.magicbeans.exceptions.MagicException;
@@ -33,9 +34,10 @@ import org.devyant.magicbeans.exceptions.MagicException;
  * 
  * @author ftavares
  * @version $Revision$ $Date$ ($Author$)
+ * @param <C> The component to use for the binding
  * @since Oct 4, 2005 4:43:07 AM
  */
-public abstract class AbstractMagicComponent implements MagicComponent {
+public abstract class AbstractMagicComponent<C> implements MagicComponent<C> {
     /**
      * The property to bind to.
      */
@@ -43,7 +45,7 @@ public abstract class AbstractMagicComponent implements MagicComponent {
     /**
      * The component to be binded to a property.
      */
-    protected Object component;
+    protected C component;
     
     /**
      * The property's name. This <code>String</code> will
@@ -55,6 +57,11 @@ public abstract class AbstractMagicComponent implements MagicComponent {
      * Whether this is a labeled component or not.
      */
     private boolean labeled;
+    
+    /**
+     * Is it a nested or isolated container?.
+     */
+    private boolean nested;
     
     /**
      * Creates a new <b>labeled</b> <code>AbstractMagicComponent</code> instance.
@@ -82,11 +89,15 @@ public abstract class AbstractMagicComponent implements MagicComponent {
     /**
      * @see org.devyant.magicbeans.MagicComponent#bindTo(org.devyant.magicbeans.beans.MagicProperty)
      */
-    public void bindTo(final MagicProperty property) {
+    public void bindTo(final MagicProperty property) throws MagicException {
         this.property = property;
         // get the property's name
         this.name = MagicConfiguration.resources.getNameFor(this.property);
+        // if the label is blank -> not labeled
         this.labeled = this.labeled && !StringUtils.isBlank(this.name);
+        // is it nested?
+        this.nested = this.property.getConfiguration().getSpecialBoolean(
+                MagicConfiguration.XML_NESTED) || !MagicUtils.mayBeIsolated(this);
         /*
          * TODO: maybe move the code bellow to avoid
          * recursive initialization of non-rendered components
@@ -99,13 +110,15 @@ public abstract class AbstractMagicComponent implements MagicComponent {
      * the initialization of certain parts of it's implementation
      * may override this method to achieve this.
      */
-    protected void initialize() {
+    protected void initializeComponent() throws MagicException {
+        // do nothing
     }
 
     /**
      * This is an empty implementation for the component finalization.
      */
-    protected void finalize() {
+    protected void finalizeComponent() throws MagicException {
+        // do nothing
     }
 
     /**
@@ -118,17 +131,17 @@ public abstract class AbstractMagicComponent implements MagicComponent {
     /**
      * @see org.devyant.magicbeans.MagicComponent#render()
      */
-    public Object render() throws MagicException {
+    public C render() throws MagicException {
         this.component = createComponent();
         // initialize the component
-        initialize();
+        initializeComponent();
         // fill with property's value
         final Object value = this.property.get();
         if (value != null) {
             setValue(value);
         }
         // finalize the component
-        finalize();
+        finalizeComponent();
         return this.component;
     }
 
@@ -137,6 +150,13 @@ public abstract class AbstractMagicComponent implements MagicComponent {
      */
     public boolean isLabeled() {
         return this.labeled;
+    }
+    
+    /**
+     * @see org.devyant.magicbeans.MagicComponent#isNested()
+     */
+    public boolean isNested() {
+        return this.nested;
     }
 
     /**
@@ -147,6 +167,10 @@ public abstract class AbstractMagicComponent implements MagicComponent {
     }
 
     /**
+     * This is a utility implementation of the
+     * {@link org.devyant.magicbeans.utils.Previewable} interface.
+     * @return {@link AbstractMagicComponent#getValue()}
+     * @throws MagicException {@link AbstractMagicComponent#getValue()}
      * @see org.devyant.magicbeans.utils.Previewable#preview()
      */
     public Object preview() throws MagicException {
@@ -157,7 +181,7 @@ public abstract class AbstractMagicComponent implements MagicComponent {
      * Create and return the instance of the component to bind to the property.
      * @return The actual toolkit-specific component
      */
-    protected abstract Object createComponent();
+    protected abstract C createComponent();
 
     /**
      * This method returns the current value that this component has
@@ -169,6 +193,8 @@ public abstract class AbstractMagicComponent implements MagicComponent {
 
     /**
      * This method sets the current value that this component has.
+     * <p>This method is only called if <code>value</code> is not 
+     * <code>null</code>, so you don't have to check that when implementing.</p>
      * @param value The current value for the property
      * @throws MagicException Something went wrong
      */

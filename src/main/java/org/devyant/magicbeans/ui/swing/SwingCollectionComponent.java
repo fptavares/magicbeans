@@ -33,12 +33,14 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import org.devyant.magicbeans.MagicFactory;
 import org.devyant.magicbeans.MagicUtils;
 import org.devyant.magicbeans.beans.MagicProperty;
 import org.devyant.magicbeans.conf.MagicConfiguration;
 import org.devyant.magicbeans.exceptions.MagicException;
 import org.devyant.magicbeans.i18n.MagicResources;
 import org.devyant.magicbeans.ui.AbstractMagicComponent;
+import org.devyant.magicbeans.ui.AbstractMagicContainer;
 import org.devyant.magicbeans.ui.swing.generalizers.ListGeneralizer;
 import org.devyant.magicbeans.utils.InternalMagicBean;
 
@@ -48,8 +50,10 @@ import org.devyant.magicbeans.utils.InternalMagicBean;
  * @author Filipe Tavares
  * @version $Revision$ $Date$ ($Author$)
  * @since 17/Jun/2005 2:41:31
+ * @todo extend SwingContainer? -> re-use of code and waist of code
+ *        abstract swing container? can't be -> AbstractBaseContainer
  */
-public class SwingCollectionComponent extends AbstractMagicComponent {
+public class SwingCollectionComponent extends AbstractMagicContainer {
     private final ListGeneralizer listComponent;
     private final DefaultComboBoxModel model = new DefaultComboBoxModel();
     private final JButton addButton = new JButton();
@@ -57,23 +61,18 @@ public class SwingCollectionComponent extends AbstractMagicComponent {
     private final JButton removeButton = new JButton();
     
     /**
-     * The title <code>String</code>.
-     * <p>This is used for the add/edit window title.</p>
-     */
-    private String title = "";
-    
-    /**
      * Creates a new <code>SwingCollectionComponent</code> instance.
      */
-    public SwingCollectionComponent(final ListGeneralizer listComponent) {
-        super(new JPanel());
+    public SwingCollectionComponent(final ListGeneralizer listComponent,
+            final boolean nested) {
+        super(MagicFactory.swing(), nested);
         this.listComponent = listComponent;
     }
     
     /**
-     * @see org.devyant.magicbeans.ui.AbstractMagicComponent#initialize()
+     * @see org.devyant.magicbeans.ui.AbstractMagicComponent#initializeComponent()
      */
-    protected final void initialize() {
+    protected final void initializeComponent() throws MagicException {
         listComponent.setModel(model);
         
         addButton.setText(MagicConfiguration.resources.get(MagicResources.STRING_ADDBUTTON));
@@ -99,7 +98,7 @@ public class SwingCollectionComponent extends AbstractMagicComponent {
         final JScrollPane scrollPane = new JScrollPane();
         scrollPane.getViewport().setView((Component) listComponent);
         // leave the dirty work to the layout manager :)
-        layout.addControledComponent(this, scrollPane,
+        layout.addControledComponent(this.component, scrollPane,
                 new Component[] {addButton, editButton, removeButton},
                 listComponent.isExpandable());
     }
@@ -110,7 +109,7 @@ public class SwingCollectionComponent extends AbstractMagicComponent {
      */
     public void addButtonActionPerformed(ActionEvent evt) {
         try {
-            this.property.getConfiguration().getSpecialClassInstance(
+            this.getProperty().getConfiguration().getSpecialClassInstance(
                     MagicConfiguration.XML_COLLECTION_CLASS);
             model.addElement("Yoooooo!!");
         } catch (MagicException e) {
@@ -129,7 +128,7 @@ public class SwingCollectionComponent extends AbstractMagicComponent {
                 return; // no item has been selected
             }
             // create the dialog
-            bean.showInternalFrame(this, this.title,
+            bean.showInternalFrame((Component) this.component, this.getName(),
                     new java.awt.event.WindowAdapter() {
                         public void windowClosing(java.awt.event.WindowEvent evt) {
                             ((Component) listComponent).repaint();
@@ -171,14 +170,6 @@ public class SwingCollectionComponent extends AbstractMagicComponent {
         for (Iterator i = collection.iterator(); i.hasNext(); ) {
             model.addElement(new InternalMagicBean(i.next()));
         }
-    }
-    
-    /**
-     * @see org.devyant.magicbeans.ui.swing.SwingUnlabeledContainer#setTitle(String)
-     */
-    public void setTitle(String title) {
-        super.setTitle(title);
-        this.title = title;
     }
 
     /**

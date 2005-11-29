@@ -22,11 +22,9 @@
  */
 package org.devyant.magicbeans.ui.swing;
 
-import java.awt.Container;
 import java.awt.LayoutManager;
 
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
@@ -47,33 +45,37 @@ import org.devyant.magicbeans.ui.AbstractBaseContainer;
  * @todo maybe remove status bar....
  * replace by a simple -> title + "*" -> only at nested containers...:(
  */
-public class SwingContainer extends AbstractBaseContainer {
+public class SwingContainer extends AbstractBaseContainer<JPanel> {
 
     /**
-     * @see AbstractBaseContainer#AbstractBaseContainer(boolean)
+     * @see AbstractBaseContainer#AbstractBaseContainer(org.devyant.magicbeans.ui.UIFactory)
      */
-    public SwingContainer(final boolean nested) {
-        super(MagicFactory.swing(), nested);
+    public SwingContainer() {
+        super(MagicFactory.swing());
     }
 
     /**
      * @see org.devyant.magicbeans.ui.AbstractMagicComponent#createComponent()
      */
-    protected Object createComponent() {
+    @Override
+    protected JPanel createComponent() {
         return new JPanel();
     }
 
     /**
-     * @see org.devyant.magicbeans.ui.AbstractMagicComponent#initialize()
+     * @see org.devyant.magicbeans.ui.AbstractMagicComponent#initializeComponent()
      */
-    public void initialize() {
-        super.initialize();
-        ((Container) this.component).setLayout((LayoutManager) this.layout);
+    @Override
+    public void initializeComponent() throws MagicException {
+        super.initializeComponent();
+        
+        this.component.setLayout((LayoutManager) this.layout);
     }
     
     /**
      * @see org.devyant.magicbeans.ui.AbstractMagicContainer#initMagicContainerAction(java.lang.Object)
      */
+    @Override
     protected final void initMagicContainerAction(Object button) {
         ((JButton) button).addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -92,9 +94,10 @@ public class SwingContainer extends AbstractBaseContainer {
     /**
      * @see org.devyant.magicbeans.ui.AbstractMagicContainer#finalizeNestedComponent()
      */
+    @Override
     protected void finalizeNestedComponent() {
-        ((JComponent) this.component).setBorder(
-                new TitledBorder(null,  " " + this.getName() + " ",
+        this.component.setBorder(
+                new TitledBorder(null,  " " + this.getName() + " ",  //$NON-NLS-1$//$NON-NLS-2$
                         TitledBorder.LEFT, TitledBorder.TOP));
     }
 
@@ -113,7 +116,7 @@ public class SwingContainer extends AbstractBaseContainer {
      * @todo use icon for error
      */
     protected void showErrorMessage(final String string) {
-        showMessage("[ERROR] " + string);
+        showMessage("[ERROR] " + string); //$NON-NLS-1$
     }
     
 }

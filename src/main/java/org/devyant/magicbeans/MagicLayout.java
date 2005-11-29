@@ -30,9 +30,10 @@ import org.devyant.magicbeans.exceptions.MagicException;
  * 
  * @author ftavares
  * @version $Revision$ $Date$ ($Author$)
+ * @param <C> The container implementation class
  * @since Jun 24, 2005 9:52:07 PM
  */
-public interface MagicLayout {
+public interface MagicLayout<C> {
     /**
      * Add a pair of components (label + MagicComponent)
      * that represent a property.
@@ -41,7 +42,7 @@ public interface MagicLayout {
      * @param component The magic component
      * @throws MagicException When a problem occurs while rendering the component
      */
-    public void addLabeledComponent(final Object container, final Object label,
+    public void addLabeledComponent(final C container, final Object label,
             final MagicComponent component) throws MagicException;
     /**
      * Add a pair of components (label + IsolatedComponent)
@@ -51,7 +52,7 @@ public interface MagicLayout {
      * @param component The isolated magic component
      * @throws MagicException When a problem occurs while rendering the component
      */
-    public void addLabeledIsolatedComponent(final Object container,
+    public void addLabeledIsolatedComponent(final MagicContainer container,
             final Object label, final MagicComponent component)
             throws MagicException;
     /**
@@ -76,7 +77,7 @@ public interface MagicLayout {
      * @throws MagicException When a problem occurs while rendering the component
      */
     public void addControledComponent(final Object container,
-            final MagicComponent component, final Object[] controllers,
+            final Object component, final Object[] controllers,
             boolean expand) throws MagicException;
     /**
      * Add the OK button.

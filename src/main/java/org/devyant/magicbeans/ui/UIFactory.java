@@ -52,7 +52,7 @@ public interface UIFactory {
      * @throws MagicException
      *  {@link #getNestedComponentInstanceFor(MagicProperty)}
      */
-    public abstract MagicComponent getIsolatedComponentFor(
+    public abstract MagicComponent getComponentForIsolated(
             final MagicProperty property) throws MagicException;
     
     /**

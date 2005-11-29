@@ -20,32 +20,19 @@
  * Rua Simao Bolivar 203 6C, 4470-214 Maia, Portugal.
  *
  */
-package org.devyant.magicbeans;
+package org.devyant.magicbeans.ui.isolated;
 
-import org.devyant.magicbeans.ui.listeners.UpdateButtonActionHandler;
+import org.devyant.magicbeans.MagicComponent;
+import org.devyant.magicbeans.MagicContainer;
 
 /**
- * MagicContainer is a <b>cool</b> class.
+ * TabbedContainer is a <b>cool</b> class.
  * 
- * @author Filipe Tavares
+ * @author ftavares
  * @version $Revision$ $Date$ ($Author$)
- * @since 17/Jun/2005 3:35:04
+ * @since Nov 26, 2005 4:44:43 PM
  */
-public interface MagicContainer<C> extends MagicComponent<C>,
-        UpdateButtonActionHandler {
-    /**
-     * If set to true, a MagicContainer will be able
-     * to stand alone (i.e. containing the apropriate "controllers").
-     */
-    public void setStandalone(final boolean standalone);
-    /**
-     * Tells the container which layout manager to use.
-     * @param layout The <code>MagicLayout</code> instance
-     */
-    public void setMagicLayout(final MagicLayout<C> layout);
-    /* TODO: delete?
-     * Adds a component to this container.
-     * @param component The <code>MagicComponent</code> to add
-     */
-    //public void addMagicComponent(final MagicComponent component);
+public interface TabbedContainer extends MagicContainer {
+    public Object getMainPanel();
+    public void addSecondaryPanel(final MagicComponent component);
 }
