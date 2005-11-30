@@ -45,8 +45,7 @@ public abstract class AbstractBaseContainer<C>
     /**
      * A <code>Collection</code> of this container's child components.
      */
-    private final Collection<MagicComponent<?>> components =
-        new LinkedList<MagicComponent<?>>();
+    private Collection<MagicComponent<?>> components;
     
     /**
      * Creates a new <code>AbstractBaseContainer</code> instance.
@@ -84,6 +83,8 @@ public abstract class AbstractBaseContainer<C>
         if (value == null) {
             return;
         }
+        
+        this.components = new LinkedList<MagicComponent<?>>();
         
         final Collection<MagicProperty> properties =
             MagicUtils.getProperties(value, getProperty());
