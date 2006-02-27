@@ -42,7 +42,7 @@ public interface MagicContainer<C> extends MagicComponent<C>,
      * Tells the container which layout manager to use.
      * @param layout The <code>MagicLayout</code> instance
      */
-    public void setMagicLayout(final MagicLayout<C> layout);
+    public void setMagicLayout(final MagicLayout layout);
     /* TODO: delete?
      * Adds a component to this container.
      * @param component The <code>MagicComponent</code> to add

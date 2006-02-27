@@ -24,7 +24,6 @@ package org.devyant.magicbeans.layouts.decorators;
 
 
 import org.devyant.magicbeans.MagicComponent;
-import org.devyant.magicbeans.MagicContainer;
 import org.devyant.magicbeans.MagicLayout;
 import org.devyant.magicbeans.MagicUtils;
 import org.devyant.magicbeans.exceptions.MagicException;
@@ -55,17 +54,16 @@ public class TabbedLayoutDecorator implements MagicLayout {
      * @see org.devyant.magicbeans.MagicLayout#addLabeledComponent(Object, Object, MagicComponent)
      */
     public void addLabeledComponent(final Object container, final Object label,
-            final MagicComponent component) throws MagicException {
+            final MagicComponent<?> component) throws MagicException {
         this.layout.addLabeledComponent(container, label, component);
     }
 
     /**
      * The method who's behaviour is altered.
-     * @see org.devyant.magicbeans.MagicLayout#addLabeledIsolatedComponent(MagicContainer, Object, MagicComponent)
-     * @todo damn... this is just for buttons...... grrrrr :(
+     * @see org.devyant.magicbeans.MagicLayout#addLabeledIsolatedComponent(Object, Object, MagicComponent)
      */
-    public void addLabeledIsolatedComponent(final MagicContainer container,
-            final Object label, final MagicComponent component)
+    public void addLabeledIsolatedComponent(final Object container,
+            final Object label, final MagicComponent<?> component)
             throws MagicException {
         /*
          * TODO: either add TabbedInterface and call getMainPanel()
@@ -77,7 +75,8 @@ public class TabbedLayoutDecorator implements MagicLayout {
                     ((TabbedContainer) container).getMainPanel(),
                     label, component);
         } else {
-            ((TabbedContainer) container).addSecondaryPanel(component);
+            ((TabbedContainer) container).addSecondaryPanel(component.getName(),
+                    component.render());
         }
         /*
          * TODO: nested/isolated problem. apply on component or container?
@@ -96,7 +95,7 @@ public class TabbedLayoutDecorator implements MagicLayout {
      * @see org.devyant.magicbeans.MagicLayout#addUnlabeledComponent(Object, MagicComponent)
      */
     public void addUnlabeledComponent(final Object container,
-            final MagicComponent component) throws MagicException {
+            final MagicComponent<?> component) throws MagicException {
         this.layout.addUnlabeledComponent(container, component);
     }
 

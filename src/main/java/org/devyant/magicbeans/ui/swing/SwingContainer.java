@@ -25,8 +25,8 @@ package org.devyant.magicbeans.ui.swing;
 import java.awt.LayoutManager;
 
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
 import org.devyant.magicbeans.MagicFactory;
@@ -45,7 +45,7 @@ import org.devyant.magicbeans.ui.AbstractBaseContainer;
  * @todo maybe remove status bar....
  * replace by a simple -> title + "*" -> only at nested containers...:(
  */
-public class SwingContainer extends AbstractBaseContainer<JPanel> {
+public class SwingContainer extends AbstractBaseContainer<JComponent> {
 
     /**
      * @see AbstractBaseContainer#AbstractBaseContainer(org.devyant.magicbeans.ui.UIFactory)
@@ -55,15 +55,9 @@ public class SwingContainer extends AbstractBaseContainer<JPanel> {
     }
 
     /**
-     * @see org.devyant.magicbeans.ui.AbstractMagicComponent#createComponent()
-     */
-    @Override
-    protected JPanel createComponent() {
-        return new JPanel();
-    }
-
-    /**
      * @see org.devyant.magicbeans.ui.AbstractMagicComponent#initializeComponent()
+     * @todo layout is being set after the components are added
+     * we should really try not to use this method for everything...
      */
     @Override
     public void initializeComponent() throws MagicException {
@@ -78,7 +72,8 @@ public class SwingContainer extends AbstractBaseContainer<JPanel> {
     @Override
     protected final void initMagicContainerAction(Object button) {
         ((JButton) button).addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+            public void actionPerformed(
+                    @SuppressWarnings("unused") java.awt.event.ActionEvent evt) {
                 try {
                     update();
                     fireUpdateButtonAction();

@@ -47,12 +47,12 @@ public abstract class AbstractMagicContainer<C>
     /**
      * The toolkit specific component factory.
      */
-    private final UIFactory factory;
+    private final UIFactory<?> factory;
     
     /**
      * The <code>MagicLayout</code>.
      */
-    protected MagicLayout<C> layout;
+    protected MagicLayout layout;
     
     /**
      * The status label component.
@@ -63,7 +63,7 @@ public abstract class AbstractMagicContainer<C>
      * Creates a new <b>labeled</b> <code>AbstractMagicContainer</code> instance.
      * @see #AbstractMagicContainer(UIFactory, boolean)
      */
-    public AbstractMagicContainer(final UIFactory factory) {
+    public AbstractMagicContainer(final UIFactory<?> factory) {
         this(factory, true);
     }
 
@@ -75,7 +75,7 @@ public abstract class AbstractMagicContainer<C>
      * <code>MagicFactory.swing()</code> (for the Swing toolkit).</p>
      * @param labeled Whether this is a labeled container
      */
-    public AbstractMagicContainer(final UIFactory factory,
+    public AbstractMagicContainer(final UIFactory<?> factory,
             final boolean labeled) {
         super(labeled);
         this.factory = factory;
@@ -132,7 +132,7 @@ public abstract class AbstractMagicContainer<C>
     /**
      * @see org.devyant.magicbeans.MagicContainer#setMagicLayout(org.devyant.magicbeans.MagicLayout)
      */
-    public void setMagicLayout(final MagicLayout<C> layout) {
+    public void setMagicLayout(final MagicLayout layout) {
         this.layout = layout;
     }
 
@@ -163,7 +163,7 @@ public abstract class AbstractMagicContainer<C>
      * The getter method for the factory property.
      * @return The property's <code>AbstractBaseContainer</code> value
      */
-    public final UIFactory getFactory() {
+    public final UIFactory<?> getFactory() {
         return this.factory;
     }
 

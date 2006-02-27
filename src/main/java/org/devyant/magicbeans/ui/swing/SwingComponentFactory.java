@@ -23,11 +23,16 @@
 package org.devyant.magicbeans.ui.swing;
 
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 
 import org.devyant.magicbeans.MagicComponent;
+import org.devyant.magicbeans.beans.MagicProperty;
 import org.devyant.magicbeans.conf.InvalidConfigurationException;
 import org.devyant.magicbeans.conf.MagicConfiguration;
+import org.devyant.magicbeans.conf.UnavailableConfigurationException;
 import org.devyant.magicbeans.generalizers.date.CalendarGeneralizerImpl;
 import org.devyant.magicbeans.generalizers.date.DateGeneralizerImpl;
 import org.devyant.magicbeans.generalizers.date.NoNeedForGeneralizerImpl;
@@ -44,7 +49,7 @@ import org.devyant.magicbeans.ui.swing.generalizers.list.ListGeneralizerImpl;
  * @version $Revision$ $Date$ ($Author$)
  * @since 19/Abr/2005 2:38:36
  */
-public class SwingComponentFactory extends AbstractUIFactory {
+public class SwingComponentFactory extends AbstractUIFactory<JComponent> {
 
     /**
      * @see org.devyant.magicbeans.ui.AbstractUIFactory#getComponentForString()
@@ -114,20 +119,34 @@ public class SwingComponentFactory extends AbstractUIFactory {
     /**
      * @see org.devyant.magicbeans.ui.UIFactory#createButton(java.lang.String)
      */
-    public Object createButton(final String text) {
+    public JComponent createButton(final String text) {
         return new JButton(text);
     }
     /**
      * @see org.devyant.magicbeans.ui.UIFactory#createStatus()
      */
-    public Object createStatus() {
-        return createLabel(" ");
+    public JComponent createStatus() {
+        return createLabel(" "); //$NON-NLS-1$
     }
     /**
      * @see org.devyant.magicbeans.ui.UIFactory#createLabel(java.lang.String)
      */
-    public Object createLabel(String string) {
+    public JComponent createLabel(final String string) {
         return new JLabel(string);
+    }
+    /**
+     * @see org.devyant.magicbeans.ui.AbstractUIFactory#createContainer()
+     */
+    @Override
+    protected JComponent createContainer() {
+        return new JPanel();
+    }
+    /**
+     * @see org.devyant.magicbeans.ui.AbstractUIFactory#createTabbedContainer()
+     */
+    @Override
+    protected JComponent createTabbedContainer() {
+        return new JTabbedPane();
     }
     
 }

@@ -157,6 +157,7 @@ public class MagicConfiguration {
 
 
     /**
+     * @todo switch XPath implementation
      * @param className
      * @param beanPath
      */

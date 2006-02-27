@@ -28,15 +28,19 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 
+import javax.swing.JPanel;
+
 import org.devyant.magicbeans.MagicComponent;
 import org.devyant.magicbeans.MagicContainer;
 import org.devyant.magicbeans.MagicUtils;
 import org.devyant.magicbeans.beans.MagicProperty;
+import org.devyant.magicbeans.conf.ConfigurationException;
 import org.devyant.magicbeans.conf.InvalidConfigurationException;
 import org.devyant.magicbeans.conf.MagicConfiguration;
 import org.devyant.magicbeans.conf.UnavailableConfigurationException;
 import org.devyant.magicbeans.exceptions.MagicException;
 import org.devyant.magicbeans.layouts.LayoutFactory;
+import org.devyant.magicbeans.ui.isolated.TabbedContainer;
 import org.devyant.magicbeans.ui.swing.SwingContainer;
 import org.devyant.magicbeans.ui.swing.SwingNestedContainer;
 import org.devyant.magicbeans.ui.swing.isolated.SwingChildComponent;
@@ -48,7 +52,7 @@ import org.devyant.magicbeans.ui.swing.isolated.SwingChildComponent;
  * @version $Revision$ $Date$ ($Author$)
  * @since Sep 15, 2005 1:40:50 AM
  */
-public abstract class AbstractUIFactory implements UIFactory {
+public abstract class AbstractUIFactory<T> implements UIFactory<T> {
     /**
      * The COLLECTION_STYLE_COMBO <code>String</code>.
      */
@@ -276,4 +280,72 @@ public abstract class AbstractUIFactory implements UIFactory {
      */
     protected abstract MagicComponent getComponentForFile();
     
+
+    /**
+     * @see org.devyant.magicbeans.ui.UIFactory#createContainerFor(org.devyant.magicbeans.beans.MagicProperty, boolean)
+     */
+    public T createContainerFor(final MagicProperty property,
+            final boolean hasIsolatedComponent) throws ConfigurationException {
+        if (hasIsolatedComponent) {
+            final String type = property.getConfiguration().get(
+                    MagicConfiguration.GUI_ISOLATED_TYPE_KEY);
+            if (MagicConfiguration.ISOLATED_TABBED_VALUE.equals(type)) {
+                return createTabbedContainer();
+            } else if (MagicConfiguration.ISOLATED_TREE_VALUE.equals(type)) {
+                return createTreeContainer();
+            } else if (MagicConfiguration.ISOLATED_CHILD_VALUE.equals(type)) {
+                return createChildContainer();
+            } else  {
+                
+                // invalid type
+                throw new InvalidConfigurationException(
+                        MagicConfiguration.GUI_ISOLATED_TYPE_KEY, type);
+                
+            }
+        } else {
+            return createContainer();
+        }
+    }
+
+    /**
+     * This method should be overriden
+     * to create an isolated-component-ready container.
+     * @return The container
+     * @throws UnavailableConfigurationException This factory doesn't support it
+     */
+    protected T createChildContainer() throws UnavailableConfigurationException {
+        throw new UnavailableConfigurationException(
+                MagicConfiguration.GUI_ISOLATED_TYPE_KEY,
+                MagicConfiguration.ISOLATED_CHILD_VALUE);
+    }
+
+    /**
+     * This method should be overriden
+     * to create an isolated-component-ready container.
+     * @return The container
+     * @throws UnavailableConfigurationException This factory doesn't support it
+     */
+    protected T createTreeContainer() throws UnavailableConfigurationException {
+        throw new UnavailableConfigurationException(
+                MagicConfiguration.GUI_ISOLATED_TYPE_KEY,
+                MagicConfiguration.ISOLATED_TREE_VALUE);
+    }
+
+    /**
+     * This method should be overriden
+     * to create an isolated-component-ready container.
+     * @return The container
+     * @throws UnavailableConfigurationException This factory doesn't support it
+     */
+    protected T createTabbedContainer() throws UnavailableConfigurationException {
+        throw new UnavailableConfigurationException(
+                MagicConfiguration.GUI_ISOLATED_TYPE_KEY,
+                MagicConfiguration.ISOLATED_TABBED_VALUE);
+    }
+
+    /**
+     * Create and return a default toolkit container.
+     * @return The container
+     */
+    protected abstract T createContainer();
 }

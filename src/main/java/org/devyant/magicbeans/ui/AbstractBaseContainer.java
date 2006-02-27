@@ -36,11 +36,17 @@ import org.devyant.magicbeans.exceptions.MagicException;
  * 
  * @author ftavares
  * @version $Revision$ $Date$ ($Author$)
+ * @param <C> The container to use for the binding
  * @see AbstractMagicContainer
  * @since Oct 28, 2005 7:13:05 PM
  */
 public abstract class AbstractBaseContainer<C>
         extends AbstractMagicContainer<C> {
+    
+    /**
+     * States whether this container has isolated components.
+     */
+    private boolean isolatedComponentContainer = false;
     
     /**
      * A <code>Collection</code> of this container's child components.
@@ -53,6 +59,15 @@ public abstract class AbstractBaseContainer<C>
      */
     public AbstractBaseContainer(final UIFactory factory) {
         super(factory);
+    }
+    
+    /**
+     * @see org.devyant.magicbeans.ui.AbstractMagicComponent#createComponent()
+     */
+    @Override
+    protected final C createComponent() throws MagicException {
+        return (C) this.getFactory().createContainerFor(this.getProperty(),
+                this.isIsolatedComponentContainer());
     }
     
     /**
@@ -106,6 +121,7 @@ public abstract class AbstractBaseContainer<C>
                 component = getFactory().getNestedComponentInstanceFor(prop);
             } else {
                 // isolated component
+                this.isolatedComponentContainer = true;
                 component = getFactory().getComponentForIsolated(prop);
             }
             
@@ -117,7 +133,7 @@ public abstract class AbstractBaseContainer<C>
     }
     
     /**
-     * Add the actual components to the actual container 
+     * Add the actual components to the actual container.
      * @see org.devyant.magicbeans.ui.AbstractMagicComponent#initializeComponent()
      */
     @Override
@@ -152,11 +168,28 @@ public abstract class AbstractBaseContainer<C>
     }
     
     /**
+     * The getter method for the isolatedComponentContainer property.
+     * @return The property's <code>AbstractBaseContainer</code> value
+     */
+    public final boolean isIsolatedComponentContainer() {
+        return this.isolatedComponentContainer;
+    }
+
+    /**
+     * The setter method for the isolatedComponentContainer property.
+     * @param isolatedComponentContainer The <code>boolean</code> to set
+     */
+    public final void setIsolatedComponentContainer(
+            final boolean isolatedComponentContainer) {
+        this.isolatedComponentContainer = isolatedComponentContainer;
+    }
+
+    /**
      * @todo this doesn't seem very correct...
      * @see org.devyant.magicbeans.ui.AbstractMagicComponent#setValue(java.lang.Object)
      */
     @Override
-    protected final void setValue(Object value) {
+    protected final void setValue(@SuppressWarnings("unused") Object value) {
         // do nothing
     }
     

@@ -22,7 +22,6 @@
  */
 package org.devyant.magicbeans.ui.isolated;
 
-import org.devyant.magicbeans.MagicComponent;
 import org.devyant.magicbeans.MagicContainer;
 
 /**
@@ -32,7 +31,14 @@ import org.devyant.magicbeans.MagicContainer;
  * @version $Revision$ $Date$ ($Author$)
  * @since Nov 26, 2005 4:44:43 PM
  */
-public interface TabbedContainer extends MagicContainer {
+public interface TabbedContainer {
+    /**
+     * @return The main panel
+     */
     public Object getMainPanel();
-    public void addSecondaryPanel(final MagicComponent component);
+    /**
+     * @param title
+     * @param component
+     */
+    public void addSecondaryPanel(final String title, final Object component);
 }

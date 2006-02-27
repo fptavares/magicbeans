@@ -29,7 +29,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 
 import org.devyant.magicbeans.MagicComponent;
-import org.devyant.magicbeans.MagicContainer;
 import org.devyant.magicbeans.MagicLayout;
 import org.devyant.magicbeans.exceptions.MagicException;
 
@@ -40,7 +39,12 @@ import org.devyant.magicbeans.exceptions.MagicException;
  * @version $Revision$ $Date$ ($Author$)
  * @since Jun 24, 2005 10:16:51 PM
  */
-public class GridBagMagicLayout extends GridBagLayout implements MagicLayout<Container> {
+public class GridBagMagicLayout extends GridBagLayout implements MagicLayout {
+    /**
+     * The serialVersionUID <code>long</code>.
+     */
+    private static final long serialVersionUID = -8635208882682826756L;
+    
     /**
      * The DEFAULT_ANCHOR <code>int</code>.
      */
@@ -85,10 +89,10 @@ public class GridBagMagicLayout extends GridBagLayout implements MagicLayout<Con
     private final static double NO_WEIGHTX = 0.0;
 
     /**
-     * @see org.devyant.magicbeans.MagicLayout#addLabeledComponent(Object, Object, MagicComponent)
+     * @see org.devyant.magicbeans.MagicLayout#addLabeledComponent(Object, java.lang.Object, MagicComponent)
      */
-    public void addLabeledComponent(final Container container, final Object label,
-            final MagicComponent component) throws MagicException {
+    public void addLabeledComponent(final Object container, final Object label,
+            final MagicComponent<?> component) throws MagicException {
         // add label
         addComponent(container, label, 0, line, NO_WEIGHTX);
         // add magic component
@@ -96,10 +100,10 @@ public class GridBagMagicLayout extends GridBagLayout implements MagicLayout<Con
     }
 
     /**
-     * @see org.devyant.magicbeans.MagicLayout#addLabeledIsolatedComponent(MagicContainer, Object, MagicComponent)
+     * @see org.devyant.magicbeans.MagicLayout#addLabeledIsolatedComponent(Object, Object, MagicComponent)
      */
-    public void addLabeledIsolatedComponent(final MagicContainer container,
-            final Object label, final MagicComponent component)
+    public void addLabeledIsolatedComponent(final Object container,
+            final Object label, final MagicComponent<?> component)
             throws MagicException {
         // add label
         addComponent(container, label, 0, line, NO_WEIGHTX);
@@ -112,17 +116,17 @@ public class GridBagMagicLayout extends GridBagLayout implements MagicLayout<Con
      * @see org.devyant.magicbeans.MagicLayout#addUnlabeledComponent(Object, MagicComponent)
      */
     public void addUnlabeledComponent(Object container,
-            MagicComponent component) throws MagicException {
+            MagicComponent<?> component) throws MagicException {
         // add magic component
         addComponent(container, component.render(), 0, line++, STANDARD_WEIGHTX,
                 DEFAULT_ANCHOR, GridBagConstraints.BOTH, 2, 1, insets);
     }
 
     /**
-     * @see org.devyant.magicbeans.MagicLayout#addControledNotExpandedComponent(java.awt.Container, java.awt.Component, java.awt.Component[])
+     * @see org.devyant.magicbeans.MagicLayout#addControledComponent(java.lang.Object, java.lang.Object, java.lang.Object[], boolean)
      */
     public void addControledComponent(Object container, Object component,
-            Object[] controllers, boolean expand) throws MagicException {
+            Object[] controllers, boolean expand) {
         final int fill;
         if (expand) {
             fill = GridBagConstraints.BOTH;
@@ -141,7 +145,7 @@ public class GridBagMagicLayout extends GridBagLayout implements MagicLayout<Con
     }
 
     /**
-     * @see org.devyant.magicbeans.MagicLayout#addButton(Object, Object)
+     * @see org.devyant.magicbeans.MagicLayout#addButton(Object, java.lang.Object)
      */
     public void addButton(final Object container, final Object button) {
         addComponent(container, button, 0, line++, NO_WEIGHTX,

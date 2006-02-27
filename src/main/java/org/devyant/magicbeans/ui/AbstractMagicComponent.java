@@ -130,6 +130,8 @@ public abstract class AbstractMagicComponent<C> implements MagicComponent<C> {
     
     /**
      * @see org.devyant.magicbeans.MagicComponent#render()
+     * FIXME: maybe move the layout factory to the SwingFactory
+     * the layout should be created at the same time as the container
      */
     public C render() throws MagicException {
         this.component = createComponent();
@@ -181,7 +183,7 @@ public abstract class AbstractMagicComponent<C> implements MagicComponent<C> {
      * Create and return the instance of the component to bind to the property.
      * @return The actual toolkit-specific component
      */
-    protected abstract C createComponent();
+    protected abstract C createComponent() throws MagicException;
 
     /**
      * This method returns the current value that this component has

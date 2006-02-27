@@ -17,6 +17,7 @@ package org.devyant.magicbeans.ui;
 
 import org.devyant.magicbeans.MagicComponent;
 import org.devyant.magicbeans.beans.MagicProperty;
+import org.devyant.magicbeans.conf.ConfigurationException;
 import org.devyant.magicbeans.exceptions.MagicException;
 
 /**
@@ -26,7 +27,7 @@ import org.devyant.magicbeans.exceptions.MagicException;
  * @version $Revision$ $Date$ ($Author$)
  * @since Sep 15, 2005 4:29:54 PM
  */
-public interface UIFactory {
+public interface UIFactory<T extends Object> {
 
     /**
      * This method returns a nested component for the specified property.
@@ -60,17 +61,27 @@ public interface UIFactory {
      * @param text The button's label
      * @return A button component instance
      */
-    public Object createButton(final String text);
+    public T createButton(final String text);
     /**
      * Create a label component showing the specified <code>String</code>.
      * @param string The label's <code>String</code>
      * @return The toolkit specific component
      */
-    public Object createLabel(final String string);
+    public T createLabel(final String string);
     /**
      * Create and return an apropriate UI component for the status label.
      * @return A status label instance
      */
-    public Object createStatus();
+    public T createStatus();
+    /**
+     * Create and return an apropriate UI container.
+     * <p>If the container has isolated components,
+     * it returns an apropriate isolated-component-ready container.</p>
+     * @param property The property
+     * @param hasIsolatedComponent Container will contain isolated components?
+     * @return The toolkit specific container
+     */
+    public T createContainerFor(final MagicProperty property,
+            final boolean hasIsolatedComponent) throws ConfigurationException;
 
 }
