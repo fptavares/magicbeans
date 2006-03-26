@@ -31,9 +31,9 @@
         
         <!-- Dummy.name -->
         <name>
-            <Configuration>
+            <!--<Configuration>
                 <visible>false</visible>
-            </Configuration>
+            </Configuration>-->
         </name>
         
         <!-- Dummy.description -->
@@ -63,7 +63,7 @@
         <dummy>
             <Configuration>
                 <validation enabled="true" />
-                <!-- <nested>false</nested> -->
+                <nested>false</nested>
             </Configuration>
             
             <!-- Dummy.dummy.collection -->

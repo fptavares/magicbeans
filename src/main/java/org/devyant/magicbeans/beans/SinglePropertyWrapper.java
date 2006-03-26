@@ -49,7 +49,7 @@ public class SinglePropertyWrapper implements AuxiliarBean {
      * @return The property
      */
     public final Object getProperty() {
-        return property;
+        return this.property;
     }
 
     /**
@@ -60,7 +60,11 @@ public class SinglePropertyWrapper implements AuxiliarBean {
         this.property = property;
     }
     
+    /**
+     * @see java.lang.Object#toString()
+     */
+    @Override
     public final String toString() {
-        return "* " + String.valueOf(property);
+        return "* " + String.valueOf(this.property);
     }
 }

@@ -28,7 +28,7 @@ import org.devyant.magicbeans.conf.MagicConfiguration;
 import org.devyant.magicbeans.conf.UnavailableConfigurationException;
 import org.devyant.magicbeans.exceptions.MagicException;
 import org.devyant.magicbeans.ui.UIFactory;
-import org.devyant.magicbeans.ui.swing.SwingComponentFactory;
+import org.devyant.magicbeans.ui.swing.SwingFactory;
 
 /**
  * MagicFactory is a <b>cool</b> class.
@@ -42,7 +42,7 @@ public abstract class MagicFactory {
     
     public static final UIFactory swing() {
         if (swingFactory == null) {
-            swingFactory = new SwingComponentFactory();
+            swingFactory = new SwingFactory();
         }
         return swingFactory;
     }

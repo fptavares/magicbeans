@@ -27,6 +27,7 @@ import java.awt.Frame;
 import java.awt.event.WindowListener;
 
 import org.devyant.magicbeans.MagicComponent;
+import org.devyant.magicbeans.MagicContainer;
 import org.devyant.magicbeans.MagicUtils;
 import org.devyant.magicbeans.beans.AuxiliarBean;
 import org.devyant.magicbeans.beans.MagicProperty;
@@ -63,17 +64,24 @@ public abstract class AbstractMagicBean implements AuxiliarBean {
     protected MagicComponent component;
     
     /**
+     * The standalone <code>boolean</code>.
+     */
+    protected final boolean standalone;
+    
+    /**
      * Creates a new <code>AbstractMagicBean</code> instance.
      * @param object The object to map
      * @param beanPath The bean path to use
      * @param superBeanClassName The base bean's class name
+     * @param standalone Is it a standalone container?
      */
-    public AbstractMagicBean(Object object,
-            final String superBeanClassName, final String beanPath) {
+    public AbstractMagicBean(Object object, final String superBeanClassName,
+            final String beanPath, final boolean standalone) {
         super();
         this.object = object;
         this.beanPath = beanPath;
         this.superBeanClassName = superBeanClassName;
+        this.standalone = standalone;
     }
 
     /**
@@ -85,7 +93,7 @@ public abstract class AbstractMagicBean implements AuxiliarBean {
             this.component = createMagicComponent();
         }
         
-        return this.component;
+        return this.component.render();
     }
 
     /**
@@ -153,31 +161,30 @@ public abstract class AbstractMagicBean implements AuxiliarBean {
      * @return
      * @throws MagicException
      */
-    protected MagicComponent createMagicComponent() throws MagicException {
+    protected MagicComponent<?> createMagicComponent() throws MagicException {
         // create the magic property object
         final MagicProperty property = createMagicProperty();
         
         // get the component
         MagicUtils.info("Generating the component.");
-        final MagicComponent mComponent = getMagicComponentFor(property);
+        final MagicComponent<?> mComponent = getMagicComponentFor(property);
         
         // bind container to this MagicBean's bean
         MagicUtils.info("Binding the component to a new MagicProperty"
                 + " containing the bean.");
         mComponent.bindTo(property);
    
-        return renderComponent(mComponent);
+        if (mComponent instanceof MagicContainer<?>) {
+            ((MagicContainer<?>) mComponent).setStandalone(this.standalone);
+        }
+        
+        return mComponent;
     }
 
-    /**
-     * @return
-     */
     private MagicProperty createMagicProperty() {
         return new MagicProperty(this.superBeanClassName,
                 this.beanPath, this, "object");
     }
-    protected abstract MagicComponent getMagicComponentFor(
+    protected abstract MagicComponent<?> getMagicComponentFor(
             final MagicProperty property) throws MagicException;
-    protected abstract MagicComponent renderComponent(
-            final MagicComponent mComponent);
 }

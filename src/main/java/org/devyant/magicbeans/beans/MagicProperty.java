@@ -129,6 +129,8 @@ public class MagicProperty {
         }
         
         this.configuration = new MagicConfiguration(this);
+        
+        MagicUtils.debug("------------ " + this.name);
     }
     
 

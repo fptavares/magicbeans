@@ -50,7 +50,7 @@ public class MagicBean extends AbstractMagicBean {
      * @param object The object to map
      */
     public MagicBean(Object object) {
-        super(object, object.getClass().getName(), null);
+        super(object, object.getClass().getName(), null, true);
     }
     
     /**
@@ -59,18 +59,13 @@ public class MagicBean extends AbstractMagicBean {
      * @param beanPath The bean path to use
      */
     public MagicBean(Object object, String beanPath) {
-        super(object, object.getClass().getName(), beanPath);
+        super(object, object.getClass().getName(), beanPath, true);
     }
 
     /**
-     * @see org.devyant.magicbeans.utils.AbstractMagicBean#renderComponent(org.devyant.magicbeans.MagicComponent)
-     */
-    protected MagicComponent renderComponent(final MagicComponent mComponent) {
-        return ((MagicContainer) mComponent).renderStandalone();
-    }
-    /**
      * @see org.devyant.magicbeans.utils.AbstractMagicBean#getMagicComponentFor(org.devyant.magicbeans.beans.MagicProperty)
      */
+    @Override
     protected MagicComponent getMagicComponentFor(final MagicProperty property)
             throws MagicException {
         MagicContainer mContainer =

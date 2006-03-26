@@ -1,5 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
 /*
  * Magic Beans: a library for GUI generation and component-bean mapping.
  * Copyright (C) 2005  Filipe Tavares
@@ -22,30 +20,25 @@
  * Rua Simao Bolivar 203 6C, 4470-214 Maia, Portugal.
  *
  */
--->
-<!DOCTYPE project >
-<project xmlns:j="jelly:core" xmlns:u="jelly:util" default="build">
-    <goal name="docs" prereqs="site:generate" />
-    <goal name="build" prereqs="jar:jar" />
-    <goal name="rebuild" prereqs="pom,clean,dist:build,announcement" />
-    
-    <postGoal name="site">
-        <attainGoal name="pdf" />
-    </postGoal>
-    
-    <postGoal name="dist:prepare-src-filesystem">
-        <copy todir="${maven.dist.src.assembly.dir}">
-            <fileset dir="${basedir}">
-                <include name="checks.xml" />
-                <include name="java.header" />
-                <include name=".ruleset" />
-                <include name="xdocs/**" />
-            </fileset>
-        </copy>
-    </postGoal>
+package org.devyant.magicbeans.layout;
 
-    <postGoal name="rebuild">
-        <echo message="Cleaning assembly dir." />
-        <delete dir="${maven.dist.assembly.dir}" />
-    </postGoal>
-</project>
+import org.devyant.magicbeans.MagicComponent;
+import org.devyant.magicbeans.exceptions.MagicException;
+
+/**
+ * LayoutIsolatedBehaviour is a <b>cool</b> class.
+ * 
+ * @author ftavares
+ * @version $Revision$ $Date$ ($Author$)
+ * @since Mar 23, 2006 3:10:59 PM
+ */
+public interface LayoutIsolatedBehaviour {
+
+    /** 
+     * @see org.devyant.magicbeans.MagicLayout#addLabeledIsolatedComponent(java.lang.Object, java.lang.Object, org.devyant.magicbeans.MagicComponent)
+     */
+    public void addLabeledIsolatedComponent(final Object container,
+            final Object label, MagicComponent<?> component)
+            throws MagicException;
+
+}

@@ -24,12 +24,11 @@ package org.devyant.magicbeans.ui.swing.isolated;
 
 import javax.swing.JButton;
 
-import org.devyant.magicbeans.MagicComponent;
 import org.devyant.magicbeans.MagicUtils;
-import org.devyant.magicbeans.beans.MagicProperty;
 import org.devyant.magicbeans.conf.MagicConfiguration;
 import org.devyant.magicbeans.exceptions.MagicException;
 import org.devyant.magicbeans.i18n.MagicResources;
+import org.devyant.magicbeans.ui.AbstractMagicComponent;
 import org.devyant.magicbeans.utils.InternalMagicBean;
 
 /**
@@ -39,51 +38,47 @@ import org.devyant.magicbeans.utils.InternalMagicBean;
  * @version $Revision$ $Date$ ($Author$)
  * @since Jul 6, 2005 2:11:33 AM
  */
-public class SwingChildComponent extends JButton implements MagicComponent {
-    /**
-     * The property to bind to.
-     */
-    private MagicProperty property;
+public class SwingChildComponent extends AbstractMagicComponent<JButton> {
     
     /**
      * The <code>InternalMagicBean</code>
      * that will be used to generate the container.
      */
     private InternalMagicBean internalBean;
-    
+
     /**
-     * @see org.devyant.magicbeans.MagicComponent#update()
+     * @see org.devyant.magicbeans.ui.AbstractMagicComponent#setValue(java.lang.Object)
      */
-    public void update() throws MagicException {
-        // call container's update() method 
-        this.internalBean.update();
-        // update property's value
-        this.property.set(internalBean.getRealValue());
+    @Override
+    protected void setValue(Object value) throws MagicException {
+        // create the magic bean
+        this.internalBean = new InternalMagicBean(getProperty());
     }
 
     /**
-     * @see org.devyant.magicbeans.MagicComponent#bindTo(org.devyant.magicbeans.beans.MagicProperty)
+     * @see org.devyant.magicbeans.ui.AbstractMagicComponent#getValue()
      */
-    public void bindTo(MagicProperty property) throws MagicException {
-        this.property = property;
-        // create the magic bean
-        this.internalBean = new InternalMagicBean(property);
-        
-        init(); // init gui stuff
+    @Override
+    protected Object getValue() throws MagicException {
+        // call container's update() method 
+        this.internalBean.update();
+        // update property's value
+        return this.internalBean.getRealValue();
     }
 
     /**
      * GUI initialization.
      */
-    private void init() {
-        this.setText(MagicConfiguration.resources
+    @Override
+    protected void initializeComponent() {
+        this.component.setText(MagicConfiguration.resources
                 .get(MagicResources.STRING_ISOLATEDBUTTON));
-        this.addActionListener(new java.awt.event.ActionListener() {
+        this.component.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 try {
-                    internalBean.showInternalFrame(
-                            SwingChildComponent.this,
-                            MagicConfiguration.resources.getNameFor(property),
+                    SwingChildComponent.this.internalBean.showInternalFrame(
+                            SwingChildComponent.this.component,
+                            MagicConfiguration.resources.getNameFor(getProperty()),
                             null);
                 } catch (MagicException e) {
                     MagicUtils.error(e);
@@ -93,10 +88,11 @@ public class SwingChildComponent extends JButton implements MagicComponent {
     }
 
     /**
-     * @see org.devyant.magicbeans.MagicComponent#getProperty()
+     * @see org.devyant.magicbeans.ui.AbstractMagicComponent#createComponent()
      */
-    public MagicProperty getProperty() {
-        return this.property;
+    @Override
+    protected JButton createComponent() {
+        return new JButton();
     }
 
 }

@@ -36,7 +36,7 @@ import org.devyant.magicbeans.MagicComponent;
 import org.devyant.magicbeans.MagicLayout;
 import org.devyant.magicbeans.beans.MagicProperty;
 import org.devyant.magicbeans.exceptions.MagicException;
-import org.devyant.magicbeans.layouts.GridBagMagicLayout;
+import org.devyant.magicbeans.ui.awt.layout.gridbag.GridBagMagicLayout;
 import org.devyant.magicbeans.utils.Previewable;
 
 /**

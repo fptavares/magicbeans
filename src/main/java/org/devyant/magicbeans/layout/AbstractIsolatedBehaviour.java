@@ -20,17 +20,30 @@
  * Rua Simao Bolivar 203 6C, 4470-214 Maia, Portugal.
  *
  */
-package org.devyant.magicbeans.ui.swing;
-
-
+package org.devyant.magicbeans.layout;
 
 /**
- * SwingNestedContainer is a <b>cool</b> class.
+ * AbstractIsolatedBehaviour is a <b>cool</b> class.
  * 
- * @author Filipe Tavares
+ * @author ftavares
  * @version $Revision$ $Date$ ($Author$)
- * @since 12/Jun/2005 6:54:31
+ * @param <T> The layout type
+ * @since Mar 25, 2006 3:53:13 PM
  */
-public class SwingNestedContainer extends SwingUnlabeledContainer {
-        
+public abstract class AbstractIsolatedBehaviour<T extends AbstractMagicLayout>
+        implements LayoutIsolatedBehaviour {
+    
+    /**
+     * The layout <code>T</code>.
+     */
+    protected final T layout;
+    
+    /**
+     * Creates a new <code>AbstractIsolatedBehaviour</code> instance.
+     * @param layout The layout instance
+     */
+    public AbstractIsolatedBehaviour(T layout) {
+        this.layout = layout;
+    }
+    
 }

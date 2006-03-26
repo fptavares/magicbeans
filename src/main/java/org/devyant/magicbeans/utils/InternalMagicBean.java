@@ -46,7 +46,7 @@ public class InternalMagicBean extends AbstractMagicBean {
      * @param object The object to map
      */
     public InternalMagicBean(Object object) {
-        super(object, object.getClass().getName(), null);
+        super(object, object.getClass().getName(), null, false);
     }
     
     /**
@@ -56,7 +56,7 @@ public class InternalMagicBean extends AbstractMagicBean {
      */
     public InternalMagicBean(final MagicProperty property) throws PropertyException {
         super(property.get(),
-                property.getSuperBeanClassName(), property.getBeanPath());
+                property.getSuperBeanClassName(), property.getBeanPath(), false);
     }
 
     /**
@@ -65,12 +65,6 @@ public class InternalMagicBean extends AbstractMagicBean {
     protected MagicComponent getMagicComponentFor(final MagicProperty property)
             throws MagicException {
         return MagicFactory.getComponentInstanceFor(property);
-    }
-    /**
-     * @see org.devyant.magicbeans.utils.AbstractMagicBean#renderComponent(org.devyant.magicbeans.MagicComponent)
-     */
-    protected MagicComponent renderComponent(final MagicComponent mComponent) {
-        return mComponent;
     }
     
     /**
@@ -120,6 +114,6 @@ public class InternalMagicBean extends AbstractMagicBean {
                 MagicUtils.debug(e);
             }
         }
-        return String.valueOf(getObject());
+        return String.valueOf(this.object);
     }
 }

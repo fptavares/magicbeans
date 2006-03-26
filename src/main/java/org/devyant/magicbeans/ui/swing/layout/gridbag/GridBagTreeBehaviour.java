@@ -20,26 +20,37 @@
  * Rua Simao Bolivar 203 6C, 4470-214 Maia, Portugal.
  *
  */
-package org.devyant.magicbeans.ui.swing;
+package org.devyant.magicbeans.ui.swing.layout.gridbag;
 
-import javax.swing.border.TitledBorder;
-
-import org.devyant.magicbeans.utils.components.UnlabeledComponent;
+import org.devyant.magicbeans.MagicComponent;
+import org.devyant.magicbeans.exceptions.MagicException;
+import org.devyant.magicbeans.layout.AbstractIsolatedBehaviour;
 
 /**
- * SwingUnlabeledContainer is a <b>cool</b> class.
+ * GridBagTreeBehaviour is a <b>cool</b> class.
  * 
  * @author ftavares
  * @version $Revision$ $Date$ ($Author$)
- * @since Jul 5, 2005 1:54:41 AM
+ * @since Mar 25, 2006 4:09:04 PM
  */
-public abstract class SwingUnlabeledContainer extends SwingContainer
-        implements UnlabeledComponent {
+public class GridBagTreeBehaviour
+        extends AbstractIsolatedBehaviour<SwingGridBagMagicLayout> {
+
     /**
-     * @see org.devyant.magicbeans.utils.components.UnlabeledComponent#setTitle(java.lang.String)
+     * Creates a new <code>GridBagTreeBehaviour</code> instance.
+     * @param layout The layout instance
      */
-    public void setTitle(final String title) {
-        setBorder(new TitledBorder(null, " " + title + " ",
-                TitledBorder.LEFT, TitledBorder.TOP));
+    public GridBagTreeBehaviour(SwingGridBagMagicLayout layout) {
+        super(layout);
     }
+
+    /**
+     * @see org.devyant.magicbeans.layout.LayoutIsolatedBehaviour#addLabeledIsolatedComponent(java.lang.Object, java.lang.Object, org.devyant.magicbeans.MagicComponent)
+     */
+    public void addLabeledIsolatedComponent(Object container, Object label,
+            MagicComponent<?> component) throws MagicException {
+        // @todo Auto-generated method stub
+        
+    }
+
 }

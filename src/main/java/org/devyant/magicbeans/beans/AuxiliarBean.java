@@ -31,5 +31,5 @@ package org.devyant.magicbeans.beans;
  * @since Jul 9, 2005 8:30:22 PM
  */
 public interface AuxiliarBean {
-
+    // utility interface
 }

@@ -102,17 +102,17 @@ public class AppTest
 
     public static class Dummy {
         private String name = "Dummy";
-        private String description = "A dummy class for testing";
+        /*private String description = "A dummy class for testing";
         private File bye = new File("/home/ftavares/someFile");
-        private Calendar date = Calendar.getInstance();
+        private Calendar date = Calendar.getInstance();*/
         private Dummy2 dummy = new Dummy2();
         
-        public String getDescription() {
+        /*public String getDescription() {
             return description;
         }
         public final void setDescription(String description) {
             this.description = description;
-        }
+        }*/
         public String getName() {
             return name;
         }
@@ -132,7 +132,7 @@ public class AppTest
         public final void setDummy(Dummy2 dummy) {
             this.dummy = dummy;
         }
-        public final Calendar getDate() {
+        /*public final Calendar getDate() {
             return date;
         }
         public final void setDate(Calendar date) {
@@ -151,11 +151,11 @@ public class AppTest
                 + "\n\t" + bye
                 + "\n\t" + date
                 + "\n\t" + dummy;
-        }
+        }*/
     }
     public static class Dummy2 {
         private String name = "Dummy2";
-        private boolean foo = true;
+        /*private boolean foo = true;
         private int bye = 3;
         private Collection collection = new ArrayList();
         
@@ -177,14 +177,14 @@ public class AppTest
         }
         public void setFoo(boolean foo) {
             this.foo = foo;
-        }
+        }*/
         public String getName() {
             return name;
         }
         public final void setName(String name) {
             this.name = name;
         }
-        public final Collection getCollection() {
+        /*public final Collection getCollection() {
             return collection;
         }
         public final void setCollection(Collection collection) {
@@ -204,6 +204,6 @@ public class AppTest
                 + "\n\t" + foo
                 + "\n\t" + bye
                 + "\n\t" + collection;
-        }
+        }*/
     }
 }
