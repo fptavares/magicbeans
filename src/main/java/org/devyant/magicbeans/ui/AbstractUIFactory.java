@@ -28,10 +28,9 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 
-import javax.swing.JPanel;
-
 import org.devyant.magicbeans.MagicComponent;
 import org.devyant.magicbeans.MagicContainer;
+import org.devyant.magicbeans.MagicLayout;
 import org.devyant.magicbeans.MagicUtils;
 import org.devyant.magicbeans.beans.MagicProperty;
 import org.devyant.magicbeans.conf.ConfigurationException;
@@ -39,10 +38,8 @@ import org.devyant.magicbeans.conf.InvalidConfigurationException;
 import org.devyant.magicbeans.conf.MagicConfiguration;
 import org.devyant.magicbeans.conf.UnavailableConfigurationException;
 import org.devyant.magicbeans.exceptions.MagicException;
-import org.devyant.magicbeans.layouts.LayoutFactory;
-import org.devyant.magicbeans.ui.isolated.TabbedContainer;
+import org.devyant.magicbeans.layout.AbstractMagicLayout.IsolatedBehaviourType;
 import org.devyant.magicbeans.ui.swing.SwingContainer;
-import org.devyant.magicbeans.ui.swing.SwingNestedContainer;
 import org.devyant.magicbeans.ui.swing.isolated.SwingChildComponent;
 
 /**
@@ -86,7 +83,6 @@ public abstract class AbstractUIFactory<T> implements UIFactory<T> {
      * @return A renderer for the property
      * @throws MagicException
      *  {@link #getBaseComponentInstanceFor(MagicProperty)}
-     *  {@link LayoutFactory#createLayout(MagicConfiguration)}
      */
     private final MagicComponent getComponentInstanceFor(
             final MagicProperty property, final boolean nested)
@@ -98,24 +94,17 @@ public abstract class AbstractUIFactory<T> implements UIFactory<T> {
         
         // Magic Layout
         if (component instanceof MagicContainer) {
-            configureContainer((MagicContainer) component, property);
+            // instantiate the layout manager
+            ((MagicContainer) component).setMagicLayout(
+                    createLayout(IsolatedBehaviourType.valueOf(
+                            property.getConfiguration().get(
+                                    MagicConfiguration.GUI_ISOLATED_TYPE_KEY)
+                                    .toUpperCase())));
         }
         
         // return the component
         return component;
         
-    }
-
-    /**
-     * @param container
-     * @param property
-     * @throws MagicException
-     */
-    protected void configureContainer(MagicContainer container,
-            final MagicProperty property) throws MagicException {
-        // instantiate the layout manager
-        container.setMagicLayout(
-                LayoutFactory.createLayout(property.getConfiguration()));
     }
 
     /**
@@ -177,10 +166,18 @@ public abstract class AbstractUIFactory<T> implements UIFactory<T> {
             /*if (nested) { TODO: delete?
                 return new SwingNestedContainer();
             } else {*/
-                return new SwingContainer();
+            final MagicContainer<?> container = getContainerForBean();
+            container.setStandalone(!nested);
+            return container;
             /*}*/
         }
     }
+
+    /**
+     * Create and return a new container.
+     * @return The container instance
+     */
+    protected abstract MagicContainer getContainerForBean();
 
     /**
      * @todo all wrong
@@ -348,4 +345,11 @@ public abstract class AbstractUIFactory<T> implements UIFactory<T> {
      * @return The container
      */
     protected abstract T createContainer();
+
+    /**
+     * Create and return a layout instance.
+     * @param type @todo
+     * @return The layout
+     */
+    protected abstract MagicLayout createLayout(final IsolatedBehaviourType type);
 }

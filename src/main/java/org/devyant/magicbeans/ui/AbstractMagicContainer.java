@@ -26,6 +26,7 @@ import org.devyant.magicbeans.MagicContainer;
 import org.devyant.magicbeans.MagicLayout;
 import org.devyant.magicbeans.conf.MagicConfiguration;
 import org.devyant.magicbeans.i18n.MagicResources;
+import org.devyant.magicbeans.ui.AbstractBaseContainer.ActionWrapper;
 import org.devyant.magicbeans.ui.listeners.UpdateButtonActionListener;
 
 /**
@@ -40,11 +41,6 @@ public abstract class AbstractMagicContainer<C>
         extends AbstractMagicComponent<C> implements MagicContainer<C> {
     
     /**
-     * The standalone <code>boolean</code>.
-     */
-    private boolean standalone = false;
-    
-    /**
      * The toolkit specific component factory.
      */
     private final UIFactory<?> factory;
@@ -53,11 +49,6 @@ public abstract class AbstractMagicContainer<C>
      * The <code>MagicLayout</code>.
      */
     protected MagicLayout layout;
-    
-    /**
-     * The status label component.
-     */
-    protected Object status;
     
     /**
      * Creates a new <b>labeled</b> <code>AbstractMagicContainer</code> instance.
@@ -83,30 +74,6 @@ public abstract class AbstractMagicContainer<C>
         // nested -> !standalone
         //this.setStandalone(!this.nested);
     }
-    
-    /**
-     * @see org.devyant.magicbeans.ui.AbstractMagicComponent#finalize()
-     */
-    @Override
-    protected void finalizeComponent() {
-        if (!isStandalone()) {
-            return;
-        }
-
-        // initialize status
-        this.status = getFactory().createStatus();
-        // initialize button
-        final Object button = getFactory().createButton(MagicConfiguration
-                .resources.get(MagicResources.STRING_OKBUTTON));
-        initMagicContainerAction(button);
-        // add components
-        layout.addButton(this.component, button);
-        layout.addStatus(this.component, this.status);
-        
-        if (this.isNested()) {
-            finalizeNestedComponent();
-        }
-    }
 
     /**
      * To be optionally overriden.
@@ -116,47 +83,10 @@ public abstract class AbstractMagicContainer<C>
     }
 
     /**
-     * Initializes the handler for the MagicContainerAction.
-     * @param button The OK button
-     * @todo implementation
-     */
-    protected abstract void initMagicContainerAction(Object button);
-
-    /**
-     * @see org.devyant.magicbeans.MagicContainer#setStandalone(boolean)
-     */
-    public void setStandalone(final boolean standalone) {
-        this.standalone = standalone;
-    }
-
-    /**
      * @see org.devyant.magicbeans.MagicContainer#setMagicLayout(org.devyant.magicbeans.MagicLayout)
      */
     public void setMagicLayout(final MagicLayout layout) {
         this.layout = layout;
-    }
-
-    /**
-     * @see org.devyant.magicbeans.ui.listeners.UpdateButtonActionHandler#addUpdateButtonActionListener(org.devyant.magicbeans.ui.listeners.UpdateButtonActionListener)
-     */
-    public void addUpdateButtonActionListener(final UpdateButtonActionListener l) {
-        //listenerList.add(UpdateButtonActionListener.class, l);
-    }
-
-    /**
-     * @see org.devyant.magicbeans.ui.listeners.UpdateButtonActionHandler#fireUpdateButtonAction()
-     */
-    public void fireUpdateButtonAction() {
-        // @todo Auto-generated method stub
-
-    }
-
-    /**
-     * The getter method for the standalone property.
-     * @return The property's <code>boolean</code> value
-     */
-    protected boolean isStandalone() {
-        return this.standalone;
     }
 
     /**

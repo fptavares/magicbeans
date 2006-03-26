@@ -22,18 +22,13 @@
  */
 package org.devyant.magicbeans.ui.swing;
 
-import java.awt.LayoutManager;
-
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.border.TitledBorder;
 
 import org.devyant.magicbeans.MagicFactory;
-import org.devyant.magicbeans.MagicUtils;
 import org.devyant.magicbeans.conf.MagicConfiguration;
-import org.devyant.magicbeans.exceptions.MagicException;
-import org.devyant.magicbeans.i18n.MagicResources;
 import org.devyant.magicbeans.ui.AbstractBaseContainer;
 
 /**
@@ -53,35 +48,16 @@ public class SwingContainer extends AbstractBaseContainer<JComponent> {
     public SwingContainer() {
         super(MagicFactory.swing());
     }
-
-    /**
-     * @see org.devyant.magicbeans.ui.AbstractMagicComponent#initializeComponent()
-     * @todo layout is being set after the components are added
-     * we should really try not to use this method for everything...
-     */
-    @Override
-    public void initializeComponent() throws MagicException {
-        super.initializeComponent();
-        
-        this.component.setLayout((LayoutManager) this.layout);
-    }
     
     /**
-     * @see org.devyant.magicbeans.ui.AbstractMagicContainer#initMagicContainerAction(java.lang.Object)
+     * @see org.devyant.magicbeans.ui.AbstractBaseContainer#bindButtonToAction(java.lang.Object, ActionWrapper)
      */
     @Override
-    protected final void initMagicContainerAction(Object button) {
+    protected final void bindButtonToAction(Object button, final ActionWrapper action) {
         ((JButton) button).addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(
                     @SuppressWarnings("unused") java.awt.event.ActionEvent evt) {
-                try {
-                    update();
-                    fireUpdateButtonAction();
-                    showMessage(MagicResources.MESSAGE_UPDATED);
-                } catch (MagicException e) {
-                    MagicUtils.debug(e);
-                    showErrorMessage(e.toString());
-                }
+                action.doAction();
             }
         });
     }
@@ -92,26 +68,17 @@ public class SwingContainer extends AbstractBaseContainer<JComponent> {
     @Override
     protected void finalizeNestedComponent() {
         this.component.setBorder(
-                new TitledBorder(null,  " " + this.getName() + " ",  //$NON-NLS-1$//$NON-NLS-2$
+                new TitledBorder(null, this.getName(), //" " + this.getName() + " ",  //$NON-NLS-1$//$NON-NLS-2$
                         TitledBorder.LEFT, TitledBorder.TOP));
     }
 
     /**
-     * Show a message in the status bar.
-     * @param name The message's name
+     * @see org.devyant.magicbeans.ui.AbstractBaseContainer#showMessage(java.lang.String)
      */
-    protected void showMessage(final String name) {
+    @Override
+    public void showMessage(final String name) {
         ((JLabel) this.status).setText(
                 MagicConfiguration.resources.getMessage(name));
-    }
-    
-    /**
-     * Show an error message in the status bar.
-     * @param string The message
-     * @todo use icon for error
-     */
-    protected void showErrorMessage(final String string) {
-        showMessage("[ERROR] " + string); //$NON-NLS-1$
     }
     
 }

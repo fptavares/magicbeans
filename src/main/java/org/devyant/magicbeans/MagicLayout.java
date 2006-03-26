@@ -79,6 +79,13 @@ public interface MagicLayout {
             final Object component, final Object[] controllers,
             boolean expand) throws MagicException;
     /**
+     * Add a simple component toolkit component.
+     * @param container The container
+     * @param status The status bar
+     */
+    public void addSimpleComponent(final Object container,
+            final Object component);
+    /**
      * Add the OK button.
      * @param container The container
      * @param button The button component
