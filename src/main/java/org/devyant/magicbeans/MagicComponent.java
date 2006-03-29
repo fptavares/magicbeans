@@ -73,6 +73,16 @@ public interface MagicComponent<C> {
      * @return A <code>String</code> that contains the name to be displayed
      */
     public String getName();
+    /**
+     * The setter method for this component's parent container.
+     * @param parent The parent container
+     */
+    public void setParent(MagicContainer<?> parent);
+    /**
+     * The getter method for this component's parent container.
+     * @return The parent container
+     */
+    public MagicContainer<?> getParent();
     /* TODO: delete?
      * The setter method for the name property's name.
      * <p>This <code>String</code> will

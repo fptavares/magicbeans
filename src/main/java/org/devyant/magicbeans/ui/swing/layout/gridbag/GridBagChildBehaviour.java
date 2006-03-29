@@ -24,8 +24,15 @@ package org.devyant.magicbeans.ui.swing.layout.gridbag;
 
 import java.awt.GridBagConstraints;
 
+import javax.swing.JButton;
+import javax.swing.JComponent;
+
 import org.devyant.magicbeans.MagicComponent;
+import org.devyant.magicbeans.MagicFactory;
+import org.devyant.magicbeans.MagicUtils;
+import org.devyant.magicbeans.conf.MagicConfiguration;
 import org.devyant.magicbeans.exceptions.MagicException;
+import org.devyant.magicbeans.i18n.MagicResources;
 import org.devyant.magicbeans.layout.AbstractIsolatedBehaviour;
 import org.devyant.magicbeans.ui.awt.layout.gridbag.GridBagMagicLayout;
 
@@ -51,11 +58,27 @@ public class GridBagChildBehaviour
      * @see org.devyant.magicbeans.layout.LayoutIsolatedBehaviour#addLabeledIsolatedComponent(java.lang.Object, java.lang.Object, org.devyant.magicbeans.MagicComponent)
      */
     public void addLabeledIsolatedComponent(Object container, Object label,
-            MagicComponent<?> component) throws MagicException {
+            final MagicComponent<?> component) {
+        // create the button
+        final JButton button = new JButton();
+        button.setText(MagicConfiguration.resources
+                .get(MagicResources.STRING_ISOLATEDBUTTON));
+        button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(
+                    @SuppressWarnings("unused") java.awt.event.ActionEvent evt) {
+                try {
+                    MagicFactory.swing().createAndShowWindow( (Object) button,
+                            component.getName(), (JComponent) component.render());
+                } catch (MagicException e) {
+                    MagicUtils.error(e);
+                }
+            }
+        });
+        
         // add label
         this.layout.addComponent(container, label, 0, GridBagMagicLayout.NO_WEIGHTX);
         // add magic component
-        this.layout.addComponent(container, component.render(), 1,
+        this.layout.addComponent(container, button, 1,
                 GridBagMagicLayout.NO_WEIGHTX,
                 GridBagConstraints.EAST, GridBagConstraints.VERTICAL);
         this.layout.nextRow();

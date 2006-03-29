@@ -34,7 +34,7 @@ import org.devyant.magicbeans.exceptions.MagicException;
  * @version $Revision$ $Date$ ($Author$)
  * @since Mar 23, 2006 3:07:49 PM
  */
-public abstract class AbstractMagicLayout implements MagicLayout {
+public abstract class AbstractMagicLayout<T> implements MagicLayout<T> {
     /**
      * The behaviour type.
      */
@@ -90,12 +90,12 @@ public abstract class AbstractMagicLayout implements MagicLayout {
      * @see org.devyant.magicbeans.MagicLayout#addLabeledIsolatedComponent(java.lang.Object, java.lang.Object, org.devyant.magicbeans.MagicComponent)
      */
     public final void addLabeledIsolatedComponent(Object container, Object label,
-            MagicComponent<?> component) throws MagicException {
+            MagicComponent<? extends T> component) throws MagicException {
         if (MagicUtils.mayBeIsolated(component)) {
-            addLabeledComponent(container, label, component);
-        } else {
             this.ibehaviour.addLabeledIsolatedComponent(container, label,
                     component);
+        } else {
+            addLabeledComponent(container, label, component);
         }
     }
     

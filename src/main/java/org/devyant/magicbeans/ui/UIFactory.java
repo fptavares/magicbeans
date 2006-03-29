@@ -27,7 +27,7 @@ import org.devyant.magicbeans.exceptions.MagicException;
  * @version $Revision$ $Date$ ($Author$)
  * @since Sep 15, 2005 4:29:54 PM
  */
-public interface UIFactory<T extends Object> {
+public interface UIFactory<T> {
 
     /**
      * This method returns a nested component for the specified property.
@@ -48,13 +48,14 @@ public interface UIFactory<T extends Object> {
             final MagicProperty property) throws MagicException;
 
     /**
+     * @todo can I delete this?
      * @return An isolated component if the property is mapped to an
      *  instance of a MagicContainer. If not, the normal component is returned.
      * @throws MagicException
      *  {@link #getNestedComponentInstanceFor(MagicProperty)}
      */
-    public abstract MagicComponent getComponentForIsolated(
-            final MagicProperty property) throws MagicException;
+    /*public abstract MagicComponent getComponentForIsolated(
+            final MagicProperty property) throws MagicException;*/
     
     /**
      * Create and return an apropriate UI component for the OK button.
@@ -73,6 +74,12 @@ public interface UIFactory<T extends Object> {
      * @return A status label instance
      */
     public T createStatus();
+    /**
+     * Create and return toolkit window.
+     * @param content @todo
+     */
+    public Object createAndShowWindow(Object parent,
+            final String title, T content);
     /**
      * Create and return an apropriate UI container.
      * <p>If the container has isolated components,

@@ -40,7 +40,7 @@ import org.devyant.magicbeans.layout.LayoutIsolatedBehaviour;
  * @version $Revision$ $Date$ ($Author$)
  * @since Jun 24, 2005 10:16:51 PM
  */
-public class GridBagMagicLayout extends AbstractMagicLayout {
+public class GridBagMagicLayout extends AbstractMagicLayout<Component> {
     
     /**
      * The serialVersionUID <code>long</code>.

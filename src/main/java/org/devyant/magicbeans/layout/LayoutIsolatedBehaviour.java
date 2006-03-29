@@ -35,7 +35,7 @@ import org.devyant.magicbeans.exceptions.MagicException;
 public interface LayoutIsolatedBehaviour {
 
     /** 
-     * @see org.devyant.magicbeans.MagicLayout#addLabeledIsolatedComponent(java.lang.Object, java.lang.Object, org.devyant.magicbeans.MagicComponent)
+     * @see org.devyant.magicbeans.MagicLayout#addLabeledIsolatedComponent(java.lang.Object, java.lang.Object, MagicComponent<T>)
      */
     public void addLabeledIsolatedComponent(final Object container,
             final Object label, MagicComponent<?> component)

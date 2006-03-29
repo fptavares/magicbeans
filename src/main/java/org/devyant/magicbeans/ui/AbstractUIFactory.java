@@ -39,8 +39,6 @@ import org.devyant.magicbeans.conf.MagicConfiguration;
 import org.devyant.magicbeans.conf.UnavailableConfigurationException;
 import org.devyant.magicbeans.exceptions.MagicException;
 import org.devyant.magicbeans.layout.AbstractMagicLayout.IsolatedBehaviourType;
-import org.devyant.magicbeans.ui.swing.SwingContainer;
-import org.devyant.magicbeans.ui.swing.isolated.SwingChildComponent;
 
 /**
  * AbstractUIFactory is a <b>cool</b> class.
@@ -163,13 +161,9 @@ public abstract class AbstractUIFactory<T> implements UIFactory<T> {
             // -> magic panel
             // -> auto-magic-bean -> nested magic panel
         } else {
-            /*if (nested) { TODO: delete?
-                return new SwingNestedContainer();
-            } else {*/
             final MagicContainer<?> container = getContainerForBean();
             container.setStandalone(!nested);
             return container;
-            /*}*/
         }
     }
 
@@ -178,54 +172,6 @@ public abstract class AbstractUIFactory<T> implements UIFactory<T> {
      * @return The container instance
      */
     protected abstract MagicContainer getContainerForBean();
-
-    /**
-     * @todo all wrong
-     * @see org.devyant.magicbeans.ui.UIFactory#getComponentForIsolated(org.devyant.magicbeans.beans.MagicProperty)
-     */
-    public final MagicComponent getComponentForIsolated(
-            final MagicProperty property) throws MagicException {
-        final MagicComponent component = getNestedComponentInstanceFor(property);
-        
-        if (!MagicUtils.mayBeIsolated(component)) {
-            return component;
-        }
-        
-        
-        final String type = property.getConfiguration()
-                .get(MagicConfiguration.GUI_ISOLATED_TYPE_KEY);
-        
-        if (MagicConfiguration.ISOLATED_TREE_VALUE.equals(type)) {
-            
-            // @todo tree
-            throw new UnavailableConfigurationException(
-                    MagicConfiguration.GUI_ISOLATED_TYPE_KEY, type);
-            
-        } else if (MagicConfiguration.ISOLATED_TABBED_VALUE.equals(type)) {
-            
-            // tabbed
-            /*
-             * in tabbed, all components have to be created
-             * that's why we always return the component
-             * the actual isolated component is created at TabbedLayoutDecorator
-             * it will contain all the components returned by this method
-             */
-            return component;
-            
-        } else if (MagicConfiguration.ISOLATED_CHILD_VALUE.equals(type)) {
-            
-            // child
-            return new SwingChildComponent();
-            
-        } else  {
-            
-            // invalid type
-            throw new InvalidConfigurationException(
-                    MagicConfiguration.GUI_ISOLATED_TYPE_KEY, type);
-            
-        }
-    }
-
     
     /**
      * Create a component instance to bind to a <code>java.lang.String</code>.
@@ -283,7 +229,8 @@ public abstract class AbstractUIFactory<T> implements UIFactory<T> {
      */
     public T createContainerFor(final MagicProperty property,
             final boolean hasIsolatedComponent) throws ConfigurationException {
-        if (hasIsolatedComponent) {
+        // TODO: needed?
+        /*if (hasIsolatedComponent) {
             final String type = property.getConfiguration().get(
                     MagicConfiguration.GUI_ISOLATED_TYPE_KEY);
             if (MagicConfiguration.ISOLATED_TABBED_VALUE.equals(type)) {
@@ -299,9 +246,9 @@ public abstract class AbstractUIFactory<T> implements UIFactory<T> {
                         MagicConfiguration.GUI_ISOLATED_TYPE_KEY, type);
                 
             }
-        } else {
+        } else {*/
             return createContainer();
-        }
+        /*}*/
     }
 
     /**

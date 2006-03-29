@@ -38,10 +38,10 @@
         
         <!-- Dummy.description -->
         <description>
-            <Configuration>
+            <!--<Configuration>
                 <nested>false</nested>
                 <values>dummy.collection</values>
-            </Configuration>
+            </Configuration>-->
         </description>
         
         <!-- Dummy.bye -->

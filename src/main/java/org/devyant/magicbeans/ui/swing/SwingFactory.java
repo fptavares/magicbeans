@@ -22,8 +22,12 @@
  */
 package org.devyant.magicbeans.ui.swing;
 
+import java.awt.Component;
+
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -142,13 +146,6 @@ public class SwingFactory extends AbstractUIFactory<JComponent> {
         return new JPanel();
     }
     /**
-     * @see org.devyant.magicbeans.ui.AbstractUIFactory#createTabbedContainer()
-     */
-    @Override
-    protected JComponent createTabbedContainer() {
-        return new JTabbedPane();
-    }
-    /**
      * @see org.devyant.magicbeans.ui.AbstractUIFactory#createLayout(IsolatedBehaviourType)
      */
     @Override
@@ -161,6 +158,18 @@ public class SwingFactory extends AbstractUIFactory<JComponent> {
     @Override
     protected MagicContainer getContainerForBean() {
         return new SwingContainer();
+    }
+    /**
+     * @see org.devyant.magicbeans.ui.UIFactory#createAndShowWindow(java.lang.Object, java.lang.String, Object)
+     */
+    public Object createAndShowWindow(Object parent,
+            final String title, JComponent content) {
+        final JFrame frame = new JFrame(title);
+        frame.add(content);
+        frame.pack();
+        frame.setLocationRelativeTo((Component) parent); // TODO: parent should be T ?
+        frame.setVisible(true);
+        return frame;
     }
     
 }

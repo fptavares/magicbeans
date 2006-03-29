@@ -32,7 +32,7 @@ import org.devyant.magicbeans.exceptions.MagicException;
  * @version $Revision$ $Date$ ($Author$)
  * @since Jun 24, 2005 9:52:07 PM
  */
-public interface MagicLayout {
+public interface MagicLayout<T> {
     /**
      * Add a pair of components (label + MagicComponent)
      * that represent a property.
@@ -52,7 +52,7 @@ public interface MagicLayout {
      * @throws MagicException When a problem occurs while rendering the component
      */
     public void addLabeledIsolatedComponent(final Object container,
-            final Object label, final MagicComponent<?> component)
+            final Object label, final MagicComponent<? extends T> component)
             throws MagicException;
     /**
      * Add a single magic component that represents a property.

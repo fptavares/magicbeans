@@ -22,6 +22,8 @@
  */
 package org.devyant.magicbeans;
 
+import javax.swing.JComponent;
+
 import org.devyant.magicbeans.beans.MagicProperty;
 import org.devyant.magicbeans.conf.InvalidConfigurationException;
 import org.devyant.magicbeans.conf.MagicConfiguration;
@@ -38,9 +40,9 @@ import org.devyant.magicbeans.ui.swing.SwingFactory;
  * @since 11/Jun/2005 2:04:14
  */
 public abstract class MagicFactory {
-    private static UIFactory swingFactory;
+    private static UIFactory<JComponent> swingFactory;
     
-    public static final UIFactory swing() {
+    public static final UIFactory<JComponent> swing() {
         if (swingFactory == null) {
             swingFactory = new SwingFactory();
         }

@@ -102,23 +102,23 @@ public class AppTest
 
     public static class Dummy {
         private String name = "Dummy";
-        /*private String description = "A dummy class for testing";
-        private File bye = new File("/home/ftavares/someFile");
+        private String description = "A dummy class for testing";
+        /*private File bye = new File("/home/ftavares/someFile");
         private Calendar date = Calendar.getInstance();*/
         private Dummy2 dummy = new Dummy2();
         
-        /*public String getDescription() {
+        public String getDescription() {
             return description;
         }
         public final void setDescription(String description) {
             this.description = description;
-        }*/
-        public String getName() {
+        }
+        /*public String getName() {
             return name;
         }
         public final void setName(String name) {
             this.name = name;
-        }
+        }*/
         public final boolean validateName() {
             if (name.length() > 5) {
                 return true;

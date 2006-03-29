@@ -24,6 +24,7 @@ package org.devyant.magicbeans.ui;
 
 import org.apache.commons.lang.StringUtils;
 import org.devyant.magicbeans.MagicComponent;
+import org.devyant.magicbeans.MagicContainer;
 import org.devyant.magicbeans.MagicUtils;
 import org.devyant.magicbeans.beans.MagicProperty;
 import org.devyant.magicbeans.conf.MagicConfiguration;
@@ -47,6 +48,10 @@ public abstract class AbstractMagicComponent<C> implements MagicComponent<C> {
      */
     protected C component;
     
+    /**
+     * This component's parent container.
+     */
+    private MagicContainer<?> parent;
     /**
      * The property's name. This <code>String</code> will
      * be used for the component's label/title.
@@ -167,6 +172,20 @@ public abstract class AbstractMagicComponent<C> implements MagicComponent<C> {
     public String getName() {
         return this.name;
     }
+    
+    /**
+     * @see org.devyant.magicbeans.MagicComponent#setParent(org.devyant.magicbeans.MagicContainer)
+     */
+    public void setParent(MagicContainer<?> parent) {
+        this.parent = parent;
+    }
+    
+    /**
+     * @see org.devyant.magicbeans.MagicComponent#getParent()
+     */
+    public MagicContainer<?> getParent() {
+        return this.parent;
+    }
 
     /**
      * This is a utility implementation of the
@@ -201,5 +220,14 @@ public abstract class AbstractMagicComponent<C> implements MagicComponent<C> {
      * @throws MagicException Something went wrong
      */
     protected abstract void setValue(final Object value) throws MagicException;
+    
+    
+    /**
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return getName();
+    }
     
 }

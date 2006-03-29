@@ -27,7 +27,6 @@ import java.awt.Component;
 import javax.swing.JTabbedPane;
 
 import org.devyant.magicbeans.MagicComponent;
-import org.devyant.magicbeans.MagicUtils;
 import org.devyant.magicbeans.exceptions.MagicException;
 import org.devyant.magicbeans.layout.AbstractIsolatedBehaviour;
 
@@ -63,7 +62,7 @@ public class GridBagTabbedBehaviour
     public void addLabeledIsolatedComponent(Object container,
             @SuppressWarnings("unused") Object label,
             MagicComponent<?> component) throws MagicException {
-        if (this.tabbedPane == null) {
+       if (this.tabbedPane == null) {
             // create the tabbed container
             this.tabbedPane = new JTabbedPane();
             this.layout.addSimpleComponent(container, this.tabbedPane);

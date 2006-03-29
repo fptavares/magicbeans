@@ -126,22 +126,20 @@ public abstract class AbstractBaseContainer<C>
             }
             
             // verify if is nested
-            final boolean nested = prop.getConfiguration()
-                .getSpecialBoolean(MagicConfiguration.XML_NESTED);
-            if (nested) {
-                // basic nested component
-                component = getFactory().getNestedComponentInstanceFor(prop);
-            } else {
-                // isolated component
+            if (!prop.getConfiguration()
+                    .getSpecialBoolean(MagicConfiguration.XML_NESTED)) {
                 if (!this.isolatedComponentContainer) {
                     this.isolatedComponentContainer = true;
                 }
-                component = getFactory().getComponentForIsolated(prop);
             }
+            
+            // basic nested component
+            component = getFactory().getNestedComponentInstanceFor(prop);
             
             MagicUtils.debug("Binding the generated component to the property."); //$NON-NLS-1$
             component.bindTo(prop);
             
+            component.setParent(this);
             this.components.add(component);
         }
     }
@@ -173,10 +171,10 @@ public abstract class AbstractBaseContainer<C>
         // initialize button
         final Object button = getFactory().createButton(MagicConfiguration
                 .resources.get(MagicResources.STRING_OKBUTTON));
-        bindButtonToAction(button, updateAction);
+        bindButtonToAction(button, this.updateAction);
         // add components
-        layout.addButton(this.component, button);
-        layout.addStatus(this.component, this.status);
+        this.layout.addButton(this.component, button);
+        this.layout.addStatus(this.component, this.status);
         
         if (this.isNested()) { // TODO: is this only needed on standalone?
             finalizeNestedComponent();
@@ -192,7 +190,7 @@ public abstract class AbstractBaseContainer<C>
         if (mComponent.isLabeled()) {
             final Object label = getFactory().createLabel(mComponent.getName());
             // add label + magic component
-            if (isNested()) {
+            if (mComponent.isNested()) {
                 this.layout.addLabeledComponent(
                         this.component, label, mComponent);
             } else {

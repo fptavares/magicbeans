@@ -63,9 +63,8 @@ public class SwingGridBagMagicLayout extends GridBagMagicLayout {
      * @todo
      */
     @Override
-    protected LayoutIsolatedBehaviour createTreeBehaviour()
-            throws UnsupportedOperationException {
-        throw new UnsupportedOperationException();
+    protected LayoutIsolatedBehaviour createTreeBehaviour() {
+        return new GridBagTreeBehaviour(this);
     }
 
 }
