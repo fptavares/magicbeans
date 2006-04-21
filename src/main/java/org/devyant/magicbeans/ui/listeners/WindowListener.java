@@ -20,31 +20,20 @@
  * Rua Simao Bolivar 203 6C, 4470-214 Maia, Portugal.
  *
  */
-package org.devyant.magicbeans;
+package org.devyant.magicbeans.ui.listeners;
 
-import java.util.Collection;
-
-import org.devyant.magicbeans.ui.listeners.UpdateButtonActionHandler;
+import java.util.EventListener;
 
 /**
- * MagicContainer is a <b>cool</b> class.
+ * WindowListener is a <b>cool</b> class.
  * 
  * @author ftavares
  * @version $Revision$ $Date$ ($Author$)
- * @since Apr 3, 2006 5:57:52 PM
- * @param <T> The most basic type of this toolkit's components
+ * @since Apr 16, 2006 5:49:00 PM
  */
-public interface MagicContainer<T> extends MagicComplexComponent<T>,
-        UpdateButtonActionHandler {
+public interface WindowListener extends EventListener {
     /**
-     * If set to true, a MagicComplexComponent will be able
-     * to stand alone (i.e. containing the apropriate "controllers").
-     * @param standalone The boolean value
+     * Hook method for the "close window" event.
      */
-    public void setStandalone(final boolean standalone);
-    /**
-     * Get all child components from this container.
-     * @return A <code>Collection</code> of components
-     */
-    public Collection<MagicComponent<? extends T>> getComponents();
+    public void closeWindowActionPerformed();
 }

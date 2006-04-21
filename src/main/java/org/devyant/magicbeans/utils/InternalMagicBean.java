@@ -22,16 +22,13 @@
  */
 package org.devyant.magicbeans.utils;
 
-import java.awt.Component;
-import java.awt.Frame;
-import java.awt.event.WindowListener;
-
 import org.devyant.magicbeans.MagicComponent;
 import org.devyant.magicbeans.MagicFactory;
 import org.devyant.magicbeans.MagicUtils;
 import org.devyant.magicbeans.beans.MagicProperty;
 import org.devyant.magicbeans.exceptions.MagicException;
-import org.devyant.magicbeans.exceptions.PropertyException;
+import org.devyant.magicbeans.ui.UIFactory;
+import org.devyant.magicbeans.ui.listeners.WindowListener;
 
 /**
  * InternalMagicBean is a <b>cool</b> class.
@@ -40,31 +37,29 @@ import org.devyant.magicbeans.exceptions.PropertyException;
  * @version $Revision$ $Date$ ($Author$)
  * @since Jul 29, 2005 1:45:58 AM
  */
-public class InternalMagicBean extends AbstractMagicBean {
+public class InternalMagicBean<T> extends AbstractMagicBean<T> {
     /**
-     * Creates a new <code>InternalMagicBean</code> instance.
-     * @param object The object to map
+     * The factory <code>UIFactory<T></code>.
      */
-    public InternalMagicBean(Object object) {
-        super(object, object.getClass().getName(), null, false);
-    }
+    private final UIFactory<T> factory;
     
     /**
      * Creates a new <code>InternalMagicBean</code> instance.
-     * @param property The property who's object we want to map
-     * @throws PropertyException {@link MagicProperty#get()}
+     * @param object The object to map
+     * @param factory The toolkit factory
      */
-    public InternalMagicBean(final MagicProperty property) throws PropertyException {
-        super(property.get(),
-                property.getSuperBeanClassName(), property.getBeanPath(), false);
+    public InternalMagicBean(Object object, UIFactory<T> factory) {
+        super(object, object.getClass().getName(), null, false);
+        this.factory = factory;
     }
 
     /**
      * @see org.devyant.magicbeans.utils.AbstractMagicBean#getMagicComponentFor(org.devyant.magicbeans.beans.MagicProperty)
      */
-    protected MagicComponent getMagicComponentFor(final MagicProperty property)
+    @Override
+    protected MagicComponent<? extends T> getMagicComponentFor(final MagicProperty property)
             throws MagicException {
-        return MagicFactory.getComponentInstanceFor(property);
+        return (MagicComponent<? extends T>) MagicFactory.getComponentInstanceFor(property);
     }
     
     /**
@@ -73,7 +68,7 @@ public class InternalMagicBean extends AbstractMagicBean {
      */
     public final void update() throws MagicException {
         if (componentExists()) {
-            component.update();
+            this.component.update();
         }
     }
     
@@ -84,32 +79,24 @@ public class InternalMagicBean extends AbstractMagicBean {
      * @param listener Window listener
      * @throws MagicException {@link #render()}
      */
-    public final void showInternalFrame(final Component parent,
+    public final void showInternalFrame(final T parent,
             final String title, WindowListener listener)
             throws MagicException {
-        // create frame
-        final Frame frame = createFrame(parent, title, null);
-        // render the container
-        final Component c = (Component) this.render();
-        // add user's listener
-        if (listener != null) {
-            frame.addWindowListener(listener);
-        }
-        // show frame
-        showFrame(parent, c, frame);
+        this.factory.createAndShowWindow(parent, title, this.render(), listener);
     }
     
     private final boolean componentExists() {
-        return component != null;
+        return this.component != null;
     }
     
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public final String toString() {
-        if (componentExists() && component instanceof Previewable) {
+        if (componentExists()) {
             try {
-                return String.valueOf( ((Previewable) component).preview() );
+                return String.valueOf(this.component.preview());
             } catch (MagicException e) {
                 MagicUtils.debug(e);
             }

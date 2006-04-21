@@ -103,10 +103,6 @@ public abstract class AbstractMagicComponent<C> implements MagicComponent<C> {
         // is it nested?
         this.nested = this.property.getConfiguration().getSpecialBoolean(
                 MagicConfiguration.XML_NESTED) || !MagicUtils.mayBeIsolated(this);
-        /*
-         * TODO: maybe move the code bellow to avoid
-         * recursive initialization of non-rendered components
-         */
     }
 
     /**

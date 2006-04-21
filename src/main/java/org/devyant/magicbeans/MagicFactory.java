@@ -49,7 +49,14 @@ public abstract class MagicFactory {
         return swingFactory;
     }
     
-    private static final UIFactory factoryFor(final MagicProperty property)
+    /**
+     * @param property The property
+     * @return The factory instance
+     * @throws UnavailableConfigurationException
+     * @throws InvalidConfigurationException
+     * @FIXME must use factory configuration
+     */
+    private static final UIFactory<?> factoryFor(final MagicProperty property)
             throws UnavailableConfigurationException,
                 InvalidConfigurationException {
         
@@ -79,19 +86,19 @@ public abstract class MagicFactory {
      * an object that is not an instance of <code>MagicContainer</code>,
      * this method will return <code>null</code>.
      * </p>
-     * @param beanClass The bean's class
+     * @param property The property
      * @return A <code>MagicContainer</code> instance
      * @throws MagicException When the configuration returns an invalid value
      *  or when that layout could not be instantiated
      */
-    protected static final MagicContainer getContainerInstanceFor(
+    protected static final MagicContainer<?> getContainerInstanceFor(
             final MagicProperty property) throws MagicException {
         
-        final MagicComponent component = getComponentInstanceFor(property);
+        final MagicComponent<?> component = getComponentInstanceFor(property);
         
         if (component instanceof MagicContainer) {
             // return the component
-            return (MagicContainer) component;
+            return (MagicContainer<?>) component;
         } else {
             // not a container, so return null
             return null;
@@ -106,7 +113,7 @@ public abstract class MagicFactory {
      * @throws MagicException When the configuration returns an invalid value
      *  or when that layout could not be instantiated
      */
-    public static final MagicComponent getComponentInstanceFor(
+    public static final MagicComponent<?> getComponentInstanceFor(
             final MagicProperty property) throws MagicException {
         return factoryFor(property).getBaseComponentInstanceFor(property);
     }

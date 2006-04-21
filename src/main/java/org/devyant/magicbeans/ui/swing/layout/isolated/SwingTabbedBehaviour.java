@@ -20,25 +20,25 @@
  * Rua Simao Bolivar 203 6C, 4470-214 Maia, Portugal.
  *
  */
-package org.devyant.magicbeans.ui.swing.layout.gridbag;
+package org.devyant.magicbeans.ui.swing.layout.isolated;
 
-import java.awt.Component;
-
+import javax.swing.JComponent;
 import javax.swing.JTabbedPane;
 
 import org.devyant.magicbeans.MagicComponent;
+import org.devyant.magicbeans.MagicLayout;
 import org.devyant.magicbeans.exceptions.MagicException;
 import org.devyant.magicbeans.layout.AbstractIsolatedBehaviour;
 
 /**
- * GridBagTabbedBehaviour is a <b>cool</b> class.
+ * SwingTabbedBehaviour is a <b>cool</b> class.
  * 
  * @author ftavares
  * @version $Revision$ $Date$ ($Author$)
  * @since Mar 23, 2006 3:34:22 PM
  */
-public class GridBagTabbedBehaviour
-        extends AbstractIsolatedBehaviour<SwingGridBagMagicLayout> {
+public class SwingTabbedBehaviour
+        extends AbstractIsolatedBehaviour<JComponent> {
 
     /**
      * The tabbedPane <code>JTabbedPane</code>.
@@ -46,10 +46,10 @@ public class GridBagTabbedBehaviour
     private JTabbedPane tabbedPane;
     
     /**
-     * Creates a new <code>GridBagTabbedBehaviour</code> instance.
+     * Creates a new <code>SwingTabbedBehaviour</code> instance.
      * @param layout The layout instance
      */
-    public GridBagTabbedBehaviour(SwingGridBagMagicLayout layout) {
+    public SwingTabbedBehaviour(MagicLayout<JComponent> layout) {
         super(layout);
     }
 
@@ -59,9 +59,9 @@ public class GridBagTabbedBehaviour
      * @see org.devyant.magicbeans.MagicUtils#mayBeIsolated(MagicComponent)
      * @throws MagicException 
      */
-    public void addLabeledIsolatedComponent(Object container,
-            @SuppressWarnings("unused") Object label,
-            MagicComponent<?> component) throws MagicException {
+    public void addLabeledIsolatedComponent(JComponent container,
+            @SuppressWarnings("unused") JComponent label,
+            MagicComponent<? extends JComponent> component) throws MagicException {
        if (this.tabbedPane == null) {
             // create the tabbed container
             this.tabbedPane = new JTabbedPane();
@@ -69,7 +69,7 @@ public class GridBagTabbedBehaviour
         }
         // add component as a new tab
         this.tabbedPane.addTab(
-                component.getName(), (Component) component.render());
+                component.getName(), component.render());
     }
 
 }

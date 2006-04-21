@@ -22,14 +22,12 @@
  */
 package org.devyant.magicbeans.ui.swing;
 
-import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.border.TitledBorder;
 
-import org.devyant.magicbeans.MagicFactory;
 import org.devyant.magicbeans.conf.MagicConfiguration;
-import org.devyant.magicbeans.ui.AbstractBaseContainer;
+import org.devyant.magicbeans.ui.AbstractMagicContainer;
 
 /**
  * SwingContainer is a <b>cool</b> class.
@@ -40,27 +38,7 @@ import org.devyant.magicbeans.ui.AbstractBaseContainer;
  * @todo maybe remove status bar....
  * replace by a simple -> title + "*" -> only at nested containers...:(
  */
-public class SwingContainer extends AbstractBaseContainer<JComponent> {
-
-    /**
-     * @see AbstractBaseContainer#AbstractBaseContainer(org.devyant.magicbeans.ui.UIFactory)
-     */
-    public SwingContainer() {
-        super(MagicFactory.swing());
-    }
-    
-    /**
-     * @see org.devyant.magicbeans.ui.AbstractBaseContainer#bindButtonToAction(java.lang.Object, ActionWrapper)
-     */
-    @Override
-    protected final void bindButtonToAction(Object button, final ActionWrapper action) {
-        ((JButton) button).addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(
-                    @SuppressWarnings("unused") java.awt.event.ActionEvent evt) {
-                action.doAction();
-            }
-        });
-    }
+public class SwingContainer extends AbstractMagicContainer<JComponent> {
 
     /**
      * @see org.devyant.magicbeans.ui.AbstractMagicContainer#finalizeNestedComponent()
@@ -73,7 +51,7 @@ public class SwingContainer extends AbstractBaseContainer<JComponent> {
     }
 
     /**
-     * @see org.devyant.magicbeans.ui.AbstractBaseContainer#showMessage(java.lang.String)
+     * @see org.devyant.magicbeans.ui.AbstractMagicContainer#showMessage(java.lang.String)
      */
     @Override
     public void showMessage(final String name) {

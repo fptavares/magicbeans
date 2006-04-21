@@ -32,64 +32,21 @@ import org.devyant.magicbeans.exceptions.MagicException;
  * 
  * @author ftavares
  * @version $Revision$ $Date$ ($Author$)
+ * @param <T> The most basic type of this toolkit's components
  * @since Mar 23, 2006 3:07:49 PM
  */
 public abstract class AbstractMagicLayout<T> implements MagicLayout<T> {
-    /**
-     * The behaviour type.
-     */
-    public enum IsolatedBehaviourType { CHILD, TABBED, TREE; }
     
     /**
      * The behaviour to use for the handling of isolated components.
      */
-    private final LayoutIsolatedBehaviour ibehaviour;
-
-    /**
-     * Creates a new <code>AbstractMagicLayout</code> instance.
-     * @param type The behaviour type
-     */
-    public AbstractMagicLayout(final IsolatedBehaviourType type) {
-        switch(type) {
-            case CHILD:
-            default:
-                this.ibehaviour = createChildBehaviour();
-                break;
-            case TABBED:
-                this.ibehaviour = createTabbedBehaviour();
-                break;
-            case TREE:
-                this.ibehaviour = createTreeBehaviour();
-                break;
-        }
-    }
-
-    /**
-     * Create and return the child behaviour.
-     * @return The behaviour instance
-     * @throws UnsupportedOperationException Toolkit doesn't support this
-     */
-    protected abstract LayoutIsolatedBehaviour
-            createChildBehaviour() throws UnsupportedOperationException;
-    /**
-     * Create and return the tabbed behaviour.
-     * @return The behaviour instance
-     * @throws UnsupportedOperationException Toolkit doesn't support this
-     */
-    protected abstract LayoutIsolatedBehaviour
-            createTabbedBehaviour() throws UnsupportedOperationException;
-    /**
-     * Create and return the tree behaviour.
-     * @return The behaviour instance
-     * @throws UnsupportedOperationException Toolkit doesn't support this
-     */
-    protected abstract LayoutIsolatedBehaviour
-            createTreeBehaviour() throws UnsupportedOperationException;
+    private LayoutIsolatedBehaviour<T> ibehaviour;
+    
 
     /**
      * @see org.devyant.magicbeans.MagicLayout#addLabeledIsolatedComponent(java.lang.Object, java.lang.Object, org.devyant.magicbeans.MagicComponent)
      */
-    public final void addLabeledIsolatedComponent(Object container, Object label,
+    public final void addLabeledIsolatedComponent(T container, T label,
             MagicComponent<? extends T> component) throws MagicException {
         if (MagicUtils.mayBeIsolated(component)) {
             this.ibehaviour.addLabeledIsolatedComponent(container, label,
@@ -97,6 +54,13 @@ public abstract class AbstractMagicLayout<T> implements MagicLayout<T> {
         } else {
             addLabeledComponent(container, label, component);
         }
+    }
+    
+    /**
+     * @see org.devyant.magicbeans.MagicLayout#setIsolatedBehaviour(org.devyant.magicbeans.layout.LayoutIsolatedBehaviour)
+     */
+    public void setIsolatedBehaviour(LayoutIsolatedBehaviour<T> behaviour) {
+        this.ibehaviour = behaviour;
     }
     
 }

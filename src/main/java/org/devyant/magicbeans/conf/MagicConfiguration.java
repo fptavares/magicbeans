@@ -279,7 +279,7 @@ public class MagicConfiguration {
     public final boolean getBoolean(final String key, final int configuration) {
         return conf.getBoolean(computeKey(key, configuration));
     }
-    public Class getClass(final String key, final int configuration)
+    public Class<?> getClass(final String key, final int configuration)
             throws InvalidConfigurationException {
         final String realKey = computeKey(key, configuration);
         final String name = conf.getString(realKey);
@@ -334,7 +334,8 @@ public class MagicConfiguration {
 
     public static final String GUI_COLLECTIONS_STYLE_KEY = "gui.collections.style";
 
-    public static final String GUI_LAYOUT_IMPL = "gui.layout.impl";
+    public static final String GUI_LAYOUT_PREFIX = "gui.";
+    public static final String GUI_LAYOUT_SUFIX = ".layout";
 
     public static final String RESOURCES_FILE_KEY = "resources.file";
     public static final String RESOURCES_FILE = getFromDefault(RESOURCES_FILE_KEY);

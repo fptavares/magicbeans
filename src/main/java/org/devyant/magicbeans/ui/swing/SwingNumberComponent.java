@@ -24,9 +24,7 @@ package org.devyant.magicbeans.ui.swing;
 
 import javax.swing.JFormattedTextField;
 
-import org.devyant.magicbeans.MagicComponent;
-import org.devyant.magicbeans.beans.MagicProperty;
-import org.devyant.magicbeans.exceptions.MagicException;
+import org.devyant.magicbeans.ui.AbstractMagicComponent;
 import org.devyant.magicbeans.utils.Previewable;
 
 /**
@@ -36,44 +34,31 @@ import org.devyant.magicbeans.utils.Previewable;
  * @version $Revision$ $Date$ ($Author$)
  * @since Jul 5, 2005 12:52:15 AM
  */
-public class SwingNumberComponent extends JFormattedTextField implements
-        MagicComponent, Previewable {
+public class SwingNumberComponent
+        extends AbstractMagicComponent<JFormattedTextField>
+        implements Previewable {
+
     /**
-     * The property to bind to.
+     * @see org.devyant.magicbeans.ui.AbstractMagicComponent#createComponent()
      */
-    private MagicProperty property;
-    
-    /**
-     * @see org.devyant.magicbeans.MagicComponent#update()
-     * @todo commit?
-     */
-    public void update() throws MagicException {
-        this.property.set(preview());
+    @Override
+    protected JFormattedTextField createComponent() {
+        return new JFormattedTextField();
     }
 
     /**
-     * @see org.devyant.magicbeans.MagicComponent#bindTo(org.devyant.magicbeans.beans.MagicProperty)
+     * @see org.devyant.magicbeans.ui.AbstractMagicComponent#getValue()
      */
-    public void bindTo(MagicProperty property) throws MagicException {
-        this.property = property;
-        // fill with property's value
-        final Object value = this.property.get();
-        if (value != null) {
-            this.setValue(value);
-        }
+    @Override
+    protected Object getValue() {
+        return this.component.getValue();
     }
 
     /**
-     * @see org.devyant.magicbeans.MagicComponent#getProperty()
+     * @see org.devyant.magicbeans.ui.AbstractMagicComponent#setValue(java.lang.Object)
      */
-    public MagicProperty getProperty() {
-        return property;
-    }
-
-    /**
-     * @see org.devyant.magicbeans.utils.Previewable#preview()
-     */
-    public Object preview() {
-        return this.getValue();
+    @Override
+    protected void setValue(Object value) {
+        this.component.setValue(value);
     }
 }

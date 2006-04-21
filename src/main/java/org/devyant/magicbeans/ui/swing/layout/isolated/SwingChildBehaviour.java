@@ -20,45 +20,45 @@
  * Rua Simao Bolivar 203 6C, 4470-214 Maia, Portugal.
  *
  */
-package org.devyant.magicbeans.ui.swing.layout.gridbag;
-
-import java.awt.GridBagConstraints;
+package org.devyant.magicbeans.ui.swing.layout.isolated;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
 
 import org.devyant.magicbeans.MagicComponent;
 import org.devyant.magicbeans.MagicFactory;
+import org.devyant.magicbeans.MagicLayout;
 import org.devyant.magicbeans.MagicUtils;
 import org.devyant.magicbeans.conf.MagicConfiguration;
 import org.devyant.magicbeans.exceptions.MagicException;
 import org.devyant.magicbeans.i18n.MagicResources;
 import org.devyant.magicbeans.layout.AbstractIsolatedBehaviour;
-import org.devyant.magicbeans.ui.awt.layout.gridbag.GridBagMagicLayout;
 
 /**
- * GridBagChildBehaviour is a <b>cool</b> class.
+ * SwingChildBehaviour is a <b>cool</b> class.
  * 
  * @author ftavares
  * @version $Revision$ $Date$ ($Author$)
  * @since Mar 25, 2006 3:02:12 PM
  */
-public class GridBagChildBehaviour
-        extends AbstractIsolatedBehaviour<SwingGridBagMagicLayout> {
+public class SwingChildBehaviour
+        extends AbstractIsolatedBehaviour<JComponent> {
 
     /**
-     * Creates a new <code>GridBagChildBehaviour</code> instance.
+     * Creates a new <code>SwingChildBehaviour</code> instance.
      * @param layout The layout instance
      */
-    public GridBagChildBehaviour(SwingGridBagMagicLayout layout) {
+    public SwingChildBehaviour(MagicLayout<JComponent> layout) {
         super(layout);
     }
 
     /**
      * @see org.devyant.magicbeans.layout.LayoutIsolatedBehaviour#addLabeledIsolatedComponent(java.lang.Object, java.lang.Object, org.devyant.magicbeans.MagicComponent)
      */
-    public void addLabeledIsolatedComponent(Object container, Object label,
-            final MagicComponent<?> component) {
+    public void addLabeledIsolatedComponent(JComponent container,
+            JComponent label,
+            final MagicComponent<? extends JComponent> component)
+            throws MagicException {
         // create the button
         final JButton button = new JButton();
         button.setText(MagicConfiguration.resources
@@ -67,21 +67,14 @@ public class GridBagChildBehaviour
             public void actionPerformed(
                     @SuppressWarnings("unused") java.awt.event.ActionEvent evt) {
                 try {
-                    MagicFactory.swing().createAndShowWindow( (Object) button,
-                            component.getName(), (JComponent) component.render());
+                    MagicFactory.swing().createAndShowWindow(button, component);
                 } catch (MagicException e) {
                     MagicUtils.error(e);
                 }
             }
         });
         
-        // add label
-        this.layout.addComponent(container, label, 0, GridBagMagicLayout.NO_WEIGHTX);
-        // add magic component
-        this.layout.addComponent(container, button, 1,
-                GridBagMagicLayout.NO_WEIGHTX,
-                GridBagConstraints.EAST, GridBagConstraints.VERTICAL);
-        this.layout.nextRow();
+        this.layout.addControledComponent(container, label, false, button);
     }
 
 }

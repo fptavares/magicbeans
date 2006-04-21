@@ -20,31 +20,21 @@
  * Rua Simao Bolivar 203 6C, 4470-214 Maia, Portugal.
  *
  */
-package org.devyant.magicbeans;
+package org.devyant.magicbeans.ui.swing.layout;
 
-import java.util.Collection;
+import javax.swing.JComponent;
 
-import org.devyant.magicbeans.ui.listeners.UpdateButtonActionHandler;
+import org.devyant.magicbeans.ui.awt.layout.AbstractGridBagMagicLayout;
+
 
 /**
- * MagicContainer is a <b>cool</b> class.
+ * SwingGridBagMagicLayout is a <b>cool</b> class.
  * 
  * @author ftavares
  * @version $Revision$ $Date$ ($Author$)
- * @since Apr 3, 2006 5:57:52 PM
- * @param <T> The most basic type of this toolkit's components
+ * @since Mar 25, 2006 2:50:17 PM
  */
-public interface MagicContainer<T> extends MagicComplexComponent<T>,
-        UpdateButtonActionHandler {
-    /**
-     * If set to true, a MagicComplexComponent will be able
-     * to stand alone (i.e. containing the apropriate "controllers").
-     * @param standalone The boolean value
-     */
-    public void setStandalone(final boolean standalone);
-    /**
-     * Get all child components from this container.
-     * @return A <code>Collection</code> of components
-     */
-    public Collection<MagicComponent<? extends T>> getComponents();
+public class SwingGridBagMagicLayout
+        extends AbstractGridBagMagicLayout<JComponent> {
+    // same as AWT
 }

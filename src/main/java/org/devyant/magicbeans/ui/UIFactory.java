@@ -16,18 +16,26 @@
 package org.devyant.magicbeans.ui;
 
 import org.devyant.magicbeans.MagicComponent;
+import org.devyant.magicbeans.MagicLayout;
 import org.devyant.magicbeans.beans.MagicProperty;
 import org.devyant.magicbeans.conf.ConfigurationException;
 import org.devyant.magicbeans.exceptions.MagicException;
+import org.devyant.magicbeans.ui.listeners.WindowListener;
+import org.devyant.magicbeans.utils.ActionWrapper;
 
 /**
  * AbstractUIFactory is a <b>cool</b> class.
  * 
  * @author ftavares
  * @version $Revision$ $Date$ ($Author$)
+ * @param <T> The most basic type of this toolkit's components
  * @since Sep 15, 2005 4:29:54 PM
  */
 public interface UIFactory<T> {
+    /**
+     * The behaviour type.
+     */
+    public enum IsolatedBehaviourType { CHILD, TABBED, TREE; }
 
     /**
      * This method returns a nested component for the specified property.
@@ -35,7 +43,7 @@ public interface UIFactory<T> {
      * @return A renderer for the property
      * @throws MagicException
      */
-    public abstract MagicComponent getNestedComponentInstanceFor(
+    public abstract MagicComponent<? extends T> getNestedComponentInstanceFor(
             final MagicProperty property) throws MagicException;
 
     /**
@@ -44,7 +52,7 @@ public interface UIFactory<T> {
      * @return A renderer for the property
      * @throws MagicException
      */
-    public abstract MagicComponent getBaseComponentInstanceFor(
+    public abstract MagicComponent<? extends T> getBaseComponentInstanceFor(
             final MagicProperty property) throws MagicException;
 
     /**
@@ -60,9 +68,10 @@ public interface UIFactory<T> {
     /**
      * Create and return an apropriate UI component for the OK button.
      * @param text The button's label
+     * @param action The action to be exectuted
      * @return A button component instance
      */
-    public T createButton(final String text);
+    public T createButton(final String text, final ActionWrapper action);
     /**
      * Create a label component showing the specified <code>String</code>.
      * @param string The label's <code>String</code>
@@ -75,11 +84,41 @@ public interface UIFactory<T> {
      */
     public T createStatus();
     /**
-     * Create and return toolkit window.
-     * @param content @todo
+     * Create, show and return a toolkit window.
+     * <p>
+     * Calls 
+     * {@link #createAndShowWindow(Object, MagicComponent, WindowListener)}
+     * with a <code>null</code> window listener.
+     * </p>
+     * @param parent The parent component
+     * @param component The component
+     * @return The window instance
+     * @throws MagicException {@link MagicComponent#render()}
+     * @see #createAndShowWindow(Object, MagicComponent, WindowListener)
      */
-    public Object createAndShowWindow(Object parent,
-            final String title, T content);
+    public Object createAndShowWindow(T parent,
+            final MagicComponent<? extends T> component) throws MagicException;
+    /**
+     * Create, show and return a toolkit window.
+     * @param parent The parent component
+     * @param component The component
+     * @param listener The listener for window-related events
+     * @return The window instance
+     * @throws MagicException {@link MagicComponent#render()}
+     */
+    public Object createAndShowWindow(T parent,
+            final MagicComponent<? extends T> component,
+            final WindowListener listener) throws MagicException;
+    /**
+     * Create, show and return a toolkit window.
+     * @param parent The parent component
+     * @param title The window's title
+     * @param content The content component
+     * @param listener The listener for window-related events
+     * @return The window instance
+     */
+    public Object createAndShowWindow(T parent,
+            final String title, T content, final WindowListener listener);
     /**
      * Create and return an apropriate UI container.
      * <p>If the container has isolated components,
@@ -90,5 +129,10 @@ public interface UIFactory<T> {
      */
     public T createContainerFor(final MagicProperty property,
             final boolean hasIsolatedComponent) throws ConfigurationException;
+    /**
+     * Create and return an apropriate UI container.
+     * @return The toolkit specific container
+     */
+    public T createContainer();
 
 }

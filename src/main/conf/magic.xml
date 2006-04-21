@@ -76,12 +76,19 @@
                     </collection>
                     <!-- property overrides -->
                     <magic>
-                        <gui><collections><style>combo</style></collections></gui>
+                        <gui><collections><style>list</style></collections></gui>
                         <stuff>yeh</stuff>
                     </magic>
                 </Configuration>
                 
             </collection>
+            
+            <!-- Dummy.dummy.something -->
+            <something>
+                <Configuration>
+                    <nested>false</nested>
+                </Configuration>
+            </something>
         </dummy>
         
     </bean>

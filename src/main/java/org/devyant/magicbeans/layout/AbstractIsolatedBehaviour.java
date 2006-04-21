@@ -22,27 +22,29 @@
  */
 package org.devyant.magicbeans.layout;
 
+import org.devyant.magicbeans.MagicLayout;
+
 /**
  * AbstractIsolatedBehaviour is a <b>cool</b> class.
  * 
  * @author ftavares
  * @version $Revision$ $Date$ ($Author$)
- * @param <T> The layout type
+ * @param <T> The most basic type of this toolkit's components
  * @since Mar 25, 2006 3:53:13 PM
  */
-public abstract class AbstractIsolatedBehaviour<T extends AbstractMagicLayout>
-        implements LayoutIsolatedBehaviour {
+public abstract class AbstractIsolatedBehaviour<T>
+        implements LayoutIsolatedBehaviour<T> {
     
     /**
-     * The layout <code>T</code>.
+     * The layout <code>MagicLayout</code>.
      */
-    protected final T layout;
+    protected final MagicLayout<T> layout;
     
     /**
      * Creates a new <code>AbstractIsolatedBehaviour</code> instance.
      * @param layout The layout instance
      */
-    public AbstractIsolatedBehaviour(T layout) {
+    public AbstractIsolatedBehaviour(MagicLayout<T> layout) {
         this.layout = layout;
     }
     

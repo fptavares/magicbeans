@@ -24,6 +24,7 @@ package org.devyant.magicbeans;
 
 import org.devyant.magicbeans.beans.MagicProperty;
 import org.devyant.magicbeans.exceptions.MagicException;
+import org.devyant.magicbeans.utils.Previewable;
 
 /**
  * MagicComponent is a <b>cool</b> class.
@@ -33,7 +34,7 @@ import org.devyant.magicbeans.exceptions.MagicException;
  * @param <C> The component to use for the binding
  * @since 18/Abr/2005 20:56:13
  */
-public interface MagicComponent<C> {
+public interface MagicComponent<C> extends Previewable {
     /**
      * Updates the original data container.
      * @throws MagicException Something went wrong
@@ -83,11 +84,4 @@ public interface MagicComponent<C> {
      * @return The parent container
      */
     public MagicContainer<?> getParent();
-    /* TODO: delete?
-     * The setter method for the name property's name.
-     * <p>This <code>String</code> will
-     * be used for the component's label/title.</p>
-     * @param name A <code>String</code> that contains the name to be displayed
-     */
-    //public void setName(final String name);
 }

@@ -56,12 +56,12 @@ public abstract class MagicUtils {
     }
     
     public static final boolean cannotStandalone(
-            final MagicComponent component) {
+            final MagicComponent<?> component) {
         return (component == null
                 || (!(component instanceof MagicContainer)));
     }
 
-    public static final boolean mayBeIsolated(MagicComponent component) {
+    public static final boolean mayBeIsolated(MagicComponent<?> component) {
         return !cannotStandalone(component);
     }
     
@@ -77,7 +77,7 @@ public abstract class MagicUtils {
             return string;
         }
 
-        final StringBuffer buf = new StringBuffer(len);
+        final StringBuilder buf = new StringBuilder(len);
         buf.append(Character.toTitleCase(string.charAt(0)));
         buf.append(string.substring(1));
 
@@ -95,7 +95,7 @@ public abstract class MagicUtils {
             return string;
         }
 
-        final StringBuffer buf = new StringBuffer(len);
+        final StringBuilder buf = new StringBuilder(len);
         buf.append(Character.toLowerCase(string.charAt(0)));
         buf.append(string.substring(1));
 
@@ -146,7 +146,7 @@ public abstract class MagicUtils {
             return getAllProperties(object, parent);
         } else {
             // try instatiate a comparator with the configuration value
-            final Comparator comparator = (Comparator) parent.getConfiguration()
+            final Comparator<MagicProperty> comparator = (Comparator<MagicProperty>) parent.getConfiguration()
                     .getClassInstance(MagicConfiguration.GUI_ORDER_KEY);
             // get all the declared properties
             final List<MagicProperty> properties = getAllProperties(object, parent);
@@ -179,15 +179,16 @@ public abstract class MagicUtils {
         final String xpath = BeanPathToXPathConverter.convert(
                 parent.getSuperBeanClassName(), parent.getBeanPath()) + "/*";
         // get the properties
-        final Collection names =
+        final Collection nodes =
             new DOMXPath(xpath).selectNodes(MagicConfiguration.getXML_DOC());
         
         // Collection to return
-        final Collection properties = new ArrayList(names.size());
+        final Collection<MagicProperty> properties =
+            new ArrayList<MagicProperty>(nodes.size());
         
-        debug("names: " + names);
+        debug("names: " + nodes);
         
-        for (Iterator i = names.iterator(); i.hasNext(); ) {
+        for (Iterator i = nodes.iterator(); i.hasNext(); ) {
             final String name = ((Node) i.next()).getNodeName();
             if (MagicConfiguration.CONFIGURATION_NODE.equals(name)) {
                 continue; // ignore the configuration node
@@ -203,13 +204,14 @@ public abstract class MagicUtils {
      */
     private static final List<MagicProperty> getMappedProperties(final Object object,
             final MagicProperty parent) {
-        final Map map = (Map) object;
+        final Map<String, ?> map = (Map<String, ?>) object;
         
         // Collection to return
-        final List properties = new ArrayList(map.size());
+        final List<MagicProperty> properties =
+            new ArrayList<MagicProperty>(map.size());
         
-        for (Iterator i = map.keySet().iterator(); i.hasNext(); ) {
-            properties.add(new MagicProperty(parent, object, (String) i.next()));
+        for (String key : map.keySet()) {
+            properties.add(new MagicProperty(parent, object, key));
         }
         
         return properties;
@@ -224,7 +226,8 @@ public abstract class MagicUtils {
                 PropertyUtils.getPropertyDescriptors(object);
         
         // Collection to return
-        final List properties = new ArrayList(descriptors.length);
+        final List<MagicProperty> properties =
+            new ArrayList<MagicProperty>(descriptors.length);
         
         for (int i = 0; i < descriptors.length; i++) {
             final String name = descriptors[i].getName();

@@ -44,7 +44,7 @@ import org.devyant.magicbeans.utils.AbstractMagicBean;
  * @version $Revision$ ($Author$)
  * @since 18/Abr/2005 19:44:06
  */
-public class MagicBean extends AbstractMagicBean {
+public class MagicBean extends AbstractMagicBean<Object> {
     /**
      * Creates a new <code>MagicBean</code> instance.
      * @param object The object to map
@@ -66,9 +66,9 @@ public class MagicBean extends AbstractMagicBean {
      * @see org.devyant.magicbeans.utils.AbstractMagicBean#getMagicComponentFor(org.devyant.magicbeans.beans.MagicProperty)
      */
     @Override
-    protected MagicComponent getMagicComponentFor(final MagicProperty property)
+    protected MagicComponent<?> getMagicComponentFor(final MagicProperty property)
             throws MagicException {
-        MagicContainer mContainer =
+        MagicContainer<?> mContainer =
             MagicFactory.getContainerInstanceFor(property);
         
         if (MagicUtils.cannotStandalone(mContainer)) {

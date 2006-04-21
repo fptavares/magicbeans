@@ -30,15 +30,16 @@ import org.devyant.magicbeans.exceptions.MagicException;
  * 
  * @author ftavares
  * @version $Revision$ $Date$ ($Author$)
+ * @param <T> The most basic type of this toolkit's components
  * @since Mar 23, 2006 3:10:59 PM
  */
-public interface LayoutIsolatedBehaviour {
+public interface LayoutIsolatedBehaviour<T> {
 
     /** 
-     * @see org.devyant.magicbeans.MagicLayout#addLabeledIsolatedComponent(java.lang.Object, java.lang.Object, MagicComponent<T>)
+     * @see org.devyant.magicbeans.MagicLayout#addLabeledIsolatedComponent(Object, Object, MagicComponent)
      */
-    public void addLabeledIsolatedComponent(final Object container,
-            final Object label, MagicComponent<?> component)
+    public void addLabeledIsolatedComponent(final T container,
+            final T label, MagicComponent<? extends T> component)
             throws MagicException;
 
 }

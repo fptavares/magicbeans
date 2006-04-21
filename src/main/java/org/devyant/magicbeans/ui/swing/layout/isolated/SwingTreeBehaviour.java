@@ -20,11 +20,11 @@
  * Rua Simao Bolivar 203 6C, 4470-214 Maia, Portugal.
  *
  */
-package org.devyant.magicbeans.ui.swing.layout.gridbag;
+package org.devyant.magicbeans.ui.swing.layout.isolated;
 
 import java.awt.BorderLayout;
-import java.awt.Container;
 
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.JTree;
@@ -33,45 +33,49 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeSelectionModel;
 
+import org.devyant.magicbeans.MagicContainer;
 import org.devyant.magicbeans.MagicComponent;
 import org.devyant.magicbeans.MagicContainer;
+import org.devyant.magicbeans.MagicLayout;
+import org.devyant.magicbeans.MagicUtils;
 import org.devyant.magicbeans.conf.MagicConfiguration;
 import org.devyant.magicbeans.exceptions.MagicException;
 import org.devyant.magicbeans.layout.AbstractIsolatedBehaviour;
 
 /**
- * GridBagTreeBehaviour is a <b>cool</b> class.
+ * SwingTreeBehaviour is a <b>cool</b> class.
  * 
  * @author ftavares
  * @version $Revision$ $Date$ ($Author$)
  * @since Mar 25, 2006 4:09:04 PM
  */
-public class GridBagTreeBehaviour
-        extends AbstractIsolatedBehaviour<SwingGridBagMagicLayout> {
+public class SwingTreeBehaviour
+        extends AbstractIsolatedBehaviour<JComponent> {
     
     private static TreeContainer treeContainer;
 
     /**
-     * Creates a new <code>GridBagTreeBehaviour</code> instance.
+     * Creates a new <code>SwingTreeBehaviour</code> instance.
      * @param layout The layout instance
      */
-    public GridBagTreeBehaviour(SwingGridBagMagicLayout layout) {
+    public SwingTreeBehaviour(MagicLayout<JComponent> layout) {
         super(layout);
     }
 
     /**
      * @see org.devyant.magicbeans.layout.LayoutIsolatedBehaviour#addLabeledIsolatedComponent(java.lang.Object, java.lang.Object, org.devyant.magicbeans.MagicComponent)
      */
-    public void addLabeledIsolatedComponent(Object container, Object label,
-            MagicComponent<?> component) {
-        if (treeContainer == null || !component.getProperty().getParent()
-                .getConfiguration().get(MagicConfiguration.GUI_ISOLATED_TYPE_KEY)
-                .equals(MagicConfiguration.ISOLATED_TREE_VALUE)) {
-            treeContainer = new TreeContainer(component.getParent());
+    public void addLabeledIsolatedComponent(JComponent container,
+            JComponent label, MagicComponent<? extends JComponent> component) {
+        if (treeContainer == null
+                || (!treeContainer.getRoot().equals(component.getParent())
+                && !component.getProperty().getParent().getConfiguration()
+                .get(MagicConfiguration.GUI_ISOLATED_TYPE_KEY)
+                .equals(MagicConfiguration.ISOLATED_TREE_VALUE))) {
+            treeContainer = new TreeContainer((MagicContainer<? extends JComponent>) component.getParent());
             this.layout.addSimpleComponent(container, treeContainer);
         }
-        treeContainer.addNode(component);
-        
+        //treeContainer.addNode(component);
     }
     
     /**
@@ -83,16 +87,15 @@ public class GridBagTreeBehaviour
         protected JRootPane panel = new JRootPane();
         
         /**
-         * Creates a new <code>GridBagTreeBehaviour.TreeContainer</code> instance.
+         * Creates a new <code>SwingTreeBehaviour.TreeContainer</code> instance.
          * @param rootComponent The root component
          */
-        public TreeContainer(MagicContainer<?> rootComponent) {
+        public TreeContainer(MagicContainer<? extends JComponent> rootComponent) {
             this.setLayout(new BorderLayout());
             
             this.root = createNode(rootComponent);
             this.tree = new JTree(this.root);
-            this.tree.setToggleClickCount(1);
-            this.tree.expandRow(0);
+            //this.tree.setToggleClickCount(1);
             this.tree.getSelectionModel().setSelectionMode
             (TreeSelectionModel.SINGLE_TREE_SELECTION);
             // listen for when the selection changes
@@ -100,11 +103,10 @@ public class GridBagTreeBehaviour
                 public void valueChanged(TreeSelectionEvent e) {
                     try {
                         TreeContainer.this.panel.setContentPane(
-                                (Container) ((MagicTreeNode) e.getPath()
+                                ((MagicTreeNode) e.getPath()
                                         .getLastPathComponent()).render());
                     } catch (MagicException e1) {
-                        // @todo Auto-generated catch block
-                        e1.printStackTrace();
+                        MagicUtils.debug(e1);
                     }
                 }
             });
@@ -114,15 +116,37 @@ public class GridBagTreeBehaviour
         }
         
         /**
+         * Get the root component.
+         * @return The root component
+         */
+        public MagicComponent<?> getRoot() {
+            return this.root.getComponent();
+        }
+
+        /**
          * Add a component to the tree.
          * @param component The component
          */
-        public void addNode(MagicComponent<?> component) {
+        public void addNode(MagicComponent<? extends JComponent> component) {
             this.root.add(createNode(component));
         }
         
-        private MagicTreeNode createNode(MagicComponent<?> component) {
-            return new MagicTreeNode(component);
+        private MagicTreeNode createNode(MagicComponent<? extends JComponent> component) {
+            final MagicTreeNode node = new MagicTreeNode(component);
+            if (component instanceof MagicContainer) {
+                for (MagicComponent<? extends JComponent> child
+                        : ((MagicContainer<? extends JComponent>) component)
+                        .getComponents()) {
+                    // TODO: have to check if it is isolated
+                    // TODO: have to check whether it may be isolated or not
+                    // FIXME: should the components collection be at the layout?
+                    // getting a bit too complicated?...
+                    if (!child.isNested()) {
+                        node.add(createNode(child));
+                    }
+                }
+            }
+            return node;
         }
         
     }
@@ -133,15 +157,19 @@ public class GridBagTreeBehaviour
         /**
          * The component <code>MagicComponent<?></code>.
          */
-        private final MagicComponent<?> component;
+        private final MagicComponent<? extends JComponent> component;
 
         /**
          * Creates a new <code>MagicTreeNode</code> instance.
          * @param component The component
          */
-        public MagicTreeNode(final MagicComponent<?> component) {
+        public MagicTreeNode(final MagicComponent<? extends JComponent> component) {
             this.component = component;
-            this.setUserObject(this.component.getName());
+            if (this.component == null) {
+                this.setUserObject("uidgsgdf");
+            } else {
+                this.setUserObject(this.component.getName());
+            }
         }
 
         /**
@@ -152,7 +180,7 @@ public class GridBagTreeBehaviour
             return this.component;
         }
         
-        public Object render() throws MagicException {
+        public JComponent render() throws MagicException {
             return this.component.render();
         }
         

@@ -20,31 +20,18 @@
  * Rua Simao Bolivar 203 6C, 4470-214 Maia, Portugal.
  *
  */
-package org.devyant.magicbeans;
-
-import java.util.Collection;
-
-import org.devyant.magicbeans.ui.listeners.UpdateButtonActionHandler;
+package org.devyant.magicbeans.utils;
 
 /**
- * MagicContainer is a <b>cool</b> class.
+ * Wraps an action.
  * 
  * @author ftavares
  * @version $Revision$ $Date$ ($Author$)
- * @since Apr 3, 2006 5:57:52 PM
- * @param <T> The most basic type of this toolkit's components
+ * @since Apr 4, 2006 1:48:21 AM
  */
-public interface MagicContainer<T> extends MagicComplexComponent<T>,
-        UpdateButtonActionHandler {
+public interface ActionWrapper {
     /**
-     * If set to true, a MagicComplexComponent will be able
-     * to stand alone (i.e. containing the apropriate "controllers").
-     * @param standalone The boolean value
+     * Executes the wrapped action.
      */
-    public void setStandalone(final boolean standalone);
-    /**
-     * Get all child components from this container.
-     * @return A <code>Collection</code> of components
-     */
-    public Collection<MagicComponent<? extends T>> getComponents();
+    public void doAction();
 }

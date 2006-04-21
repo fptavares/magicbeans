@@ -20,7 +20,7 @@
  * Rua Simao Bolivar 203 6C, 4470-214 Maia, Portugal.
  *
  */
-package org.devyant.magicbeans.ui.awt.layout.gridbag;
+package org.devyant.magicbeans.ui.awt.layout;
 
 import java.awt.Component;
 import java.awt.Container;
@@ -31,16 +31,17 @@ import java.awt.Insets;
 import org.devyant.magicbeans.MagicComponent;
 import org.devyant.magicbeans.exceptions.MagicException;
 import org.devyant.magicbeans.layout.AbstractMagicLayout;
-import org.devyant.magicbeans.layout.LayoutIsolatedBehaviour;
 
 /**
- * GridBagMagicLayout is a <b>cool</b> class.
+ * AbstractGridBagMagicLayout is a <b>cool</b> class.
  * 
  * @author ftavares
  * @version $Revision$ $Date$ ($Author$)
+ * @param <T> The most basic type of this toolkit's components
  * @since Jun 24, 2005 10:16:51 PM
  */
-public class GridBagMagicLayout extends AbstractMagicLayout<Component> {
+public abstract class AbstractGridBagMagicLayout<T extends Component>
+        extends AbstractMagicLayout<T> {
     
     /**
      * The serialVersionUID <code>long</code>.
@@ -52,13 +53,6 @@ public class GridBagMagicLayout extends AbstractMagicLayout<Component> {
      */
     private final GridBagLayout layout = new GridBagLayout();
     
-    /**
-     * Creates a new <code>GridBagMagicLayout</code> instance.
-     * @param type
-     */
-    public GridBagMagicLayout(IsolatedBehaviourType type) {
-        super(type);
-    }
     
     /**
      * The DEFAULT_ANCHOR <code>int</code>.
@@ -104,10 +98,10 @@ public class GridBagMagicLayout extends AbstractMagicLayout<Component> {
     public final static double NO_WEIGHTX = 0.0;
 
     /**
-     * @see org.devyant.magicbeans.MagicLayout#addLabeledComponent(Object, java.lang.Object, MagicComponent)
+     * @see org.devyant.magicbeans.MagicLayout#addLabeledComponent(java.lang.Object, java.lang.Object, org.devyant.magicbeans.MagicComponent)
      */
-    public void addLabeledComponent(final Object container, final Object label,
-            final MagicComponent<?> component) throws MagicException {
+    public void addLabeledComponent(final T container, final T label,
+            final MagicComponent<? extends T> component) throws MagicException {
         // add label
         addComponent(container, label, 0, NO_WEIGHTX);
         // add magic component
@@ -116,23 +110,10 @@ public class GridBagMagicLayout extends AbstractMagicLayout<Component> {
     }
 
     /**
-     * @see org.devyant.magicbeans.MagicLayout#addLabeledIsolatedComponent(Object, Object, MagicComponent)
+     * @see org.devyant.magicbeans.MagicLayout#addUnlabeledComponent(java.lang.Object, org.devyant.magicbeans.MagicComponent)
      */
-    /*public void addLabeledIsolatedComponent(final Object container,
-            final Object label, final MagicComponent<?> component)
-            throws MagicException {
-        // add label
-        addComponent(container, label, 0, line, NO_WEIGHTX);
-        // add magic component
-        addComponent(container, component.render(), 1, line++, NO_WEIGHTX,
-                GridBagConstraints.EAST, GridBagConstraints.VERTICAL);
-    }*/
-
-    /**
-     * @see org.devyant.magicbeans.MagicLayout#addUnlabeledComponent(Object, MagicComponent)
-     */
-    public void addUnlabeledComponent(Object container,
-            MagicComponent<?> component) throws MagicException {
+    public void addUnlabeledComponent(T container,
+            MagicComponent<? extends T> component) throws MagicException {
         // add magic component
         addComponent(container, component.render(), 0, STANDARD_WEIGHTX,
                 DEFAULT_ANCHOR, GridBagConstraints.BOTH, 2, 1, defaultInsets);
@@ -140,10 +121,10 @@ public class GridBagMagicLayout extends AbstractMagicLayout<Component> {
     }
 
     /**
-     * @see org.devyant.magicbeans.MagicLayout#addControledComponent(java.lang.Object, java.lang.Object, java.lang.Object[], boolean)
+     * @see org.devyant.magicbeans.MagicLayout#addControledComponent(java.lang.Object, java.lang.Object, boolean, T[])
      */
-    public void addControledComponent(Object container, Object component,
-            Object[] controllers, boolean expand) {
+    public void addControledComponent(T container, T component, boolean expand,
+            T... controllers) {
         final int fill;
         if (expand) {
             fill = GridBagConstraints.BOTH;
@@ -151,12 +132,12 @@ public class GridBagMagicLayout extends AbstractMagicLayout<Component> {
             fill = GridBagConstraints.HORIZONTAL;
         }
         // add main component
-        addComponent(container, component, 1, STANDARD_WEIGHTX,
+        addComponent(container, component, 0, STANDARD_WEIGHTX,
                 DEFAULT_ANCHOR, fill, 1, controllers.length, defaultInsets);
         // add controllers
         for (int i = 0; i < controllers.length; i++) {
-            addComponent(container, controllers[i], 2, NO_WEIGHTX,
-                    DEFAULT_ANCHOR, GridBagConstraints.HORIZONTAL,
+            addComponent(container, controllers[i], 1, NO_WEIGHTX,
+                    DEFAULT_ANCHOR, GridBagConstraints.NONE,
                     1, 1, defaultInsets);
             nextRow();
         }
@@ -165,7 +146,7 @@ public class GridBagMagicLayout extends AbstractMagicLayout<Component> {
     /**
      * @see org.devyant.magicbeans.MagicLayout#addButton(Object, java.lang.Object)
      */
-    public void addButton(final Object container, final Object button) {
+    public void addButton(final T container, final T button) {
         addComponent(container, button, 0, NO_WEIGHTX,
                 GridBagConstraints.LINE_END, GridBagConstraints.NONE,
                 GridBagConstraints.REMAINDER, 1, new Insets(INSETS_TOP + 10,
@@ -176,7 +157,7 @@ public class GridBagMagicLayout extends AbstractMagicLayout<Component> {
     /**
      * @see org.devyant.magicbeans.MagicLayout#addStatus(Object, Object)
      */
-    public void addStatus(final Object container, final Object status) {
+    public void addStatus(final T container, final T status) {
         addComponent(container, status, 0, STANDARD_WEIGHTX,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                 GridBagConstraints.REMAINDER, 1,
@@ -187,7 +168,7 @@ public class GridBagMagicLayout extends AbstractMagicLayout<Component> {
     /**
      * @see org.devyant.magicbeans.MagicLayout#addSimpleComponent(java.lang.Object, java.lang.Object)
      */
-    public void addSimpleComponent(Object container, Object component) {
+    public void addSimpleComponent(T container, T component) {
         addComponent(container, component, 0, STANDARD_WEIGHTX,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                 GridBagConstraints.REMAINDER, 1, defaultInsets);
@@ -205,8 +186,8 @@ public class GridBagMagicLayout extends AbstractMagicLayout<Component> {
      * @param x The x coordinate
      * @param weightx The <code>GridBagConstraints</code>'s weightx value
      */
-    public final void addComponent(final Object container,
-            final Object component, int x, double weightx) {
+    public final void addComponent(final T container,
+            final T component, int x, double weightx) {
         addComponent(container, component, x, weightx,
                 GridBagConstraints.LINE_START, GridBagConstraints.BOTH);
     }
@@ -219,8 +200,8 @@ public class GridBagMagicLayout extends AbstractMagicLayout<Component> {
      * @param anchor The <code>GridBagConstraints</code>'s anchor to use
      * @param fill The <code>GridBagConstraints</code>'s fill to use
      */
-    public final void addComponent(final Object container,
-            final Object component, int x,
+    public final void addComponent(final T container,
+            final T component, int x,
             double weightx, int anchor, int fill) {
         addComponent(container, component,
                 x, weightx, anchor, fill, 1, 1, defaultInsets);
@@ -237,8 +218,8 @@ public class GridBagMagicLayout extends AbstractMagicLayout<Component> {
      * @param gridheight The <code>GridBagConstraints</code>'s gridheight to use
      * @param insets The <code>GridBagConstraints</code>'s defaultInsets to use
      */
-    public final void addComponent(final Object container,
-            final Object component, int x, double weightx, int anchor,
+    public final void addComponent(final T container,
+            final T component, int x, double weightx, int anchor,
             int fill, int gridwidth, int gridheight, Insets insets) {
         // TODO: unnecessary repetition of this...
         ((Container) container).setLayout(this.layout);
@@ -251,8 +232,7 @@ public class GridBagMagicLayout extends AbstractMagicLayout<Component> {
         this.gridBagConstraints.gridy = this.line;
         this.gridBagConstraints.insets = insets;
         this.gridBagConstraints.weightx = weightx;
-        ((Container) container).add(
-                (Component) component, this.gridBagConstraints);
+        ((Container) container).add(component, this.gridBagConstraints);
     }
     
     /**
@@ -260,36 +240,6 @@ public class GridBagMagicLayout extends AbstractMagicLayout<Component> {
      */
     public final void nextRow() {
         this.line++;
-    }
-
-    /**
-     * @see org.devyant.magicbeans.layout.AbstractMagicLayout#createChildBehaviour()
-     * @todo
-     */
-    @Override
-    protected LayoutIsolatedBehaviour createChildBehaviour()
-            throws UnsupportedOperationException {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * @see org.devyant.magicbeans.layout.AbstractMagicLayout#createTabbedBehaviour()
-     * @todo
-     */
-    @Override
-    protected LayoutIsolatedBehaviour createTabbedBehaviour()
-            throws UnsupportedOperationException {
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * @see org.devyant.magicbeans.layout.AbstractMagicLayout#createTreeBehaviour()
-     * @todo
-     */
-    @Override
-    protected LayoutIsolatedBehaviour createTreeBehaviour()
-            throws UnsupportedOperationException {
-        throw new UnsupportedOperationException();
     }
 
 }

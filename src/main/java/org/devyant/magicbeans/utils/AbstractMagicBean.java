@@ -43,7 +43,7 @@ import org.devyant.magicbeans.ui.WindowFactory;
  * @version $Revision$ $Date$ ($Author$)
  * @since Aug 1, 2005 5:32:45 AM
  */
-public abstract class AbstractMagicBean implements AuxiliarBean {
+public abstract class AbstractMagicBean<T> implements AuxiliarBean {
     /**
      * The object <code>Object</code>.
      */
@@ -61,7 +61,7 @@ public abstract class AbstractMagicBean implements AuxiliarBean {
     /**
      * The singleton <code>MagicComponent</code> to return on {@link #render()}.
      */
-    protected MagicComponent component;
+    protected MagicComponent<? extends T> component;
     
     /**
      * The standalone <code>boolean</code>.
@@ -88,7 +88,7 @@ public abstract class AbstractMagicBean implements AuxiliarBean {
      * @throws MagicException Thrown if something goes wrong
      *  during the GUI generation process.
      */
-    public Object render() throws MagicException {
+    public T render() throws MagicException {
         if (this.component == null) {
             this.component = createMagicComponent();
         }
@@ -149,7 +149,7 @@ public abstract class AbstractMagicBean implements AuxiliarBean {
      * @return An object.
      * @see org.devyant.magicbeans.beans.SinglePropertyWrapper
      */
-    public final Object getRealValue() {
+    public final Object getValue() {
         if (object instanceof SinglePropertyWrapper) {
             return ((SinglePropertyWrapper) object).getProperty();
         } else {
@@ -161,13 +161,14 @@ public abstract class AbstractMagicBean implements AuxiliarBean {
      * @return
      * @throws MagicException
      */
-    protected MagicComponent<?> createMagicComponent() throws MagicException {
+    protected MagicComponent<? extends T> createMagicComponent() throws MagicException {
         // create the magic property object
         final MagicProperty property = createMagicProperty();
         
         // get the component
         MagicUtils.info("Generating the component.");
-        final MagicComponent<?> mComponent = getMagicComponentFor(property);
+        final MagicComponent<? extends T> mComponent =
+            getMagicComponentFor(property);
         
         // bind container to this MagicBean's bean
         MagicUtils.info("Binding the component to a new MagicProperty"
@@ -185,6 +186,6 @@ public abstract class AbstractMagicBean implements AuxiliarBean {
         return new MagicProperty(this.superBeanClassName,
                 this.beanPath, this, "object");
     }
-    protected abstract MagicComponent<?> getMagicComponentFor(
+    protected abstract MagicComponent<? extends T> getMagicComponentFor(
             final MagicProperty property) throws MagicException;
 }

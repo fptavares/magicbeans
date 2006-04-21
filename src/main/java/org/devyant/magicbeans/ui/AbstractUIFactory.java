@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.Date;
 
 import org.devyant.magicbeans.MagicComponent;
+import org.devyant.magicbeans.MagicComplexComponent;
 import org.devyant.magicbeans.MagicContainer;
 import org.devyant.magicbeans.MagicLayout;
 import org.devyant.magicbeans.MagicUtils;
@@ -36,15 +37,16 @@ import org.devyant.magicbeans.beans.MagicProperty;
 import org.devyant.magicbeans.conf.ConfigurationException;
 import org.devyant.magicbeans.conf.InvalidConfigurationException;
 import org.devyant.magicbeans.conf.MagicConfiguration;
-import org.devyant.magicbeans.conf.UnavailableConfigurationException;
 import org.devyant.magicbeans.exceptions.MagicException;
-import org.devyant.magicbeans.layout.AbstractMagicLayout.IsolatedBehaviourType;
+import org.devyant.magicbeans.layout.LayoutIsolatedBehaviour;
+import org.devyant.magicbeans.ui.listeners.WindowListener;
 
 /**
  * AbstractUIFactory is a <b>cool</b> class.
  * 
  * @author ftavares
  * @version $Revision$ $Date$ ($Author$)
+ * @param <T> The most basic type of this toolkit's components
  * @since Sep 15, 2005 1:40:50 AM
  */
 public abstract class AbstractUIFactory<T> implements UIFactory<T> {
@@ -56,48 +58,59 @@ public abstract class AbstractUIFactory<T> implements UIFactory<T> {
      * The COLLECTION_STYLE_LIST <code>String</code>.
      */
     protected static final String COLLECTION_STYLE_LIST = "list";
+    /**
+     * The keyword <code>String</code>.
+     */
+    public final String keyword;
 
 
     /**
+     * Creates a new <code>AbstractUIFactory</code> instance.
+     * @param keyword The keyword that represents this toolkit
+     */
+    public AbstractUIFactory(final String keyword) {
+        this.keyword = keyword;
+    }
+    
+    /**
      * @see org.devyant.magicbeans.ui.UIFactory#getNestedComponentInstanceFor(org.devyant.magicbeans.beans.MagicProperty)
      */
-    public final MagicComponent getNestedComponentInstanceFor(
+    public final MagicComponent<? extends T> getNestedComponentInstanceFor(
             final MagicProperty property) throws MagicException {
-        return getComponentInstanceFor(property, true);
+        return getComponentInstanceFor(property);
     }
 
     /**
      * @see org.devyant.magicbeans.ui.UIFactory#getBaseComponentInstanceFor(org.devyant.magicbeans.beans.MagicProperty)
      */
-    public final MagicComponent getBaseComponentInstanceFor(
+    public final MagicComponent<? extends T> getBaseComponentInstanceFor(
             final MagicProperty property) throws MagicException {
-        return getComponentInstanceFor(property, false);
+        return getComponentInstanceFor(property);
     }
     
     /**
      * This method returns a magic component for the specified property.
      * @param property The property
-     * @param nested Whether it is a nested component or not
      * @return A renderer for the property
      * @throws MagicException
      *  {@link #getBaseComponentInstanceFor(MagicProperty)}
+     * @FIXME remove this
      */
-    private final MagicComponent getComponentInstanceFor(
-            final MagicProperty property, final boolean nested)
+    private final MagicComponent<? extends T> getComponentInstanceFor(
+            final MagicProperty property)
             throws MagicException {
         // create the component
-        final MagicComponent component = getBinderInstanceFor(property.getType(),
-                property.getConfiguration(), nested);
+        final MagicComponent<? extends T> component = getBinderInstanceFor(
+                property.getType(), property.getConfiguration());
         MagicUtils.debug("Generated a new component: " + component);
         
-        // Magic Layout
-        if (component instanceof MagicContainer) {
-            // instantiate the layout manager
-            ((MagicContainer) component).setMagicLayout(
-                    createLayout(IsolatedBehaviourType.valueOf(
-                            property.getConfiguration().get(
-                                    MagicConfiguration.GUI_ISOLATED_TYPE_KEY)
-                                    .toUpperCase())));
+        // initialize layout TODO: initialize later?
+        
+        if (component instanceof MagicComplexComponent) {
+            final MagicComplexComponent<T> complex =
+                (MagicComplexComponent<T>) component;
+            complex.setMagicLayout(createLayoutFor(property));
+            complex.setUIFactory(this);
         }
         
         // return the component
@@ -107,15 +120,15 @@ public abstract class AbstractUIFactory<T> implements UIFactory<T> {
 
     /**
      * @param type The class of the object to bind to
-     * @param nested Whether it is a nested component or not
+     * @param configuration This property's configuration
      * @return A <code>MagicComponent</code> instance for the property
      * @throws InvalidConfigurationException The configuration specified
      *  an invalid value.
      * @todo complete...
      * numbers, files, colors, ... timelines (a Collection of dates)...
      */
-    private final MagicComponent getBinderInstanceFor(final Class type,
-            final MagicConfiguration configuration, final boolean nested)
+    private final MagicComponent<? extends T> getBinderInstanceFor(
+            final Class<?> type, final MagicConfiguration configuration)
             throws InvalidConfigurationException {
         MagicUtils.debug("Type for component: " + type.getName());
         // java.lang.String
@@ -156,14 +169,11 @@ public abstract class AbstractUIFactory<T> implements UIFactory<T> {
         } else if (File.class.isAssignableFrom(type)) {
             return getComponentForFile();
             
-            
             // complex data
             // -> magic panel
             // -> auto-magic-bean -> nested magic panel
         } else {
-            final MagicContainer<?> container = getContainerForBean();
-            container.setStandalone(!nested);
-            return container;
+            return getContainerForBean();
         }
     }
 
@@ -171,43 +181,43 @@ public abstract class AbstractUIFactory<T> implements UIFactory<T> {
      * Create and return a new container.
      * @return The container instance
      */
-    protected abstract MagicContainer getContainerForBean();
+    protected abstract MagicContainer<? extends T> getContainerForBean();
     
     /**
      * Create a component instance to bind to a <code>java.lang.String</code>.
      * @return The appropriate component
      */
-    protected abstract MagicComponent getComponentForString();
+    protected abstract MagicComponent<? extends T> getComponentForString();
     /**
      * Create a component instance to bind to a <code>java.lang.Number</code>.
      * @return The appropriate component
      */
-    protected abstract MagicComponent getComponentForNumber();
+    protected abstract MagicComponent<? extends T> getComponentForNumber();
     /**
      * Create a component instance to bind to a <code>java.lang.Boolean</code>.
      * @return The appropriate component
      */
-    protected abstract MagicComponent getComponentForBoolean();
+    protected abstract MagicComponent<? extends T> getComponentForBoolean();
     /**
      * Create a component instance to bind to a <code>java.util.Date</code>.
      * @return The appropriate component
      */
-    protected abstract MagicComponent getComponentForDate();
+    protected abstract MagicComponent<? extends T> getComponentForDate();
     /**
      * Create a component instance to bind to a <code>java.util.Calendar</code>.
      * @return The appropriate component
      */
-    protected abstract MagicComponent getComponentForCalendar();
+    protected abstract MagicComponent<? extends T> getComponentForCalendar();
     /**
      * Create a component instance to bind to a <code>java.sql.Timestamp</code>.
      * @return The appropriate component
      */
-    protected abstract MagicComponent getComponentForTimestamp();
+    protected abstract MagicComponent<? extends T> getComponentForTimestamp();
     /**
      * Create a component instance to bind to a <code>java.sql.Date</code>.
      * @return The appropriate component
      */
-    protected abstract MagicComponent getComponentForSqlDate();
+    protected abstract MagicComponent<? extends T> getComponentForSqlDate();
     /**
      * Create a component instance to bind
      * to a <code>java.util.Collection</code>.
@@ -215,13 +225,13 @@ public abstract class AbstractUIFactory<T> implements UIFactory<T> {
      * @return The appropriate component
      * @throws InvalidConfigurationException
      */
-    protected abstract MagicComponent getComponentForCollection(
+    protected abstract MagicComponent<? extends T> getComponentForCollection(
             final String style) throws InvalidConfigurationException;
     /**
      * Create a component instance to bind to a <code>java.io.File</code>.
      * @return The appropriate component
      */
-    protected abstract MagicComponent getComponentForFile();
+    protected abstract MagicComponent<? extends T> getComponentForFile();
     
 
     /**
@@ -250,53 +260,83 @@ public abstract class AbstractUIFactory<T> implements UIFactory<T> {
             return createContainer();
         /*}*/
     }
-
-    /**
-     * This method should be overriden
-     * to create an isolated-component-ready container.
-     * @return The container
-     * @throws UnavailableConfigurationException This factory doesn't support it
-     */
-    protected T createChildContainer() throws UnavailableConfigurationException {
-        throw new UnavailableConfigurationException(
-                MagicConfiguration.GUI_ISOLATED_TYPE_KEY,
-                MagicConfiguration.ISOLATED_CHILD_VALUE);
-    }
-
-    /**
-     * This method should be overriden
-     * to create an isolated-component-ready container.
-     * @return The container
-     * @throws UnavailableConfigurationException This factory doesn't support it
-     */
-    protected T createTreeContainer() throws UnavailableConfigurationException {
-        throw new UnavailableConfigurationException(
-                MagicConfiguration.GUI_ISOLATED_TYPE_KEY,
-                MagicConfiguration.ISOLATED_TREE_VALUE);
-    }
-
-    /**
-     * This method should be overriden
-     * to create an isolated-component-ready container.
-     * @return The container
-     * @throws UnavailableConfigurationException This factory doesn't support it
-     */
-    protected T createTabbedContainer() throws UnavailableConfigurationException {
-        throw new UnavailableConfigurationException(
-                MagicConfiguration.GUI_ISOLATED_TYPE_KEY,
-                MagicConfiguration.ISOLATED_TABBED_VALUE);
-    }
-
-    /**
-     * Create and return a default toolkit container.
-     * @return The container
-     */
-    protected abstract T createContainer();
-
+    
     /**
      * Create and return a layout instance.
-     * @param type @todo
+     * @param property The behaviour type to use
      * @return The layout
+     * @throws MagicException On the layout instantiation
      */
-    protected abstract MagicLayout createLayout(final IsolatedBehaviourType type);
+    private MagicLayout<T> createLayoutFor(final MagicProperty property)
+            throws MagicException {
+        final IsolatedBehaviourType type = IsolatedBehaviourType.valueOf(
+                property.getConfiguration().get(
+                        MagicConfiguration.GUI_ISOLATED_TYPE_KEY)
+                        .toUpperCase());
+        
+        final MagicLayout<T> layout = (MagicLayout<T>) property
+            .getConfiguration().getClassInstance(
+                    MagicConfiguration.GUI_LAYOUT_PREFIX + keyword
+                    + MagicConfiguration.GUI_LAYOUT_SUFIX);
+        
+        final LayoutIsolatedBehaviour<T> behaviour;
+        switch(type) {
+            case CHILD:
+            default:
+                behaviour = createChildBehaviour(layout);
+                break;
+            case TABBED:
+                behaviour = createTabbedBehaviour(layout);
+                break;
+            case TREE:
+                behaviour = createTreeBehaviour(layout);
+                break;
+        }
+        layout.setIsolatedBehaviour(behaviour);
+        return layout;
+    }
+    
+    /**
+     * @see org.devyant.magicbeans.ui.UIFactory#createAndShowWindow(java.lang.Object, org.devyant.magicbeans.MagicComponent)
+     */
+    public Object createAndShowWindow(T parent,
+            MagicComponent<? extends T> component) throws MagicException {
+        return createAndShowWindow(parent, component, null);
+    }
+    
+    /**
+     * @see org.devyant.magicbeans.ui.UIFactory#createAndShowWindow(java.lang.Object, org.devyant.magicbeans.MagicComponent, org.devyant.magicbeans.ui.listeners.WindowListener)
+     */
+    public Object createAndShowWindow(T parent,
+            MagicComponent<? extends T> component,
+            final WindowListener listener) throws MagicException {
+        return createAndShowWindow(
+                parent, component.getName(), component.render(), listener);
+    }
+
+    /**
+     * Create and return the child behaviour.
+     * @param layout The layout for which this behaviour is intended for
+     * @return The behaviour instance
+     * @throws UnsupportedOperationException Toolkit doesn't support this
+     */
+    protected abstract LayoutIsolatedBehaviour<T> createChildBehaviour(
+            MagicLayout<T> layout) throws UnsupportedOperationException;
+    /**
+     * Create and return the tabbed behaviour.
+     * @param layout The layout for which this behaviour is intended for
+     * @return The behaviour instance
+     * @throws UnsupportedOperationException Toolkit doesn't support this
+     */
+    protected abstract LayoutIsolatedBehaviour<T> createTabbedBehaviour(
+            MagicLayout<T> layout) throws UnsupportedOperationException;
+    /**
+     * Create and return the tree behaviour.
+     * @param layout The layout for which this behaviour is intended for
+     * @return The behaviour instance
+     * @throws UnsupportedOperationException Toolkit doesn't support this
+     */
+    protected abstract LayoutIsolatedBehaviour<T> createTreeBehaviour(
+            MagicLayout<T> layout) throws UnsupportedOperationException;
+    
 }

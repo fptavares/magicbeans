@@ -20,31 +20,38 @@
  * Rua Simao Bolivar 203 6C, 4470-214 Maia, Portugal.
  *
  */
-package org.devyant.magicbeans;
+package org.devyant.magicbeans.ui.swing;
 
-import java.util.Collection;
+import javax.swing.JComponent;
 
-import org.devyant.magicbeans.ui.listeners.UpdateButtonActionHandler;
+import org.devyant.magicbeans.exceptions.MagicException;
+import org.devyant.magicbeans.ui.AbstractComplexComponent;
+import org.devyant.magicbeans.ui.AbstractMagicComponent;
 
 /**
- * MagicContainer is a <b>cool</b> class.
+ * SwingEnumComponent is a <b>cool</b> class.
  * 
  * @author ftavares
  * @version $Revision$ $Date$ ($Author$)
- * @since Apr 3, 2006 5:57:52 PM
- * @param <T> The most basic type of this toolkit's components
+ * @since Apr 12, 2006 7:51:42 PM
  */
-public interface MagicContainer<T> extends MagicComplexComponent<T>,
-        UpdateButtonActionHandler {
+public class SwingEnumComponent extends AbstractComplexComponent<JComponent> {
+
     /**
-     * If set to true, a MagicComplexComponent will be able
-     * to stand alone (i.e. containing the apropriate "controllers").
-     * @param standalone The boolean value
+     * @see org.devyant.magicbeans.ui.AbstractMagicComponent#getValue()
      */
-    public void setStandalone(final boolean standalone);
+    @Override
+    protected Object getValue() {
+        return null;
+    }
+
     /**
-     * Get all child components from this container.
-     * @return A <code>Collection</code> of components
+     * @see org.devyant.magicbeans.ui.AbstractMagicComponent#setValue(java.lang.Object)
      */
-    public Collection<MagicComponent<? extends T>> getComponents();
+    @Override
+    protected void setValue(Object value) {
+        // @todo Auto-generated method stub
+        
+    }
+
 }

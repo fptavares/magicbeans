@@ -23,10 +23,9 @@
 package org.devyant.magicbeans.ui.swing;
 
 import javax.swing.JCheckBox;
+import javax.swing.SwingConstants;
 
-import org.devyant.magicbeans.MagicComponent;
-import org.devyant.magicbeans.beans.MagicProperty;
-import org.devyant.magicbeans.exceptions.MagicException;
+import org.devyant.magicbeans.ui.AbstractMagicComponent;
 import org.devyant.magicbeans.utils.Previewable;
 
 /**
@@ -36,46 +35,39 @@ import org.devyant.magicbeans.utils.Previewable;
  * @version $Revision$ $Date$ ($Author$)
  * @since Jul 10, 2005 4:05:20 AM
  */
-public class SwingBooleanComponent extends JCheckBox
-        implements MagicComponent, Previewable {
-    /**
-     * The property to bind to.
-     */
-    private MagicProperty property;
-    
-    /**
-     * @see org.devyant.magicbeans.MagicComponent#update()
-     */
-    public void update() throws MagicException {
-        this.property.set(preview());
-    }
+public class SwingBooleanComponent extends AbstractMagicComponent<JCheckBox>
+        implements Previewable {
 
     /**
-     * @see org.devyant.magicbeans.MagicComponent#bindTo(org.devyant.magicbeans.beans.MagicProperty)
+     * @see org.devyant.magicbeans.ui.AbstractMagicComponent#createComponent()
      */
-    public void bindTo(MagicProperty property) throws MagicException {
-        this.property = property;
-        // fill with property's value
-        final Object value = this.property.get();
-        if (value != null) {
-            this.setSelected(((Boolean) value).booleanValue());
-        }
-        this.setHorizontalAlignment(LEFT);
-        //this.setHorizontalTextPosition(LEADING);
+    @Override
+    protected JCheckBox createComponent() {
+        return new JCheckBox();
     }
     
     /**
-     * @see org.devyant.magicbeans.MagicComponent#getProperty()
+     * @see org.devyant.magicbeans.ui.AbstractMagicComponent#initializeComponent()
      */
-    public final MagicProperty getProperty() {
-        return property;
+    @Override
+    protected void initializeComponent() {
+        this.component.setHorizontalAlignment(SwingConstants.LEFT);
     }
 
     /**
-     * @see org.devyant.magicbeans.utils.Previewable#preview()
+     * @see org.devyant.magicbeans.ui.AbstractMagicComponent#getValue()
      */
-    public Object preview() {
-        return new Boolean(this.isSelected());
+    @Override
+    protected Object getValue() {
+        return this.component.isSelected();
+    }
+
+    /**
+     * @see org.devyant.magicbeans.ui.AbstractMagicComponent#setValue(java.lang.Object)
+     */
+    @Override
+    protected void setValue(Object value) {
+        this.component.setSelected((Boolean) value);
     }
 
 }

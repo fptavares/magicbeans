@@ -22,17 +22,15 @@
  */
 package org.devyant.magicbeans;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Random;
+
+import org.apache.commons.lang.RandomStringUtils;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-
-import org.apache.commons.lang.RandomStringUtils;
 
 /**
  * AppTest is a <b>cool</b> class.
@@ -72,7 +70,7 @@ public class AppTest
         
         bean.showFrame(null, new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
-                MagicUtils.debug(bean.getRealValue().toString());
+                MagicUtils.debug(bean.getValue().toString());
                 System.exit(0);
             }
         });
@@ -103,22 +101,36 @@ public class AppTest
     public static class Dummy {
         private String name = "Dummy";
         private String description = "A dummy class for testing";
+        private boolean itIsTrue = true;
+        private double number = 6.85;
         /*private File bye = new File("/home/ftavares/someFile");
         private Calendar date = Calendar.getInstance();*/
-        private Dummy2 dummy = new Dummy2();
+        private Dummy2 dummy = new Dummy2(new Dummy3());
         
+        public boolean isItIsTrue() {
+            return this.itIsTrue;
+        }
+        public void setItIsTrue(boolean itIsTrue) {
+            this.itIsTrue = itIsTrue;
+        }
+        public double getNumber() {
+            return this.number;
+        }
+        public void setNumber(double number) {
+            this.number = number;
+        }
         public String getDescription() {
             return description;
         }
         public final void setDescription(String description) {
             this.description = description;
         }
-        /*public String getName() {
+        public String getName() {
             return name;
         }
         public final void setName(String name) {
             this.name = name;
-        }*/
+        }
         public final boolean validateName() {
             if (name.length() > 5) {
                 return true;
@@ -155,16 +167,24 @@ public class AppTest
     }
     public static class Dummy2 {
         private String name = "Dummy2";
-        /*private boolean foo = true;
-        private int bye = 3;
-        private Collection collection = new ArrayList();
-        
-        public Dummy2() {
+        private Object something;
+        public Dummy2(Object object) {
+            this.something = object;
             Random r = new Random();
             for (int i = 0; i < 6; i++) {
                 collection.add(RandomStringUtils.randomAlphanumeric(r.nextInt(48)+4));
             }
         }
+        public Object getSomething() {
+            return this.something;
+        }
+        public void setSomething(Object something) {
+            this.something = something;
+        }
+
+        private boolean foo = true;
+        private int bye = 3;
+        private Collection collection = new ArrayList();
         
         public int getBye() {
             return bye;
@@ -177,14 +197,14 @@ public class AppTest
         }
         public void setFoo(boolean foo) {
             this.foo = foo;
-        }*/
+        }
         public String getName() {
             return name;
         }
         public final void setName(String name) {
             this.name = name;
         }
-        /*public final Collection getCollection() {
+        public final Collection getCollection() {
             return collection;
         }
         public final void setCollection(Collection collection) {
@@ -204,6 +224,15 @@ public class AppTest
                 + "\n\t" + foo
                 + "\n\t" + bye
                 + "\n\t" + collection;
-        }*/
+        }
+    }
+    public static class Dummy3 {
+        private String name = "Dummy3";
+        public String getName() {
+            return name;
+        }
+        public final void setName(String name) {
+            this.name = name;
+        }
     }
 }
